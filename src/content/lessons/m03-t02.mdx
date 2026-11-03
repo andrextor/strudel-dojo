@@ -1,0 +1,61 @@
+---
+topic: M03-T02
+title: Inversiones y voicings
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Staff from '../../components/music/Staff.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Un acorde está **invertido** cuando la nota más grave no es la fundamental. Con la tercera abajo es la **1.ª inversión**; con la quinta abajo, la **2.ª**. Se cifra con barra: Do mayor con Mi en el bajo es **C/E**.
+</Callout>
+
+## Las tres posiciones
+
+Las notas son las mismas; cambia cuál queda abajo:
+
+<Staff client:visible abc={'X:1\nL:1/2\nK:C\n[CEG] [EGc] [Gce] |]'} label="Do mayor en estado fundamental, 1.ª y 2.ª inversión" />
+
+<Keyboard low="C4" high="B5" highlight={["E4", "G4", "C5"]} labels="name" label="C/E: Do mayor en primera inversión" />
+
+<Listen client:visible code='note("<[c3,e3,g3] [e3,g3,c4] [g3,c4,e4]>").s("piano")' label="Escuchar las tres posiciones de Do mayor" />
+
+| Posición | Nota más grave | Cifrado |
+|----------|----------------|---------|
+| Estado fundamental | Fundamental | C |
+| 1.ª inversión | Tercera | C/E |
+| 2.ª inversión | Quinta | C/G |
+
+<Callout tone="hint" title="Cómo reconocerla">
+  Ordena las notas por terceras para encontrar la fundamental (Mi Sol Do → Do Mi Sol). Luego mira cuál está abajo.
+</Callout>
+
+## Voicings cerrados y abiertos
+
+Un **voicing** es cómo repartes las notas del acorde. **Cerrado**: todas dentro de una octava. **Abierto**: separadas, por ejemplo con la fundamental grave y la tercera arriba. En guitarra, las formas CAGED son cinco voicings del mismo acorde a lo largo del mástil.
+
+<Listen client:visible code='note("<[c3,e3,g3] [c2,g3,e4]>").s("piano")' label="Escuchar Do mayor cerrado y abierto" />
+
+<Fretboard highlight={["C", "E", "G"]} frets={12} label="Todas las notas de Do mayor hasta el traste 12: de ahí salen las formas CAGED" />
+
+## Strudel: `voicing` y `anchor`
+
+`voicing` elige posiciones que se mueven poco de un acorde al siguiente. Con `anchor` decides hasta qué nota llega arriba (por defecto c5): así subes o bajas el registro sin cambiar los acordes.
+
+<StrudelRef name="anchor" summary="Fija la nota más aguda hasta la que llega el voicing (por defecto c5)." />
+
+<Example client:visible code='chord("<C Am F G>").anchor("c4").voicing().s("piano")' />
+
+<details>
+  <summary>¿Por qué importa la inversión?</summary>
+
+Con inversiones, el bajo se mueve por grados en vez de saltar: C – G/B – Am suena como una línea que baja (Do, Si, La). Es la base de muchas progresiones pop y de la conducción de voces que verás en M07.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Nombrar un acorde con su inversión a partir de sus notas, de la más grave a la más aguda, y repasar escalas, grados y relativas de M02.
+</Callout>

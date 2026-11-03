@@ -48,7 +48,7 @@ Calibrado para quien ya leyó partitura: va rápido y rellena huecos. Tiene prue
 
 - Habilidades: `triad-quality`, `inversions`, `diatonic-chords-major`, `diatonic-chords-minor`.
 - Ejercicios: `chord` (deletrear, nombrar), `roman`, `ear-chord` (M/m/dim/aum).
-- **Combate M03**: acompañamiento de 4 acordes diatónicos con voicing y arpegio, más un bajo en raíces. Aserción: cada ciclo coincide con el set de notas del acorde declarado.
+- **Combate M03**: acompañamiento de I–vi–IV–V en Do mayor (C Am F G) con voicing y arpegio, más un bajo en raíces. Aserciones: cada ciclo coincide con el set de notas de su acorde (`chordPerCycle`) y el bajo toca la fundamental (`rootsPerBar`). La progresión es fija para poder comprobarla.
 
 ## M04 · Cinturón verde · Función armónica y progresiones
 

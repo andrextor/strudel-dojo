@@ -83,16 +83,16 @@ type Grade = { correct: boolean; feedback?: string }        // feedback: p. ej. 
 | `key-signature` | key-signatures | Armadura ↔ tonalidad (mayor o relativa menor). | `maxAccidentals`, `minor` |
 | `relative-key` | relative-minor | Relativa menor/mayor de X. | `maxAccidentals` |
 | `scale-degree` | scale-degrees | ¿Cuál es el grado N / el nombre funcional en X? | `scales[]` |
-| `chord-spelling` | triad-quality / seventh-chords | Deletrea el acorde X. | `types[]`, `tonics[]` |
-| `chord-name` | idem | Nombra el acorde de estas notas (incluye inversiones). | `types[]`, `inversions` |
-| `diatonic-chord` | diatonic-chords-* | Acorde del grado N en la tonalidad X (romano ↔ cifrado). | `key`, `sevenths` |
+| `chord-spelling` | triad-quality / seventh-chords | Deletrea el acorde X (hoy tríadas). | `qualities[]` (major, minor, diminished, augmented), `roots[]` |
+| `chord-name` | inversions | Nombra el acorde de estas notas, de grave a agudo (opciones; las notas van marcadas en el instrumento). | `qualities[]`, `inversions` |
+| `diatonic-chord` / `diatonic-chord-minor` | diatonic-chords-major / -minor | Acorde del grado N en la tonalidad X, o grado de un acorde (opciones). Un id por modo, para que cada uno registre su habilidad. | `tonics[]` (séptimas llegan en M07) |
 | `transpose` | transpose-* | Transporta la melodía/acorde por un intervalo o a otra tonalidad. | `by: interval|key`, `length` |
 | `mode-spelling` | mode-spelling | Escribe el modo X desde Y. | `modes[]` |
 | `characteristic-note` | characteristic-note | ¿Cuál es la nota característica de X? | `modes[]` |
 | `secondary-dominant` | secondary-dominants | V/x en la tonalidad Y. | `targets[]` |
 | `chord-scale` | chord-scale | Escala para el acorde X en contexto Y. | — |
 | `ear-interval` | interval-ear | Escucha e identifica el intervalo. | `set[]`, `direction: up|down|harmonic` |
-| `ear-chord` | chord-ear | Calidad del acorde escuchado. | `types[]`, `inversions` |
+| `ear-chord` | chord-ear | Calidad del acorde escuchado. | `qualities[]`, `inversions` |
 | `ear-scale` | mode-ear | ¿Qué escala/modo suena? | `scales[]` |
 | `ear-melody` | melodic-dictation | Toca en el teclado la melodía escuchada. | `length`, `scale`, `maxLeap` |
 | `rhythm-match` | rhythm-reading | ¿Qué mini-notation suena como esta figura? | `meter`, `subdivision` |

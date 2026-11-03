@@ -19,6 +19,19 @@ const CASES: { id: string; params: Record<string, unknown>; strict?: boolean }[]
   { id: 'rhythm-match', params: { meter: 4, subdivision: 4 } },
   { id: 'scale-spelling', params: { scales: ['major'] }, strict: true },
   { id: 'scale-spelling', params: { scales: ['minor'] }, strict: true },
+  {
+    id: 'chord-spelling',
+    params: { qualities: ['major', 'minor', 'diminished', 'augmented'] },
+    strict: true,
+  },
+  { id: 'chord-name', params: { qualities: ['major', 'minor', 'diminished'], inversions: true } },
+  { id: 'chord-name', params: { qualities: ['major', 'minor'], inversions: false } },
+  { id: 'diatonic-chord', params: {} },
+  { id: 'diatonic-chord-minor', params: {} },
+  {
+    id: 'ear-chord',
+    params: { qualities: ['major', 'minor', 'diminished', 'augmented'], inversions: true },
+  },
   { id: 'key-signature', params: { maxAccidentals: 7 } },
   { id: 'key-signature', params: { maxAccidentals: 4, minor: true } },
   { id: 'scale-degree', params: { scales: ['major'] } },
@@ -76,7 +89,7 @@ for (const { id, params, strict } of CASES) {
       }
 
       // Ear exercises carry playable Strudel code.
-      if (id === 'ear-interval' || id === 'rhythm-match') {
+      if (id === 'ear-interval' || id === 'rhythm-match' || id === 'ear-chord') {
         assert.match(q.audio ?? '', /\(".+"\)/, 'missing or malformed audio')
       }
 

@@ -1,0 +1,64 @@
+---
+topic: M03-T01
+title: Tríadas
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Una **tríada** son tres notas apiladas por terceras: **fundamental**, **tercera** y **quinta**. La calidad depende de esas dos distancias: **mayor** (3M + 5J), **menor** (3m + 5J), **disminuida** (3m + 5d) y **aumentada** (3M + 5A).
+</Callout>
+
+## Apilar terceras
+
+Desde Do, salta una letra cada vez: **Do, Mi, Sol**. Do–Mi es una tercera mayor (4 semitonos) y Do–Sol una quinta justa (7): Do mayor.
+
+<Keyboard low="C4" high="B4" highlight={["C4", "E4", "G4"]} labels="name" label="Do mayor: Do, Mi, Sol" />
+
+<Listen client:visible code='note("[c3,e3,g3]").s("piano")' label="Escuchar Do mayor" />
+
+| Calidad | Tercera | Quinta | Sobre Do | Cifrado |
+|---------|---------|--------|----------|---------|
+| Mayor | 3M (4) | 5J (7) | Do Mi Sol | C |
+| Menor | 3m (3) | 5J (7) | Do Mi♭ Sol | Cm |
+| Disminuida | 3m (3) | 5d (6) | Do Mi♭ Sol♭ | C° (Cdim) |
+| Aumentada | 3M (4) | 5A (8) | Do Mi Sol♯ | C+ (Caug) |
+
+<Listen client:visible code='note("<[c3,e3,g3] [c3,eb3,g3] [c3,eb3,gb3] [c3,e3,g#3]>").s("piano")' label="Escuchar las cuatro calidades sobre Do" />
+
+<Callout tone="hint" title="Para el oído">
+  La mayor suena luminosa, la menor oscura, la disminuida tensa (pide moverse) y la aumentada suspendida, como sin resolver.
+</Callout>
+
+<details>
+  <summary>¿Y el deletreo?</summary>
+
+Las tres notas son letras alternas: si la fundamental es Fa♯, las letras son Fa, La y Do. Fa♯ menor es **Fa♯, La, Do♯**, nunca Fa♯, La, Re♭. Por eso aparecen nombres como Si♭𝄫 o Fa𝄪 en algunas disminuidas y aumentadas.
+</details>
+
+## En la guitarra
+
+La forma de "Mi mayor" al aire contiene solo tres notas distintas, repetidas en varias octavas:
+
+<Fretboard highlight={["E", "G#", "B"]} frets={4} label="Mi, Sol♯ y Si: Mi mayor en las primeras posiciones" />
+
+## Strudel: acordes con `note` y con `chord`
+
+Con `note`, la coma dentro de `[ ]` hace sonar las notas juntas. Con `chord` escribes el cifrado y `voicing` lo convierte en notas, eligiendo una buena distribución.
+
+<StrudelRef name="chord" summary="Escribe acordes por su cifrado: C, Am, Bo (disminuido), Caug." />
+<StrudelRef name="voicing" summary="Convierte el cifrado de chord en notas reales, bien repartidas." />
+
+<Example client:visible code='chord("<C Am F G>").voicing().s("piano")' />
+
+<Callout tone="warning" title="Cifrado en Strudel">
+  Dentro de `chord`, la disminuida se escribe con `o` (`Bo`) y la aumentada con `aug` (`Caug`): el `+` tiene otro significado en la mini-notation.
+</Callout>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Escribir las tres notas de cualquier tríada mayor, menor, disminuida o aumentada con el deletreo correcto, reconocer su calidad de oído y nombrar intervalos de módulos anteriores.
+</Callout>

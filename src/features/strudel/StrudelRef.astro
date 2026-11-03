@@ -2,7 +2,9 @@
 // Reference card for one Strudel function, rendered at build time so the reference data
 // never ships to the client. The description is the package's own (English) HTML.
 import { reference } from '@strudel/reference'
+import InlineCode from '../../components/ui/InlineCode.tsx'
 import Listen from './Listen.tsx'
+import es from './ref-es.json'
 
 interface Props {
   name: string
@@ -13,15 +15,27 @@ const { name, summary } = Astro.props
 const doc = reference.docs.find((d) => d.name === name)
 if (doc === undefined) throw new Error(`StrudelRef: unknown function ${name}`)
 const example = doc.examples?.[0]
+const translated = (es as Record<string, string>)[name]
 ---
 
 <section class="my-4 rounded-card border border-dojo-hairline bg-dojo-surface p-5">
   <h3 class="font-mono text-lg font-semibold text-dojo-violet">{name}</h3>
   {summary && <p class="mt-2 text-dojo-text">{summary}</p>}
   {
+    translated && (
+      <div class="mt-2 space-y-2 text-sm text-dojo-muted">
+        {translated.split('\n\n').map((para) => (
+          <p>
+            <InlineCode text={para} />
+          </p>
+        ))}
+      </div>
+    )
+  }
+  {
     doc.description && (
       <details class="mt-2 text-sm text-dojo-muted">
-        <summary class="cursor-pointer">Descripción original (inglés)</summary>
+        <summary class="cursor-pointer">Original en inglés</summary>
         <div class="prose-sm mt-2" set:html={doc.description} />
       </details>
     )

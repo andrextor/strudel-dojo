@@ -256,3 +256,20 @@ test('firstCycle gives one cycle of haps, or just the first onset', async () => 
     ['c3', 'e3'],
   )
 })
+
+test('every documented Strudel function has its Spanish translation', async () => {
+  const { reference } = await import('@strudel/reference')
+  const { readFileSync } = await import('node:fs')
+  const es: Record<string, string> = JSON.parse(
+    readFileSync(new URL('./ref-es.json', import.meta.url), 'utf8'),
+  )
+  for (const d of reference.docs) {
+    if (typeof d.name !== 'string' || !d.description) continue
+    const translated = es[d.name]
+    assert.ok(
+      translated,
+      `${d.name}: missing; run node --env-file=.env scripts/translate-reference.mjs`,
+    )
+    assert.equal(translated.split('`').length % 2, 1, `${d.name}: unbalanced backticks`)
+  }
+})

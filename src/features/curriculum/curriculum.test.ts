@@ -83,11 +83,11 @@ test('every ready topic lesson file exists', () => {
   }
 })
 
-test('ready modules M01 and M02, rest draft', () => {
-  assert.equal(modules.find((m) => m.id === 'M01')?.status, 'ready')
-  assert.equal(modules.find((m) => m.id === 'M02')?.status, 'ready')
+const READY = ['M01', 'M02', 'M03']
+
+test('ready modules are exactly the finished belts, the rest draft', () => {
   for (const m of modules) {
-    if (m.id !== 'M01' && m.id !== 'M02') assert.equal(m.status, 'draft', `${m.id} should be draft`)
+    assert.equal(m.status, READY.includes(m.id) ? 'ready' : 'draft', `${m.id} status`)
   }
 })
 
@@ -117,6 +117,10 @@ const BOSS_SOLUTIONS: Record<string, string> = {
   note("<g2!4 e2!4>").s("piano"),
   n("<[0 2 4 2] [3 4 5 4] [2 1 0 1] [4 3 2 ~] [0 2 4 2] [5 4 3 2] [1 2 3 1] [0 ~ 0 ~]>")
     .scale("<G3:major!4 E3:minor!4>").s("piano")
+)`,
+  'M03-BOSS': `stack(
+  chord("<C Am F G>").voicing().arp("0 1 2 3 4 3 2 1").s("piano"),
+  chord("<C Am F G>").rootNotes(2).s("piano")
 )`,
 }
 

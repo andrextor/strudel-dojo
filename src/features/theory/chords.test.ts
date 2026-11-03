@@ -1,6 +1,14 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { diatonicChords, identifyChord, parseChordInput, spellChord } from './chords.ts'
+import {
+  diatonicChords,
+  diatonicTriads,
+  identifyChord,
+  parseChordInput,
+  spellChord,
+  spellTriad,
+  triadSymbol,
+} from './chords.ts'
 
 test('spellChord', () => {
   assert.deepEqual(spellChord('Cmaj7'), ['C', 'E', 'G', 'B'])
@@ -58,4 +66,19 @@ test('diatonicChords major: roman case reflects quality', () => {
   )
   assert.deepEqual(sevenths?.[4]?.notes, ['G', 'B', 'D', 'F'])
   assert.equal(diatonicChords('X'), null)
+})
+
+test('triads: spelling, symbols and the diatonic triads of both modes', () => {
+  assert.deepEqual(spellTriad('Gb', 'diminished'), ['Gb', 'Bbb', 'Dbb'])
+  assert.deepEqual(spellTriad('B', 'augmented'), ['B', 'D#', 'F##'])
+  assert.equal(triadSymbol('F#', 'minor'), 'F#m')
+  assert.equal(triadSymbol('C', 'diminished'), 'C°')
+  assert.deepEqual(
+    diatonicTriads('D', 'major')?.map((t) => `${t.roman}:${t.root}`),
+    ['I:D', 'ii:E', 'iii:F#', 'IV:G', 'V:A', 'vi:B', 'vii°:C#'],
+  )
+  assert.deepEqual(
+    diatonicTriads('A', 'minor')?.map((t) => t.roman),
+    ['i', 'ii°', 'III', 'iv', 'v', 'VI', 'VII'],
+  )
 })

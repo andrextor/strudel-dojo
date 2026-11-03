@@ -1,0 +1,51 @@
+---
+topic: M03-T03
+title: Campo armónico mayor
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Si apilas terceras sobre cada grado de una escala mayor, usando solo sus notas, salen siete acordes: **I ii iii IV V vi vii°**. Mayúscula = mayor, minúscula = menor, ° = disminuido. Es igual en todas las tonalidades mayores.
+</Callout>
+
+## Siete acordes de una escala
+
+En Do mayor:
+
+| Grado | I | ii | iii | IV | V | vi | vii° |
+|-------|---|----|-----|----|---|----|------|
+| Acorde | C | Dm | Em | F | G | Am | B° |
+
+<Listen client:visible code='chord("<C Dm Em F G Am Bo C>").voicing().s("piano")' label="Escuchar el campo armónico de Do mayor" />
+
+El patrón de calidades (mayor, menor, menor, mayor, mayor, menor, disminuido) no cambia de tonalidad. En Re mayor: **D Em F♯m G A Bm C♯°**.
+
+<Keyboard low="D4" high="C#5" highlight={["F#", "A", "C#"]} labels="name" label="iii de Re mayor: Fa♯ menor (Fa♯, La, Do♯)" />
+
+## Cifrado romano y americano
+
+El **romano** dice la función (el grado) sin importar la tonalidad; el **americano** dice las notas. "I–V–vi–IV" es la misma progresión en Do (C G Am F) y en Sol (G D Em C).
+
+<Listen client:visible code='chord("<G D Em C>").voicing().s("piano")' label="Escuchar I–V–vi–IV en Sol mayor" />
+
+## Strudel: apilar terceras con `add`
+
+`add` suma un número a cada valor. Si sumas `[0,2,4]` a un grado dentro de `n`, obtienes la tríada de ese grado, y `scale` se encarga del deletreo:
+
+<StrudelRef name="add" summary="Suma un valor a cada nota o número del patrón." />
+
+<Example client:visible code='n("<0 1 2 3 4 5 6>".add("[0,2,4]")).scale("D:major").s("piano")' />
+
+<details>
+  <summary>¿Por qué el vii es disminuido?</summary>
+
+En Do mayor, el vii es Si–Re–Fa. De Si a Fa hay 6 semitonos, una quinta disminuida: es el único grado cuya quinta no es justa. Por eso suena tenso y empuja hacia la tónica, igual que el V.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Decir qué acorde hay en cada grado de cualquier tonalidad mayor, y qué grado es un acorde dado, en cifrado romano y americano.
+</Callout>

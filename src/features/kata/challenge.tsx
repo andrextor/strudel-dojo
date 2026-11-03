@@ -1,6 +1,7 @@
 // What katas and the boss share: running the assertions on the user's code and listing them.
 import { CircleCheck, CircleX, LoaderCircle } from 'lucide-preact'
 import { useRef, useState } from 'preact/hooks'
+import InlineCode from '../../components/ui/InlineCode.tsx'
 import type { Assertion } from '../curriculum/schema.ts'
 import { runKata } from '../strudel/assertions.ts'
 import type { DojoError } from '../strudel/types.ts'
@@ -27,23 +28,6 @@ export function useAssertions(assertions: Assertion[], cycles: number) {
     return next
   }
   return { check, test }
-}
-
-// Assertion messages mark code with backticks: `bd`.
-function Message({ text }: { text: string }) {
-  return (
-    <span>
-      {text.split('`').map((part, i) =>
-        i % 2 === 1 ? (
-          <code key={i} class="font-mono text-dojo-violet">
-            {part}
-          </code>
-        ) : (
-          part
-        ),
-      )}
-    </span>
-  )
 }
 
 export function AssertionList({ check, count }: { check: Check; count: number }) {
@@ -79,7 +63,9 @@ export function AssertionList({ check, count }: { check: Check; count: number })
           ) : (
             <CircleX size={18} class="mt-0.5 shrink-0 text-dojo-danger" aria-label="Falta" />
           )}
-          <Message text={r.message} />
+          <span>
+            <InlineCode text={r.message} />
+          </span>
         </li>
       ))}
     </ul>

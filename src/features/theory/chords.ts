@@ -67,3 +67,68 @@ function romanFor(base: string, quality: string): string {
       return base
   }
 }
+
+export type TriadQuality = 'major' | 'minor' | 'diminished' | 'augmented'
+export const TRIAD_QUALITIES: readonly TriadQuality[] = [
+  'major',
+  'minor',
+  'diminished',
+  'augmented',
+]
+
+const TONAL_SUFFIX: Record<TriadQuality, string> = {
+  major: '',
+  minor: 'm',
+  diminished: 'dim',
+  augmented: 'aug',
+}
+// How the app writes chords: C, Cm, C°, C+.
+const SHOWN_SUFFIX: Record<TriadQuality, string> = {
+  major: '',
+  minor: 'm',
+  diminished: '°',
+  augmented: '+',
+}
+
+export const isTriadQuality = (v: unknown): v is TriadQuality =>
+  typeof v === 'string' && (TRIAD_QUALITIES as readonly string[]).includes(v)
+
+export function spellTriad(root: string, quality: TriadQuality): string[] | null {
+  return spellChord(`${root}${TONAL_SUFFIX[quality]}`)
+}
+
+export function triadSymbol(root: string, quality: TriadQuality): string {
+  return `${root}${SHOWN_SUFFIX[quality]}`
+}
+
+const QUALITY_OF: Record<string, TriadQuality> = {
+  Major: 'major',
+  Minor: 'minor',
+  Diminished: 'diminished',
+  Augmented: 'augmented',
+}
+
+export interface DiatonicTriad {
+  degree: number // 1–7
+  roman: string // I ii iii IV V vi vii° / i ii° III iv v VI VII
+  root: string
+  quality: TriadQuality
+  notes: string[]
+}
+
+// The seven triads of a major key or of the natural minor (spec 01, M03).
+export function diatonicTriads(tonic: string, mode: 'major' | 'minor'): DiatonicTriad[] | null {
+  const symbols = mode === 'major' ? Key.majorKey(tonic).triads : Key.minorKey(tonic).natural.triads
+  if (symbols.length !== 7) return null
+  return symbols.map((symbol, i) => {
+    const chord = Chord.get(symbol)
+    const quality = QUALITY_OF[chord.quality] ?? 'major'
+    return {
+      degree: i + 1,
+      roman: romanFor(BASE_ROMAN[i] ?? '', chord.quality),
+      root: chord.tonic ?? '',
+      quality,
+      notes: chord.notes,
+    }
+  })
+}

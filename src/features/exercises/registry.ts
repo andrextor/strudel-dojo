@@ -1,5 +1,9 @@
 import { createRng, type Rng } from '../../lib/random.ts'
 import type { MixEntry } from '../curriculum/schema.ts'
+import { chordName } from './generators/chord-name.ts'
+import { chordSpelling } from './generators/chord-spelling.ts'
+import { diatonicChord, diatonicChordMinor } from './generators/diatonic-chord.ts'
+import { earChord } from './generators/ear-chord.ts'
 import { earInterval } from './generators/ear-interval.ts'
 import { enharmonic } from './generators/enharmonic.ts'
 import { intervalBuild } from './generators/interval-build.ts'
@@ -48,6 +52,11 @@ const REGISTERED: Registered[] = [
   erase(keySignatureGen),
   erase(scaleDegree),
   erase(relativeKey),
+  erase(chordSpelling),
+  erase(chordName),
+  erase(diatonicChord),
+  erase(diatonicChordMinor),
+  erase(earChord),
 ]
 
 export const registry: Map<string, Registered> = new Map(REGISTERED.map((r) => [r.id, r]))

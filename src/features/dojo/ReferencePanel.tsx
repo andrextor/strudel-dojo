@@ -1,32 +1,36 @@
 import { BookOpen, Search } from 'lucide-preact'
 import { useEffect, useState } from 'preact/hooks'
+import InlineCode from '../../components/ui/InlineCode.tsx'
 
 interface Doc {
   name: string
-  text: string
+  es: string | null // Spanish translation (scripts/translate-reference.mjs)
+  text: string // original English, tags stripped
   example: string | null
 }
 
 let docs: Promise<Doc[]> | null = null
 
-// @strudel/reference is ~550 kB, so it loads only when the panel opens. Descriptions are the
-// package's HTML; tags are stripped so nothing is injected into the page.
+// @strudel/reference is ~550 kB, so it loads only when the panel opens, together with our
+// Spanish translations. The package's HTML is only used stripped, so nothing is injected.
 const loadDocs = () =>
-  (docs ??= import('@strudel/reference').then(({ reference }) =>
-    reference.docs.flatMap((d) =>
-      typeof d.name === 'string'
-        ? [
-            {
-              name: d.name,
-              text: (d.description ?? '')
-                .replace(/<[^>]+>/g, '')
-                .replace(/\s+/g, ' ')
-                .trim(),
-              example: d.examples?.[0] ?? null,
-            },
-          ]
-        : [],
-    ),
+  (docs ??= Promise.all([import('@strudel/reference'), import('../strudel/ref-es.json')]).then(
+    ([{ reference }, { default: es }]) =>
+      reference.docs.flatMap((d) =>
+        typeof d.name === 'string'
+          ? [
+              {
+                name: d.name,
+                es: (es as Record<string, string>)[d.name] ?? null,
+                text: (d.description ?? '')
+                  .replace(/<[^>]+>/g, '')
+                  .replace(/\s+/g, ' ')
+                  .trim(),
+                example: d.examples?.[0] ?? null,
+              },
+            ]
+          : [],
+      ),
   ))
 
 export default function ReferencePanel({ onInsert }: { onInsert: (code: string) => void }) {
@@ -44,7 +48,10 @@ export default function ReferencePanel({ onInsert }: { onInsert: (code: string) 
     return name.includes(q) ? 2 : 3
   }
   const found = (all ?? [])
-    .filter((d) => q === '' || d.name.toLowerCase().includes(q) || d.text.toLowerCase().includes(q))
+    .filter(
+      (d) =>
+        q === '' || d.name.toLowerCase().includes(q) || (d.es ?? d.text).toLowerCase().includes(q),
+    )
     .sort((a, b) => rank(a) - rank(b))
     .slice(0, 40)
 
@@ -76,7 +83,11 @@ export default function ReferencePanel({ onInsert }: { onInsert: (code: string) 
           {found.map((d) => (
             <li key={d.name} class="min-w-0 space-y-1 border-b border-dojo-hairline pb-3">
               <p class="font-mono font-semibold break-all text-dojo-violet">{d.name}</p>
-              {d.text && <p class="line-clamp-3 text-sm break-words text-dojo-muted">{d.text}</p>}
+              {(d.es ?? d.text) && (
+                <p class="line-clamp-3 text-sm break-words text-dojo-muted">
+                  <InlineCode text={d.es ?? d.text} />
+                </p>
+              )}
               {d.example && (
                 <button
                   type="button"

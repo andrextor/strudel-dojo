@@ -1,5 +1,8 @@
 import { Note } from 'tonal'
 import type { Rng } from '../../../lib/random.ts'
+import { isTriadQuality, type TriadQuality, triadSymbol } from '../../theory/chords.ts'
+import { CHORD_TYPE_ES } from '../../theory/es.ts'
+import { formatNote } from '../../theory/notes.ts'
 
 // Pitch-class pools by accidental policy. Naturals first so "none" is a subset.
 export const NATURALS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'] as const
@@ -84,3 +87,34 @@ export const MINOR_TONICS = [
   'Bb',
   'Eb',
 ] as const
+
+// Pitch classes stacked upwards from `octave`: each note lands above the previous one.
+export function voiceUp(pcs: readonly string[], octave: number): string[] {
+  let previous = Number.NEGATIVE_INFINITY
+  return pcs.map((pc) => {
+    let o = octave
+    while ((Note.midi(`${pc}${o}`) ?? 0) <= previous) o++
+    previous = Note.midi(`${pc}${o}`) ?? previous
+    return `${pc}${o}`
+  })
+}
+
+const INVERSION_ES = ['', ', 1.ª inversión', ', 2.ª inversión']
+
+// "Re menor (Dm)", "Do mayor, 1.ª inversión (C/E)": the chord as the app names it.
+export function chordLabel(
+  root: string,
+  quality: TriadQuality,
+  inversion = 0,
+  bass = root,
+): string {
+  const symbol = `${formatNote(root, 'american')}${triadSymbol('', quality)}`
+  const slash = inversion === 0 ? '' : `/${formatNote(bass, 'american')}`
+  return `${formatNote(root, 'latin')} ${CHORD_TYPE_ES[quality] ?? quality}${INVERSION_ES[inversion] ?? ''} (${symbol}${slash})`
+}
+
+export function parseQualities(raw: unknown): TriadQuality[] | null {
+  const list = raw ?? ['major', 'minor']
+  if (!Array.isArray(list) || list.length === 0 || !list.every(isTriadQuality)) return null
+  return list
+}

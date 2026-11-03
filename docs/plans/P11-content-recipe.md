@@ -21,7 +21,7 @@ Un módulo por rama y por PR: `feat/content-mNN-<cinturon>` (p. ej. `feat/conten
 
 | Módulo | Generadores nuevos (mínimo) | Aserciones nuevas probables | Hecho |
 |--------|-----------------------------|-----------------------------|-------|
-| M03 Naranja | chord-spelling, chord-name (con inversiones), diatonic-chord, ear-chord | — (chordPerCycle ya existe) | [ ] |
+| M03 Naranja | chord-spelling, chord-name (con inversiones), diatonic-chord, ear-chord | — (chordPerCycle ya existe) | [x] |
 | M04 Verde | harmonic-function, cadence-id, progression-roman, harmonize-note | rootsPerBar (ya existe) | [ ] |
 | M05 Azul | transpose (by interval, by key), capo, modulation-pivot | matchesReference con `transposeBy` (ya existe) | [ ] |
 | M06 Morado | mode-spelling, characteristic-note, ear-scale (modos), modal-progression | characteristicNoteRatio (ya existe) | [ ] |
@@ -29,3 +29,18 @@ Un módulo por rama y por PR: `feat/content-mNN-<cinturon>` (p. ej. `feat/conten
 | M08 Rojo | secondary-dominant, borrowed-chord, tritone-sub, reharm-choice | chordFunctionAt (nueva: verifica que el acorde del ciclo i sea V/x, préstamo o subV) | [ ] |
 | M09 Negro | minor-variants, pentatonic-box, symmetric-scale, chord-scale | scalePerCycle (nueva: notas del ciclo i dentro de la escala i) | [ ] |
 | M10 Dan | form-id, layer-count, sound-design-choice | sectionsDistinct (nueva), layerCount (nueva) | [ ] |
+
+### M03 (rama `feat/content-m03-orange`)
+
+- Generadores nuevos: `chord-spelling` (tríadas de las cuatro calidades, deletreo estricto, `spellAll` por params), `chord-name` (opciones con inversiones y calidades vecinas; las notas van en `marked`), `diatonic-chord` y `diatonic-chord-minor` (dos ids, uno por modo, para que cada uno registre su habilidad; pregunta el acorde de un grado o el grado de un acorde) y `ear-chord` (calidad de oído, con inversiones opcionales; habilidad nueva `chord-ear`). Los cuatro pasan el test de 200 semillas. Helpers en `theory/chords.ts`: `spellTriad`, `triadSymbol`, `diatonicTriads` (mayor y menor natural), con test.
+- Hechos de Strudel verificados: el diccionario de `voicing` no conoce `Cdim` (en el código se escribe `Co`) y `C+` rompe la mini-notation (se escribe `Caug`); en las aserciones `chordPerCycle` usa el cifrado de `tonal` (`C#dim`). Para apilar terceras dentro de una escala, el `add` va sobre la cadena de números: `n("<0 … 6>".add("[0,2,4]"))`; sobre `n(…)` suma al control y no a los grados. `dict` no está en `@strudel/reference`; M03 no lo necesita.
+- Combate con progresión fija (I–vi–IV–V en Do) para poder comprobarla: `chordPerCycle` más `rootsPerBar` para el bajo.
+- La prueba de cada tema incluye 20–30 % de preguntas de módulos anteriores (intervalos, grados, relativas, escalas).
+- El test de currículo ahora lista los módulos listos (`READY`) en vez de fijar M01 y M02.
+
+### Referencia de Strudel en español (pedido del dueño, en esta misma rama)
+
+- `scripts/translate-reference.mjs` traduce una vez las 507 descripciones de `@strudel/reference` con Claude Haiku 5.5 (lotes de 25, salidas estructuradas, el código entre comillas invertidas intacto) y escribe `src/features/strudel/ref-es.json` (70 KB, versionado; la app nunca llama a Claude para esto). Sin `--force` solo traduce lo que falte.
+- El panel de referencia del Dojo muestra el español (y busca en español); las fichas `<StrudelRef>` de las lecciones muestran el español con el original en inglés plegado debajo. `InlineCode` (nuevo, en `components/ui`) pinta el `código`; lo usan también los mensajes de las aserciones.
+- Un test exige traducción para cada función documentada (y comillas invertidas balanceadas): si se actualiza `@strudel/reference`, el test pide volver a correr el script.
+- La traducción de `anchor` corrigió una explicación mía en M03-T02: `anchor` fija la nota más aguda del voicing (por defecto c5), no "alrededor de qué nota" se acomoda.
