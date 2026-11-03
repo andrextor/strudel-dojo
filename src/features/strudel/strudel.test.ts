@@ -218,6 +218,52 @@ const CASES: { a: Assertion; pass: string; fail: string; message: RegExp; cycles
     fail: 'note("d3 e3 f3 a3")',
     message: /B \(la nota que da color a D dorian\) es 0 %/,
   },
+  {
+    a: { type: 'chordFunctionAt', key: 'C', cycle: 1, function: 'secondary-dominant' },
+    pass: 'note("<[c3,e3,g3] [a2,c#3,e3,g3] [d3,f3,a3]>")',
+    fail: 'note("<[c3,e3,g3] [a2,c3,e3] [d3,f3,a3]>")',
+    message: /ciclo 2 debería sonar una dominante secundaria de Do mayor/,
+    cycles: 3,
+  },
+  {
+    // V/IV as a plain C triad is just the tonic: only C7 counts.
+    a: { type: 'chordFunctionAt', key: 'C', cycle: 0, function: 'secondary-dominant' },
+    pass: 'note("[c3,e3,g3,bb3]")',
+    fail: 'note("[c3,e3,g3]")',
+    message: /debería sonar una dominante secundaria/,
+  },
+  {
+    a: { type: 'chordFunctionAt', key: 'C', cycle: 0, function: 'borrowed' },
+    pass: 'note("[f3,ab3,c4]")',
+    fail: 'note("[f3,a3,c4]")',
+    message: /un acorde prestado/,
+  },
+  {
+    a: { type: 'chordFunctionAt', key: 'C', cycle: 0, function: 'tritone-sub' },
+    pass: 'note("[db3,f3,ab3,cb4]")',
+    fail: 'note("[g2,b2,d3,f3]")',
+    message: /sustituto tritonal/,
+  },
+  {
+    a: { type: 'scalePerCycle', scales: ['D:dorian', 'G:mixolydian'] },
+    pass: 'n("0 2 4 6").scale("<D:dorian G:mixolydian>")',
+    fail: 'n("0 2 4 6").scale("<D:dorian G:major>")',
+    message: /ciclo 2 se pide G mixolydian/,
+    cycles: 2,
+  },
+  {
+    a: { type: 'sectionsDistinct', min: 2 },
+    pass: 'note("<[c3 e3] [f3 a3]>")',
+    fail: 'note("c3 e3")',
+    message: /Solo hay 1 compases distintos/,
+    cycles: 2,
+  },
+  {
+    a: { type: 'layerCount', min: 3 },
+    pass: 'stack(s("bd hh"), note("c3").s("piano"))',
+    fail: 's("bd sd")',
+    message: /se piden al menos 3/,
+  },
 ]
 
 for (const { a, pass, fail, message, cycles } of CASES) {

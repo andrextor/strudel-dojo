@@ -1,0 +1,53 @@
+---
+topic: M07-T02
+title: Campo armónico con séptimas
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Si apilas **cuatro** notas por terceras sobre cada grado de la escala mayor, salen siete acordes de séptima: **Imaj7 iim7 iiim7 IVmaj7 V7 vim7 viiø7**. El patrón es el mismo en todas las tonalidades mayores, y solo el V es de dominante.
+</Callout>
+
+## Siete acordes de séptima
+
+En Do mayor:
+
+| Grado | Imaj7 | iim7 | iiim7 | IVmaj7 | V7 | vim7 | viiø7 |
+|-------|-------|------|-------|--------|----|------|-------|
+| Acorde | Cmaj7 | Dm7 | Em7 | Fmaj7 | G7 | Am7 | Bø7 |
+
+<Listen client:visible code='n("<0 1 2 3 4 5 6>".add("[0,2,4,6]")).scale("C:major").s("piano")' label="Escuchar el campo armónico con séptimas de Do mayor" />
+
+Compáralo con las tríadas de M03: I y IV ganan una séptima **mayor**, ii, iii y vi una **menor**, el V una **menor** (y se vuelve dominante) y el vii° se vuelve **semidisminuido**. En Re mayor: **Dmaj7 Em7 F♯m7 Gmaj7 A7 Bm7 C♯ø7**.
+
+<Keyboard low="A4" high="G5" highlight={["A4", "C#5", "E5", "G5"]} labels="name" label="V7 de Re mayor: A7 (La, Do♯, Mi, Sol)" />
+
+<details>
+  <summary>¿Por qué solo hay un dominante?</summary>
+
+Para que un acorde sea 7 (dominante) necesita tercera mayor y séptima menor. En la escala mayor, la única nota con tercera mayor y séptima menor encima es el grado 5: Sol–Si–Re–Fa en Do. Su 3.ª (Si) y su 7.ª (Fa) forman un tritono, la tensión que empuja hacia la tónica.
+</details>
+
+## Strudel: progresiones con `chord` y `mode`
+
+Con `chord(…).voicing()` Strudel elige un voicing que suena bien, pero a veces omite una nota (la 5.ª de Dm7, por ejemplo). Si quieres el acorde **completo** con la fundamental abajo, usa `mode("root")` antes de `voicing`:
+
+<StrudelRef name="mode" summary="Cómo se acomoda el voicing respecto al ancla; con root pone la fundamental abajo." />
+
+<Example client:visible code='chord("<Dm7 G7 C^7 C^7>").mode("root").voicing().s("piano")' />
+
+La misma progresión sin `mode` usa el voicing por defecto: suena bien, pero en el pianoroll verás que Dm7 llega sin su 5.ª (La).
+
+<Listen client:visible code='chord("<Dm7 G7 C^7 C^7>").voicing().s("piano")' label="Escuchar ii–V–I con el voicing por defecto" />
+
+Y con `n` y `add` ya no necesitas escribir acordes: sumar `[0,2,4,6]` a cada grado apila la séptima dentro de la escala.
+
+<Example client:visible code='n("<0 5 1 4>".add("[0,2,4,6]")).scale("Bb:major").s("piano")' />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Decir qué acorde de séptima hay en cada grado de cualquier tonalidad mayor y qué grado es un acorde dado, deletrear maj7, 7, m7 y ø7, y recordar el campo armónico de tríadas y la escala mayor.
+</Callout>

@@ -1,0 +1,78 @@
+---
+topic: M09-T02
+title: Pentatónicas y blues
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Una **pentatónica** (*pentatonic*) tiene cinco notas y ningún semitono: casi nada choca, por eso es la escala favorita para improvisar. La **mayor** es 1 2 3 5 6; la **menor**, 1 ♭3 4 5 ♭7. La escala de **blues** es la pentatónica menor más la **♭5**, la *blue note*.
+</Callout>
+
+## Mayor y menor pentatónica
+
+Quita de la mayor los grados 4 y 7 (los que forman semitonos) y queda la pentatónica mayor. Quita de la menor natural los grados 2 y 6 y queda la menor.
+
+| Escala | Fórmula | Desde Do | Desde La |
+|--------|---------|----------|----------|
+| Pentatónica mayor | 1 2 3 5 6 | Do Re Mi Sol La | La Si Do♯ Mi Fa♯ |
+| Pentatónica menor | 1 ♭3 4 5 ♭7 | Do Mi♭ Fa Sol Si♭ | La Do Re Mi Sol |
+| Blues | 1 ♭3 4 ♭5 5 ♭7 | Do Mi♭ Fa Sol♭ Sol Si♭ | La Do Re Mi♭ Mi Sol |
+
+Do pentatónica mayor y La pentatónica menor tienen las mismas cinco notas: son relativas, como Do mayor y La menor.
+
+<Keyboard low="C4" high="B4" highlight={["C4", "D4", "E4", "G4", "A4"]} labels="name" label="Do pentatónica mayor = La pentatónica menor: solo teclas blancas, sin Fa ni Si" />
+
+<Listen client:visible code='n("0 1 2 3 4 5 4 3 2 1").scale("<C4:major:pentatonic A3:minor:pentatonic>").s("piano")' label="Escuchar Do pentatónica mayor y La pentatónica menor" />
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 5 4 3 2 1").scale("A3:blues").s("piano")' label="Escuchar La blues, con la blue note Mi♭" />
+
+## Las cinco cajas en la guitarra
+
+En el diapasón, la pentatónica menor se toca en cinco **cajas** (*boxes*): posiciones de dos notas por cuerda que se encadenan a lo largo del mástil. Cada caja empieza, en la 6.ª cuerda, en la nota siguiente de la escala.
+
+<Fretboard highlight={["A", "C", "D", "E", "G"]} frets={15} label="La pentatónica menor en todo el mástil: las cinco cajas se tocan una tras otra" />
+
+| Caja | Empieza en la 6.ª cuerda | Trastes |
+|------|--------------------------|---------|
+| 1 | La (traste 5) | 5–8 |
+| 2 | Do (traste 8) | 7–10 |
+| 3 | Re (traste 10) | 9–13 |
+| 4 | Mi (traste 12) | 12–15 |
+| 5 | Sol (traste 3 o 15) | 2–5 (o 14–17) |
+
+La caja 1 es la más usada en el rock y el blues: el dedo índice en el traste 5 y la tónica bajo ese dedo en las cuerdas 6.ª y 1.ª.
+
+<details>
+  <summary>¿Y la pentatónica mayor?</summary>
+
+Son las mismas cajas: Do pentatónica mayor usa las mismas posiciones que La pentatónica menor, solo que la tónica es Do. Por eso la caja 2 de La menor es la "caja 1" de Do mayor.
+</details>
+
+## Strudel: solos al azar
+
+`irand(n)` da un número entero al azar entre 0 y n − 1. Es una señal continua: `segment` la corta en notas, tantas por ciclo como le pidas. Usado dentro de `n`, cada número es un grado de la escala, así que el azar nunca se sale de ella.
+
+<StrudelRef name="irand" summary="Un entero al azar entre 0 y n − 1; dentro de n, un grado al azar de la escala." />
+<StrudelRef name="segment" summary="Corta una señal continua en n eventos por ciclo." />
+
+<Example client:visible code='n(irand(5).segment(8)).scale("A4:minor:pentatonic").s("piano")' />
+
+`perlin` es ruido suave: sube y baja sin saltos bruscos, entre 0 y 1. Con `range` lo llevas a los grados que quieras. Suena más a frase que `irand`.
+
+<StrudelRef name="perlin" summary="Ruido suave entre 0 y 1: una curva que sube y baja sin saltos." />
+<StrudelRef name="range" summary="Lleva una señal de 0..1 al rango que indiques, por ejemplo range(0, 10)." />
+
+<Listen client:visible code='n(perlin.range(0, 10).segment(8)).scale("E3:blues").s("piano")' label="Escuchar una línea con perlin sobre Mi blues" />
+
+<Callout tone="hint" title="El azar es repetible">
+  El azar de Strudel depende del ciclo: el ciclo 1 suena igual cada vez que lo reproduces. Por eso el Dojo puede comprobar tus katas aunque usen `irand`.
+</Callout>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Escribir la pentatónica mayor, la menor y la escala de blues desde cualquier tónica, repasar la menor armónica y la melódica, y los intervalos y grados de la escala mayor.
+</Callout>

@@ -1,0 +1,70 @@
+---
+topic: M04-T02
+title: Cadencias
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Staff from '../../components/music/Staff.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Una **cadencia** (*cadence*) es la forma de terminar una frase, como la puntuación de una oración. **V → I** cierra con punto final (auténtica). **IV → I** cierra suave (plagal). **V → vi** engaña (rota). Terminar en **V** deja la frase abierta, como una pregunta (semicadencia).
+</Callout>
+
+## Auténtica: perfecta e imperfecta
+
+La **cadencia auténtica** (*authentic cadence*) va de la dominante a la tónica: V → I. Es **perfecta** (*perfect authentic*) cuando los dos acordes están en estado fundamental y la voz más aguda termina en la tónica. Si arriba queda la tercera o la quinta, o algún acorde está invertido, es **imperfecta** (*imperfect authentic*): también cierra, pero con menos peso.
+
+<Staff client:visible abc={'X:1\nL:1/2\nK:C\n[G,B,D]2 [CEGc]2 | [G,B,D]2 [CGe]2 |]'} label="V–I en Do: perfecta (Do arriba) e imperfecta (Mi arriba)" />
+
+<Listen client:visible code='note("<[[c3,e3,g3,c4] [f3,a3,c4]] [[g2,b2,d3,g3] [c3,e3,g3,c4]]>").s("piano")' label="Escuchar una auténtica perfecta: termina con Do arriba" />
+
+<Listen client:visible code='note("<[[c3,e3,g3,c4] [f3,a3,c4]] [[g2,b2,d3,g3] [c3,g3,e4]]>").s("piano")' label="Escuchar una auténtica imperfecta: termina con Mi arriba" />
+
+## Plagal, rota y semicadencia
+
+- **Plagal** (*plagal cadence*): IV → I. Es el "amén" del final de los himnos. Reposa sin pasar por la dominante.
+- **Rota** (*deceptive cadence*): V → vi. El V promete la tónica y aparece el vi, que comparte dos notas con el I: sorprende sin romper la tonalidad.
+- **Semicadencia** (*half cadence*): cualquier acorde → V. La frase se detiene en la tensión y pide una respuesta.
+
+<Listen client:visible code='chord("<[C G] [F C]>").voicing().s("piano")' label="Escuchar una cadencia plagal: F → C" />
+
+<Listen client:visible code='chord("<[C F] [G Am]>").voicing().s("piano")' label="Escuchar una cadencia rota: G → Am" />
+
+<Listen client:visible code='chord("<[C Am] [F G]>").voicing().s("piano")' label="Escuchar una semicadencia: termina en G" />
+
+| Cadencia | Grados | En Do mayor | Sensación |
+|----------|--------|-------------|-----------|
+| Auténtica perfecta | V → I, tónica arriba | G → C | Punto final |
+| Auténtica imperfecta | V → I, otra nota arriba | G → C | Cierre más suave |
+| Plagal | IV → I | F → C | "Amén" |
+| Rota | V → vi | G → Am | Sorpresa |
+| Semicadencia | … → V | F → G | Pregunta abierta |
+
+## Strudel: frases de dos ciclos
+
+Una frase corta cabe en dos ciclos: dos acordes por ciclo con `[ ]` dentro de `< >`. El primer ciclo prepara y el segundo hace la cadencia.
+
+<Example client:visible code={`stack(
+  chord("<[C F] [G C]>").voicing().s("piano"),
+  chord("<[C F] [G C]>").rootNotes(2).s("piano")
+)`} />
+
+Si pones otro `< >` **dentro**, ese acorde cambia en cada vuelta de la frase. Aquí la primera vez la frase engaña (G → Am) y la segunda cierra (G → C):
+
+<Example client:visible code={`stack(
+  chord("<[C F] [G <Am C>]>").voicing().s("piano"),
+  chord("<[C F] [G <Am C>]>").rootNotes(2).s("piano")
+)`} />
+
+<details>
+  <summary>Pregunta y respuesta</summary>
+
+Muchas melodías se arman en pares de frases: la primera termina en semicadencia (queda abierta) y la segunda en auténtica (cierra). Se llama **antecedente** y **consecuente** (*antecedent* y *consequent*).
+
+<Listen client:visible code='chord("<[C F] <[Dm G] [G C]>>").voicing().s("piano")' label="Escuchar una pregunta (termina en G) y su respuesta (termina en C)" />
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Reconocer las cinco cadencias por sus grados y su voz más aguda, y también de oído, en cualquier tonalidad mayor. Repasarás también los acordes de cada grado y la calidad de una tríada de oído.
+</Callout>

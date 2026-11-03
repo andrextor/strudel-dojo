@@ -3,33 +3,562 @@
   "order": 10,
   "belt": "dan",
   "title": "Composición y live coding",
-  "summary": "Forma, arreglo por capas, diseño de sonido y performance.",
-  "status": "draft",
+  "summary": "Forma y motivo, arreglo por capas, diseño de sonido y performance en vivo: el cinturón final.",
+  "status": "ready",
   "prerequisite": "M09",
   "topics": [
     {
       "id": "M10-T01",
       "title": "Forma y motivo",
-      "goal": "Desarrollar un motivo en frases y secciones.",
-      "skills": ["form"]
+      "goal": "Reconocer motivo, frase y período, transformar un motivo (transposición, inversión, retrogradación, aumentación, disminución) y organizar secciones en formas como AABA.",
+      "skills": ["form"],
+      "lesson": "m10-t01",
+      "practice": {
+        "mix": [
+          {
+            "generator": "motif-transform",
+            "params": {
+              "transforms": ["transposition", "inversion", "retrograde"]
+            },
+            "weight": 1
+          }
+        ]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [
+          {
+            "generator": "motif-transform",
+            "weight": 4
+          },
+          {
+            "generator": "interval-name",
+            "params": {
+              "maxInterval": "8P",
+              "direction": "both"
+            },
+            "weight": 1
+          },
+          {
+            "generator": "diatonic-chord",
+            "weight": 1
+          }
+        ]
+      },
+      "katas": [
+        {
+          "id": "M10-T01-K1",
+          "title": "Pregunta y respuesta",
+          "brief": "Con `arrange`, toca la pregunta `c4 e4 g4 d4` dos ciclos y después la respuesta `c4 e4 d4 c4` dos ciclos, que cierra en Do.",
+          "starter": "arrange([4, note(\"c4 e4 g4 d4\")]).s(\"piano\")",
+          "solution": "arrange([2, note(\"c4 e4 g4 d4\")], [2, note(\"c4 e4 d4 c4\")]).s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["arrange"]
+            },
+            {
+              "type": "sectionsDistinct",
+              "min": 2
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "E", "D", "C"],
+              "voice": "all",
+              "cycle": 3
+            }
+          ],
+          "hints": [
+            "`arrange` recibe pares `[ciclos, patrón]` separados por comas: `arrange([2, a], [2, b])`."
+          ]
+        },
+        {
+          "id": "M10-T01-K2",
+          "title": "Forma AABA",
+          "brief": "Arma la forma AABA, un ciclo por sección: A es `c4 e4 g4 e4` y B (el puente) es `f4 a4 c5 a4`.",
+          "starter": "arrange([2, note(\"c4 e4 g4 e4\")], [2, note(\"f4 a4 c5 a4\")]).s(\"piano\")",
+          "solution": "arrange([2, note(\"c4 e4 g4 e4\")], [1, note(\"f4 a4 c5 a4\")], [1, note(\"c4 e4 g4 e4\")]).s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["arrange"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "E", "G", "E"],
+              "voice": "all",
+              "cycle": 0
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "E", "G", "E"],
+              "voice": "all",
+              "cycle": 1
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["F", "A", "C", "A"],
+              "voice": "all",
+              "cycle": 2
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "E", "G", "E"],
+              "voice": "all",
+              "cycle": 3
+            }
+          ],
+          "hints": [
+            "Ahora suena AABB. B dura un solo ciclo y A vuelve al final: agrega un tercer par."
+          ]
+        },
+        {
+          "id": "M10-T01-K3",
+          "title": "Canon con off",
+          "brief": "Agrega con `off` una copia del motivo una octava arriba que entre 1/8 de ciclo después: un canon a la octava.",
+          "starter": "note(\"c4 e4 g4 e4\").s(\"piano\")",
+          "solution": "note(\"c4 e4 g4 e4\").off(1/8, (x) => x.add(note(12))).s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["off"]
+            },
+            {
+              "type": "eventsPerCycle",
+              "min": 8
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "C", "E", "E", "G", "G", "E", "E"],
+              "voice": "all",
+              "cycle": 0
+            }
+          ],
+          "hints": [
+            "`off(1/8, (x) => x.add(note(12)))`: el retraso primero, después qué hacerle a la copia.",
+            "Una octava son 12 semitonos."
+          ]
+        }
+      ]
     },
     {
       "id": "M10-T02",
       "title": "Arreglo en capas",
-      "goal": "Equilibrar registro, densidad y contrapunto.",
-      "skills": ["arrangement"]
+      "goal": "Repartir un arreglo en ritmo, bajo, armonía y melodía, cada capa en su registro y su densidad, y mezclarlas con volumen, panorama y órbitas.",
+      "skills": ["arrangement"],
+      "lesson": "m10-t02",
+      "practice": {
+        "mix": [
+          {
+            "generator": "layer-role",
+            "params": {
+              "modes": ["role", "missing"]
+            },
+            "weight": 1
+          }
+        ]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [
+          {
+            "generator": "layer-role",
+            "weight": 4
+          },
+          {
+            "generator": "diatonic-chord",
+            "weight": 1
+          },
+          {
+            "generator": "rhythm-match",
+            "weight": 1
+          }
+        ]
+      },
+      "katas": [
+        {
+          "id": "M10-T02-K1",
+          "title": "Cuatro capas",
+          "brief": "Completa el arreglo de C Am F G hasta tener al menos cuatro fuentes de sonido: bombo y hi-hat, acordes en `piano` y un bajo `sawtooth` que toque la fundamental de cada acorde.",
+          "starter": "stack(\n  s(\"bd*4\"),\n  chord(\"<C Am F G>\").voicing().s(\"piano\")\n)",
+          "solution": "stack(\n  s(\"bd*4, hh*8\"),\n  chord(\"<C Am F G>\").rootNotes(2).s(\"sawtooth\"),\n  chord(\"<C Am F G>\").voicing().s(\"piano\")\n)",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "layerCount",
+              "min": 4
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["sawtooth", "hh"]
+            },
+            {
+              "type": "rootsPerBar",
+              "roots": ["C", "A", "F", "G"]
+            }
+          ],
+          "hints": [
+            "`rootNotes(2)` da la fundamental de cada acorde en la octava 2.",
+            "El hi-hat se suma a la batería con una coma: `s(\"bd*4, hh*8\")`."
+          ]
+        },
+        {
+          "id": "M10-T02-K2",
+          "title": "La mezcla",
+          "brief": "Mezcla el arreglo: baja la batería con `gain`, abre el estéreo con `pan` (acordes a un lado, melodía al otro) y manda los acordes con reverb a su propia `orbit`.",
+          "starter": "stack(\n  s(\"bd*4, hh*8\"),\n  chord(\"<C Am F G>\").voicing().s(\"piano\"),\n  n(\"0 2 4 2\").scale(\"C5:major\").s(\"gm_epiano1\")\n)",
+          "solution": "stack(\n  s(\"bd*4, hh*8\").gain(0.7),\n  chord(\"<C Am F G>\").voicing().s(\"piano\").pan(0.3).room(0.6).orbit(2),\n  n(\"0 2 4 2\").scale(\"C5:major\").s(\"gm_epiano1\").pan(0.7)\n)",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["gain", "pan", "orbit"]
+            },
+            {
+              "type": "layerCount",
+              "min": 4
+            }
+          ],
+          "hints": [
+            "`pan` va de 0 (izquierda) a 1 (derecha).",
+            "`orbit(2)` separa los efectos de esa capa de los del resto."
+          ]
+        },
+        {
+          "id": "M10-T02-K3",
+          "title": "Movimiento contrario",
+          "brief": "La melodía sube Do Re Mi Fa. Escribe debajo un bajo `sawtooth` que baje por grados desde Do3: Do, Si, La, Sol, nota contra nota.",
+          "starter": "stack(\n  n(\"0 1 2 3\").scale(\"C4:major\").s(\"piano\"),\n  n(\"0 0 0 0\").scale(\"C3:major\").s(\"sawtooth\")\n)",
+          "solution": "stack(\n  n(\"0 1 2 3\").scale(\"C4:major\").s(\"piano\"),\n  n(\"0 -1 -2 -3\").scale(\"C3:major\").s(\"sawtooth\")\n)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "B", "A", "G"],
+              "voice": "lowest",
+              "cycle": 0
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "D", "E", "F"],
+              "voice": "highest",
+              "cycle": 0
+            },
+            {
+              "type": "layerCount",
+              "min": 2
+            }
+          ],
+          "hints": ["Dentro de `scale`, los grados negativos bajan: `-1` es la nota de abajo."]
+        }
+      ]
     },
     {
       "id": "M10-T03",
       "title": "Diseño de sonido",
-      "goal": "Usar envolventes, filtros y efectos.",
-      "skills": ["sound-design"]
+      "goal": "Elegir la fuente (sinte, sample o soundfont) y darle forma con envolvente, filtros y efectos: reverb, delay y distorsión.",
+      "skills": ["sound-design"],
+      "lesson": "m10-t03",
+      "practice": {
+        "mix": [
+          {
+            "generator": "sound-design",
+            "params": {
+              "functions": [
+                "lpf",
+                "hpf",
+                "lpq",
+                "room",
+                "delay",
+                "shape",
+                "vowel",
+                "attack",
+                "release"
+              ]
+            },
+            "weight": 1
+          }
+        ]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [
+          {
+            "generator": "sound-design",
+            "weight": 4
+          },
+          {
+            "generator": "interval-name",
+            "params": {
+              "maxInterval": "8P",
+              "direction": "both"
+            },
+            "weight": 1
+          },
+          {
+            "generator": "scale-spelling",
+            "params": {
+              "scales": ["major"]
+            },
+            "weight": 1
+          }
+        ]
+      },
+      "katas": [
+        {
+          "id": "M10-T03-K1",
+          "title": "Bajo oscuro",
+          "brief": "Este bajo `sawtooth` es muy brillante: ponle un filtro pasa bajos con `lpf` para oscurecerlo (prueba 600).",
+          "starter": "note(\"c2 c2 eb2 g1\").s(\"sawtooth\")",
+          "solution": "note(\"c2 c2 eb2 g1\").s(\"sawtooth\").lpf(600)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["lpf"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["sawtooth"]
+            }
+          ],
+          "hints": ["`.lpf(600)` corta lo que está por encima de 600 Hz."]
+        },
+        {
+          "id": "M10-T03-K2",
+          "title": "Pad que respira",
+          "brief": "Convierte los acordes en un pad: sinte `sawtooth`, ataque lento con `attack` y una cola larga con `release`.",
+          "starter": "chord(\"<Am F C G>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<Am F C G>\").voicing().s(\"sawtooth\").attack(0.5).release(1)",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["attack", "release"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["sawtooth"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["Am", "F", "C", "G"]
+            }
+          ],
+          "hints": [
+            "El piano es un sample y no sostiene: cambia `s(\"piano\")` por `s(\"sawtooth\")`.",
+            "`attack` y `release` se miden en segundos."
+          ]
+        },
+        {
+          "id": "M10-T03-K3",
+          "title": "Sala y eco",
+          "brief": "Cambia el piano por el soundfont `gm_epiano1` y dale espacio con `room` y un eco con `delay`.",
+          "starter": "n(\"0 2 4 7\").scale(\"C4:minor\").s(\"piano\")",
+          "solution": "n(\"0 2 4 7\").scale(\"C4:minor\").s(\"gm_epiano1\").room(0.6).delay(0.4)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "soundsInclude",
+              "names": ["gm_epiano1"]
+            },
+            {
+              "type": "usesFunction",
+              "names": ["room", "delay"]
+            },
+            {
+              "type": "notesWithinScale",
+              "scale": "C:minor"
+            }
+          ],
+          "hints": ["Los soundfonts se eligen con `s`, como cualquier sonido: `s(\"gm_epiano1\")`."]
+        }
+      ]
     },
     {
       "id": "M10-T04",
       "title": "Performance",
-      "goal": "Construir un set en vivo con tensión y liberación.",
-      "skills": ["performance"]
+      "goal": "Crear tensión y liberación en vivo con señales, azar controlado y transiciones, y planear la curva de un set.",
+      "skills": ["performance"],
+      "lesson": "m10-t04",
+      "practice": {
+        "mix": [
+          {
+            "generator": "performance-signal",
+            "params": {
+              "directions": ["describe"]
+            },
+            "weight": 1
+          }
+        ]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [
+          {
+            "generator": "performance-signal",
+            "weight": 4
+          },
+          {
+            "generator": "sound-design",
+            "weight": 1
+          },
+          {
+            "generator": "relative-key",
+            "params": {
+              "maxAccidentals": 7
+            },
+            "weight": 1
+          },
+          {
+            "generator": "diatonic-chord-minor",
+            "weight": 1
+          }
+        ]
+      },
+      "katas": [
+        {
+          "id": "M10-T04-K1",
+          "title": "Filtro que respira",
+          "brief": "Haz que el filtro del bajo se abra y se cierre solo: usa `sine` con `range` (de 300 a 3000) y estíralo con `slow(4)`.",
+          "starter": "note(\"c2*8\").s(\"sawtooth\").lpf(800)",
+          "solution": "note(\"c2*8\").s(\"sawtooth\").lpf(sine.range(300, 3000).slow(4))",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["lpf", "range"]
+            },
+            {
+              "type": "eventsPerCycle",
+              "min": 8
+            }
+          ],
+          "hints": [
+            "En lugar de un número fijo, `lpf` acepta una señal: `lpf(sine.range(300, 3000))`."
+          ]
+        },
+        {
+          "id": "M10-T04-K2",
+          "title": "Hi-hat que improvisa",
+          "brief": "Con `sometimesBy`, haz que el hi-hat se duplique (`fast(2)`) en un 30 % de los eventos.",
+          "starter": "stack(\n  s(\"bd*4\"),\n  s(\"hh*8\")\n)",
+          "solution": "stack(\n  s(\"bd*4\"),\n  s(\"hh*8\").sometimesBy(0.3, (x) => x.fast(2))\n)",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["sometimesBy"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "hh"]
+            }
+          ],
+          "hints": [
+            "`sometimesBy(0.3, (x) => x.fast(2))`: primero la probabilidad, después la función."
+          ]
+        },
+        {
+          "id": "M10-T04-K3",
+          "title": "Melodía generativa",
+          "brief": "Deja que el azar elija la melodía: ocho grados al azar por ciclo con `irand(8).segment(8)` dentro de `n`, en La menor.",
+          "starter": "n(\"0 2 4 2\").scale(\"A4:minor\").s(\"gm_epiano1\")",
+          "solution": "n(irand(8).segment(8)).scale(\"A4:minor\").s(\"gm_epiano1\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["irand", "segment"]
+            },
+            {
+              "type": "eventsPerCycle",
+              "min": 8
+            },
+            {
+              "type": "notesWithinScale",
+              "scale": "A:minor"
+            }
+          ],
+          "hints": [
+            "`irand(8)` da enteros de 0 a 7; `segment(8)` toma ocho por ciclo.",
+            "Como pasan por `scale`, todos los grados caen en La menor."
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "placement": {
+    "questions": 20,
+    "passPercent": 90,
+    "mix": [
+      {
+        "generator": "motif-transform",
+        "weight": 3
+      },
+      {
+        "generator": "layer-role",
+        "weight": 3
+      },
+      {
+        "generator": "sound-design",
+        "weight": 3
+      },
+      {
+        "generator": "performance-signal",
+        "weight": 3
+      }
+    ]
+  },
+  "boss": {
+    "id": "M10-BOSS",
+    "title": "Combate final: tu pieza",
+    "brief": "Compón una pieza original con forma clara (por ejemplo A B A o A B C A, con `arrange`), al menos cuatro capas con fuentes de sonido distintas, una modulación o un préstamo modal y una sección generativa (señales o azar). La comprobación toca 16 ciclos; la versión completa para el Sensei debería durar de 2 a 4 minutos (ajusta con `cpm` y la cantidad de ciclos por sección).",
+    "starter": "arrange(\n  [16, stack(\n    s(\"bd*4\"),\n    note(\"<c2 a1 f1 g1>\").s(\"sawtooth\")\n  )]\n)",
+    "cycles": 16,
+    "assertions": [
+      {
+        "type": "usesFunction",
+        "names": ["arrange", "stack"]
+      },
+      {
+        "type": "layerCount",
+        "min": 4
+      },
+      {
+        "type": "sectionsDistinct",
+        "min": 3
+      }
+    ],
+    "rubric": [
+      {
+        "id": "form",
+        "label": "La forma se entiende: secciones con contraste, un motivo que vuelve y se desarrolla",
+        "weight": 3
+      },
+      {
+        "id": "arrangement",
+        "label": "Al menos cuatro capas con papel, registro y densidad propios, bien mezcladas",
+        "weight": 3
+      },
+      {
+        "id": "harmony",
+        "label": "Hay una modulación o un préstamo modal que se oye y está bien resuelto",
+        "weight": 2
+      },
+      {
+        "id": "live",
+        "label": "Una sección generativa y un diseño de sonido con intención, con tensión y liberación",
+        "weight": 2
+      }
+    ],
+    "passScore": 7
+  }
 }

@@ -1,0 +1,64 @@
+---
+topic: M05-T04
+title: El círculo como mapa
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  El **círculo de quintas** (*circle of fifths*) ordena las doce tonalidades mayores: cada paso a la derecha sube una quinta y suma un ♯ (o quita un ♭). Las vecinas son las tonalidades más cercanas, y recorrerlo hacia la izquierda, de quinta en quinta, es el camino de muchas progresiones: ii–V–I.
+</Callout>
+
+## El mapa
+
+Hacia la derecha (una quinta arriba): **C → G → D → A → E → B → F♯**. Hacia la izquierda (una quinta abajo): **C → F → B♭ → E♭ → A♭ → D♭ → G♭**. F♯ y G♭ suenan igual: ahí el círculo se cierra.
+
+| ♭ | 5 | 4 | 3 | 2 | 1 | 0 | 1 | 2 | 3 | 4 | 5 | ♯ |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| | D♭ | A♭ | E♭ | B♭ | F | **C** | G | D | A | E | B | |
+
+Lo que te dice el mapa:
+
+- **Vecinas**: las tonalidades a un paso comparten seis de siete notas. Son las modulaciones más suaves (lo viste en el tema anterior).
+- **Distancia**: cuantos más pasos, más notas cambian. De C a A hay tres pasos: tres sostenidos nuevos.
+- **Relativas**: cada tonalidad mayor comparte su lugar con su relativa menor (C con Am, G con Em).
+
+<Listen client:visible code='chord("<C G D A E B>").voicing().s("piano")' label="Escuchar el círculo hacia la derecha: C G D A E B" />
+
+<Listen client:visible code='chord("<C F Bb Eb Ab Db>").voicing().s("piano")' label="Escuchar el círculo hacia la izquierda: C F B♭ E♭ A♭ D♭" />
+
+## Quintas que caen: ii–V–I
+
+En una tonalidad mayor, ii → V → I baja de quinta en quinta: en Do, Dm → G → C (Re está una quinta arriba de Sol, y Sol una quinta arriba de Do). Es el círculo recorrido hacia la izquierda.
+
+Si encadenas varios ii–V, cada uno lleva a una tonalidad un tono más abajo: Dm–G (hacia C), Cm–F (hacia B♭), B♭m–E♭ (hacia A♭).
+
+<Listen client:visible code='chord("<Dm7 G7 Cm7 F7 Bbm7 Eb7 Ab Ab>").voicing().s("piano")' label="Escuchar ii–V encadenados que bajan un tono: hacia C, B♭ y A♭" />
+
+<Keyboard low="C3" high="B4" highlight={["D", "G", "C"]} labels="name" label="Re, Sol, Do: las fundamentales de ii–V–I en Do mayor, de quinta en quinta" />
+
+## Strudel: ciclos con `< >` y `add` incremental
+
+No hace falta escribir cada acorde. Toma la tríada de Do y súmale semitonos distintos en cada ciclo: 7 por cada quinta arriba (y 12 menos, para no subir demasiado).
+
+<Example client:visible code='note("[c3,e3,g3]".add("<0 7 2 9>")).s("piano")' />
+
+Hacia la izquierda, cada paso suma 5 semitonos (una cuarta, que es una quinta abajo):
+
+<Example client:visible code='note("[c3,e3,g3]".add("<0 5 10 15>")).s("piano")' />
+
+Y para encadenar ii–V, escribe el par una vez y bájalo un tono (`-2`) cada dos ciclos:
+
+<Example client:visible code='note("<[d3,f3,a3] [g3,b3,d4]>".add("<0 0 -2 -2 -4 -4>")).s("piano")' />
+
+<details>
+  <summary>¿Por qué el círculo y no la escala cromática?</summary>
+
+En orden cromático (C, C♯, D…) las tonalidades vecinas casi no comparten notas: Do mayor y Re♭ mayor solo tienen dos en común (Fa y Do). En el círculo, cada paso cambia una sola nota. Por eso es el mapa que usan quienes componen para planear modulaciones y quienes improvisan para seguir ii–V.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Decir qué tonalidad está una quinta arriba o abajo en el círculo, nombrar las dos vecinas de una tonalidad mayor, reconocer el ii–V que lleva a cada tonalidad, y repasar armaduras y relativas.
+</Callout>

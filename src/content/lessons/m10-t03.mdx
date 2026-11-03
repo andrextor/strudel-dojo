@@ -1,0 +1,68 @@
+---
+topic: M10-T03
+title: Diseño de sonido
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  El **diseño de sonido** (*sound design*) decide cómo suena cada nota: la **fuente** (un sintetizador o un sample), la **envolvente** (*envelope*: cómo nace y se apaga), los **filtros** (qué frecuencias pasan) y los **efectos** (reverb, delay, distorsión).
+</Callout>
+
+## Sintes y samples
+
+Un **sample** es una grabación: `piano`, `bd`, o los **soundfonts** General MIDI como `gm_epiano1` o `gm_acoustic_bass`. Un **sinte** genera la onda en el momento: `sawtooth` (brillante), `square` (hueco), `triangle` (suave), `sine` (puro).
+
+<Listen client:visible code='note("<c3 e3 g3 c4>").s("<sawtooth square triangle sine>")' label="Escuchar cuatro ondas: sierra, cuadrada, triangular y senoidal" />
+
+<Listen client:visible code='chord("<C Am F G>").voicing().s("gm_epiano1")' label="Escuchar un soundfont de piano eléctrico" />
+
+## La envolvente: ADSR
+
+| Etapa | Qué controla |
+|-------|--------------|
+| **A**taque (*attack*) | Cuánto tarda en llegar al volumen máximo |
+| **D**ecaimiento (*decay*) | Cuánto tarda en bajar al nivel de sostenimiento |
+| **S**ostenimiento (*sustain*) | El nivel mientras la nota sigue |
+| **R**elajación (*release*) | Cuánto tarda en apagarse al terminar |
+
+Un ataque largo hace un **pad** que entra despacio; uno corto, un sonido percusivo.
+
+<StrudelRef name="attack" summary="Ataque: segundos hasta el volumen máximo." />
+<StrudelRef name="release" summary="Relajación: segundos que tarda en apagarse la nota." />
+<StrudelRef name="adsr" summary="Las cuatro etapas en un valor: ataque:decaimiento:sostenimiento:relajación." />
+
+<Example client:visible code='chord("<C Am F G>").voicing().s("sawtooth").attack(0.5).release(1).gain(0.6)' />
+
+## Filtros
+
+<StrudelRef name="lpf" summary="Filtro pasa bajos: deja pasar lo grave y apaga lo agudo. El número es la frecuencia de corte en Hz." />
+<StrudelRef name="hpf" summary="Filtro pasa altos: quita los graves." />
+<StrudelRef name="lpq" summary="Resonancia del filtro pasa bajos: realza la zona del corte." />
+<StrudelRef name="vowel" summary="Filtro de formantes: hace que el sonido imite una vocal (a, e, i, o, u)." />
+
+<Listen client:visible code='note("c2 c2 eb2 g1").s("sawtooth").lpf("<4000 1500 600 300>").lpq(8)' label="Escuchar el bajo cada vez más oscuro con el filtro" />
+
+<Listen client:visible code='note("c3*4").s("sawtooth").vowel("<a e i o>")' label="Escuchar las vocales" />
+
+## Efectos
+
+<StrudelRef name="room" summary="Reverberación: el sonido parece estar en una sala; más alto, sala más grande." />
+<StrudelRef name="delay" summary="Eco: repite el sonido un instante después." />
+<StrudelRef name="shape" summary="Distorsión por saturación: ensucia y endurece el sonido (de 0 a 1)." />
+
+<Example client:visible code='n("0 2 4 7").scale("C4:minor").s("gm_epiano1").room(0.6).delay(0.4)' />
+
+<Listen client:visible code='note("c2 ~ c2 eb2").s("sawtooth").lpf(900).shape("<0 0.7>")' label="Escuchar el bajo limpio y luego distorsionado" />
+
+<details>
+  <summary>Orden de la cadena</summary>
+
+Piensa en la cadena como un camino: **fuente → envolvente → filtro → distorsión → espacio (reverb, delay)**. En Strudel el orden en que escribes las funciones no cambia esa cadena, pero pensarla así te ayuda a decidir qué tocar primero cuando un sonido no te convence.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Saber qué hace cada función de sonido (filtros, envolvente, efectos, mezcla) y qué función usar para un resultado, y repasar intervalos y escalas mayores.
+</Callout>

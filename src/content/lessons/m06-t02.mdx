@@ -1,0 +1,54 @@
+---
+topic: M06-T02
+title: Nota característica
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Cada modo tiene una **nota característica** (*characteristic note*): la que lo separa de la escala mayor o menor más parecida. Dórico = menor con 6.ª mayor; frigio = menor con 2.ª menor; lidio = mayor con 4.ª aumentada; mixolidio = mayor con 7.ª menor; locrio = frigio con 5.ª disminuida. Si quieres que se oiga el modo, toca esa nota.
+</Callout>
+
+## Una nota cambia todo
+
+| Modo | Se parece a… | Nota característica | En Re |
+|---|---|---|---|
+| dórico | menor natural | 6.ª mayor | Si (en vez de Si♭) |
+| frigio | menor natural | 2.ª menor | Mi♭ (en vez de Mi) |
+| lidio | mayor | 4.ª aumentada | Sol♯ (en vez de Sol) |
+| mixolidio | mayor | 7.ª menor | Do (en vez de Do♯) |
+| eólico | dórico | 6.ª menor | Si♭ (en vez de Si) |
+| locrio | frigio | 5.ª disminuida | La♭ (en vez de La) |
+
+<Keyboard low="D4" high="D5" highlight={["D", "E", "F", "G", "A", "B", "C"]} labels="name" label="Re dórico: igual que Re menor natural, pero con Si en lugar de Si♭" />
+
+<Listen client:visible code='n("0 2 4 5 4 2").scale("<D:dorian D:aeolian>").s("piano")' label="Escuchar Re dórico y luego Re eólico: solo cambia el Si" />
+
+<Listen client:visible code='n("0 1 2 3 4 3 2 1").scale("<F:lydian F:major>").s("piano")' label="Escuchar Fa lidio y luego Fa mayor: Si contra Si♭" />
+
+## Vamps que subrayan el color
+
+Una **vamp** es un acorde o dos que se repiten mientras la melodía da vueltas. Sobre una vamp de un solo acorde, la nota característica es la que dice el modo: cae en tiempo fuerte, dura más o suena más fuerte.
+
+<Listen client:visible code='stack(note("d2").s("piano"), n("0 2 5 4 5 2 0 ~").scale("D3:dorian").s("piano"))' label="Escuchar una vamp en Re dórico que insiste en Si" />
+
+## Strudel: acentuar con `gain`
+
+`gain` controla el volumen de cada evento. Con una secuencia de valores, acentúas justo la nota característica:
+
+<StrudelRef name="gain" summary="Volumen de cada nota (1 es normal; menos, más suave)." />
+
+<Example client:visible code='n("0 3 4 3 0 3 4 3").scale("F:lydian").gain("0.6 1 0.6 1 0.6 1 0.6 1").s("piano")' />
+
+<details>
+  <summary>¿Y el jónico?</summary>
+
+El jónico es la escala mayor, la referencia contra la que comparas lidio y mixolidio. Si te piden su "nota característica", piensa en la 4.ª justa: es justo lo que el lidio sube.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Decir la nota característica de cualquier modo desde cualquier tónica natural, bien deletreada, y repasar tríadas y escalas mayores de M02 y M03.
+</Callout>

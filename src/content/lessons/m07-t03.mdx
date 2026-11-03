@@ -1,0 +1,65 @@
+---
+topic: M07-T03
+title: Tensiones
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Las **tensiones** (*tensions*) son las notas que siguen apilando terceras encima de la séptima: **9, 11 y 13**. Salen de la escala de la tonalidad. Una regla simple decide cuáles usar: **si una tensión queda medio tono encima de una nota del acorde, es evitada** (*avoid note*); las demás están **disponibles**.
+</Callout>
+
+## 9, 11 y 13
+
+Sigue apilando terceras sobre Cmaj7 (Do Mi Sol Si): **Re, Fa, La**. Son la 2.ª, la 4.ª y la 6.ª, pero una octava más arriba, por eso se llaman **9, 11 y 13** (2 + 7, 4 + 7, 6 + 7).
+
+<Keyboard low="C4" high="B5" highlight={["C4", "E4", "G4", "B4", "D5", "A5"]} labels="name" label="Cmaj7 con 9 (Re) y 13 (La): las tensiones disponibles" />
+
+<Listen client:visible code='note("<[c3,e3,g3,b3] [c3,e3,g3,b3,d4] [c3,e3,g3,b3,d4,a4]>").s("piano")' label="Escuchar Cmaj7, Cmaj9 y Cmaj13" />
+
+## La regla de la avoid note
+
+Una tensión medio tono encima de una nota del acorde forma con ella una **9.ª menor**, el choque más áspero: tapa la nota del acorde y cambia su función. En esta lección usamos solo esa regla, con las tensiones que da la escala mayor.
+
+Sobre Cmaj7, la 11 (Fa) queda medio tono encima de Mi (la 3.ª): **evitada**. La 9 (Re) y la 13 (La) no rozan a nadie: **disponibles**.
+
+<Listen client:visible code='note("<[c3,e3,g3,b3,d4] [c3,e3,g3,b3,f4]>").s("piano")' label="Escuchar Cmaj7 con la 9 (disponible) y con la 11 (evitada)" />
+
+En Do mayor queda así:
+
+| Acorde | 9 | 11 | 13 | Disponibles |
+|--------|---|----|----|-------------|
+| Cmaj7 (I) | Re | Fa ✗ (sobre Mi) | La | 9, 13 |
+| Dm7 (ii) | Mi | Sol | Si | 9, 11, 13 |
+| Em7 (iii) | Fa ✗ (sobre Mi) | La | Do ✗ (sobre Si) | 11 |
+| Fmaj7 (IV) | Sol | Si | Re | 9, 11, 13 |
+| G7 (V) | La | Do ✗ (sobre Si) | Mi | 9, 13 |
+| Am7 (vi) | Si | Re | Fa ✗ (sobre Mi) | 9, 11 |
+| Bø7 (vii) | Do ✗ (sobre Si) | Mi | Sol | 11, 13 |
+
+El patrón es el mismo en cualquier tonalidad mayor, porque depende de los grados.
+
+<details>
+  <summary>¿Y la 13 de Dm7?</summary>
+
+Con esta regla, Si sobre Dm7 está disponible: no queda medio tono encima de ninguna nota de Re–Fa–La–Do. Algunos métodos la evitan porque Fa y Si forman un tritono que suena a dominante. Aquí usamos solo la regla del medio tono, para que sea una sola idea fácil de aplicar.
+</details>
+
+## Strudel: cifrados con tensiones y diccionarios
+
+`chord` entiende cifrados con tensiones como `C^9`, `Dm9`, `G13` o `C69`. Cómo los reparte depende del **diccionario** de voicings que elijas con `dictionary`. El diccionario `lefthand` toca voicings de mano izquierda de jazz: sin fundamental y con la 9 en su lugar; en G7, además, la 13 reemplaza a la 5.ª.
+
+<StrudelRef name="dictionary" summary="Elige el diccionario de voicings: lefthand, guidetones, triads, ireal…" />
+
+<Example client:visible code='chord("<Dm7 G7 C^7 C^7>").dictionary("lefthand").voicing().s("piano")' />
+
+Sin la fundamental, el acorde queda flotando. Un bajo debajo lo asienta:
+
+<Listen client:visible code='stack(chord("<Dm7 G7 C^7 C^7>").dictionary("lefthand").voicing(), note("<d2 g2 c2 c2>")).s("piano")' label="Escuchar ii–V–I con voicings lefthand y bajo" />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Decir qué tensiones (9, 11, 13) están disponibles o son evitadas sobre cada acorde de séptima de una tonalidad mayor, con la regla del medio tono, nombrar acordes del campo armónico y repasar intervalos y tríadas.
+</Callout>

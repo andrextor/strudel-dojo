@@ -5,6 +5,8 @@ export const SKILL_NAME_ES: Record<string, string> = {
   'interval-quality': 'Intervalos',
   'interval-ear': 'Intervalos de oído',
   'chord-ear': 'Acordes de oído',
+  'mode-ear': 'Modos de oído',
+  'melodic-dictation': 'Dictado melódico',
   'rhythm-reading': 'Lectura rítmica',
   'major-scale-spelling': 'Escala mayor',
   'key-signatures': 'Armaduras',

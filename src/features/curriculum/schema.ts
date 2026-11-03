@@ -52,6 +52,19 @@ export const assertionSchema = z.discriminatedUnion('type', [
     transposeBy: z.string().optional(),
   }),
   z.object({
+    type: z.literal('chordFunctionAt'),
+    key: z.string().min(1), // major tonic, e.g. "C"
+    cycle: z.number().int().nonnegative(),
+    function: z.enum(['secondary-dominant', 'borrowed', 'tritone-sub']),
+  }),
+  z.object({
+    type: z.literal('scalePerCycle'),
+    scales: nonEmptyNames, // "C:dorian" or "C dorian", one per cycle, repeating
+    minRatio: z.number().min(0).max(1).optional(),
+  }),
+  z.object({ type: z.literal('sectionsDistinct'), min: z.number().int().positive() }),
+  z.object({ type: z.literal('layerCount'), min: z.number().int().positive() }),
+  z.object({
     type: z.literal('characteristicNoteRatio'),
     mode: z.string().min(1),
     minRatio: z.number().min(0).max(1),

@@ -5,6 +5,13 @@ import { fileURLToPath } from 'node:url'
 import { validateEntry } from '../exercises/registry.ts'
 import { runKata, stripCode } from '../strudel/assertions.ts'
 import { evaluatePattern } from '../strudel/evaluate.ts'
+import { bossSolution as m04 } from './boss-solutions/m04.ts'
+import { bossSolution as m05 } from './boss-solutions/m05.ts'
+import { bossSolution as m06 } from './boss-solutions/m06.ts'
+import { bossSolution as m07 } from './boss-solutions/m07.ts'
+import { bossSolution as m08 } from './boss-solutions/m08.ts'
+import { bossSolution as m09 } from './boss-solutions/m09.ts'
+import { bossSolution as m10 } from './boss-solutions/m10.ts'
 import { type Assertion, type Module, moduleSchema } from './schema.ts'
 import { SKILL_NAME_ES } from './skills.ts'
 
@@ -83,12 +90,13 @@ test('every ready topic lesson file exists', () => {
   }
 })
 
-const READY = ['M01', 'M02', 'M03']
-
-test('ready modules are exactly the finished belts, the rest draft', () => {
-  for (const m of modules) {
-    assert.equal(m.status, READY.includes(m.id) ? 'ready' : 'draft', `${m.id} status`)
-  }
+// Belts are finished in order: the ready modules are always M01…Mk, with no draft in between.
+test('ready modules come first, in order, and the rest are drafts', () => {
+  const firstDraft = modules.findIndex((m) => m.status === 'draft')
+  const cut = firstDraft === -1 ? modules.length : firstDraft
+  for (const m of modules.slice(cut))
+    assert.equal(m.status, 'draft', `${m.id} is ready after a draft`)
+  assert.ok(cut >= 3, 'M01–M03 are ready')
 })
 
 test('each generator in a mix exists in the registry and its params validate', () => {
@@ -118,6 +126,11 @@ const BOSS_SOLUTIONS: Record<string, string> = {
   n("<[0 2 4 2] [3 4 5 4] [2 1 0 1] [4 3 2 ~] [0 2 4 2] [5 4 3 2] [1 2 3 1] [0 ~ 0 ~]>")
     .scale("<G3:major!4 E3:minor!4>").s("piano")
 )`,
+  ...Object.fromEntries(
+    Object.entries({ M04: m04, M05: m05, M06: m06, M07: m07, M08: m08, M09: m09, M10: m10 })
+      .filter((e): e is [string, string] => e[1] !== null)
+      .map(([id, code]) => [`${id}-BOSS`, code]),
+  ),
   'M03-BOSS': `stack(
   chord("<C Am F G>").voicing().arp("0 1 2 3 4 3 2 1").s("piano"),
   chord("<C Am F G>").rootNotes(2).s("piano")

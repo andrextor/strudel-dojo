@@ -1,0 +1,66 @@
+---
+topic: M05-T03
+title: Modulación básica
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  **Modular** (*modulate*) es cambiar de tonalidad dentro de la misma pieza. La forma más suave: ir a una **tonalidad vecina** (una quinta arriba o abajo), pasar por un **acorde pivote** que está en las dos, y confirmar la nueva tonalidad con **su dominante** (V).
+</Callout>
+
+## Tonalidades vecinas
+
+Do mayor y Sol mayor solo se diferencian en una nota: Fa en Do, Fa♯ en Sol. Por eso comparten cuatro de sus siete tríadas:
+
+| Acorde | C | Dm | Em | F | G | Am | B° | D | Bm | F♯° |
+|--------|---|----|----|---|---|----|----|---|----|-----|
+| En Do mayor | I | ii | iii | IV | V | vi | vii° | — | — | — |
+| En Sol mayor | IV | — | vi | — | I | ii | — | V | iii | vii° |
+
+**C, Em, G y Am** están en las dos. Cualquiera de ellos sirve de pivote.
+
+<Keyboard low="C4" high="B4" highlight={["C", "D", "E", "F#", "G", "A", "B"]} labels="name" label="Sol mayor: las notas de Do mayor con Fa♯ en lugar de Fa" />
+
+## Los tres pasos
+
+1. **Afirma la tonalidad de partida**: I–IV en Do (C F).
+2. **Pivote**: un acorde común. Am es vi en Do y ii en Sol: el oído todavía no sabe que cambiaste.
+3. **Dominante de la nueva tonalidad**: D, el V de Sol. Su tercera, Fa♯, es la nota que Do no tiene, y es la sensible que lleva a Sol. Después, G: llegaste.
+
+<Listen client:visible code='chord("<C F Am D G G>").voicing().s("piano")' label="Escuchar C F | Am (pivote) | D (V de Sol) | G: de Do mayor a Sol mayor" />
+
+Para ir a la vecina de abajo (de Do a Fa), el camino es el mismo: pivote Dm (ii en Do, vi en Fa) y dominante C, que en la práctica suena con séptima (C7, con el Si♭ de Fa) para que se note el cambio.
+
+<Listen client:visible code='note("<[c3,e3,g3] [d3,f3,a3] [c3,e3,g3,bb3] [f3,a3,c4]>").s("piano")' label="Escuchar C | Dm (pivote) | C7 (V de Fa) | F: de Do mayor a Fa mayor" />
+
+## Strudel: secciones con `arrange`
+
+`arrange` encadena secciones. Cada una dice cuántos ciclos dura y qué patrón suena:
+
+<StrudelRef name="arrange" summary="Encadena secciones: cada una es [ciclos, patrón] y suena durante esos ciclos." />
+
+<Example client:visible code={`arrange(
+  [2, n("0 2 4 2").scale("C4:major")],
+  [2, n("0 2 4 2").scale("G4:major")]
+).s("piano")`} />
+
+La misma idea con acordes: tres ciclos en Do que terminan en el pivote, y tres que confirman Sol.
+
+<Example client:visible code={`arrange(
+  [3, chord("<C F Am>")],
+  [3, chord("<D G G>")]
+).voicing().s("piano")`} />
+
+<details>
+  <summary>Más allá de las vecinas</summary>
+
+También se puede modular a la relativa menor (Do mayor → La menor: comparten todas las notas, basta con insistir en Am y su dominante E), o sin pivote, de golpe, subiendo un semitono o un tono en el último estribillo: el famoso "cambio de camión" (*truck driver's modulation*) del pop.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Encontrar un acorde común entre una tonalidad mayor y su vecina (una quinta arriba o abajo), nombrar la dominante de la nueva tonalidad, y repasar los acordes de cada grado.
+</Callout>

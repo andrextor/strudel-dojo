@@ -1,0 +1,63 @@
+---
+topic: M07-T04
+title: Conducción de voces
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Staff from '../../components/music/Staff.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  La **conducción de voces** (*voice leading*) es encadenar acordes moviendo cada voz lo menos posible. La clave son las **notas guía** (*guide tones*): la **3.ª** y la **7.ª** de cada acorde. En un ii–V–I, la 7.ª baja medio tono a la 3.ª del acorde siguiente y la 3.ª se queda como su 7.ª.
+</Callout>
+
+## Notas guía
+
+La 3.ª dice si el acorde es mayor o menor; la 7.ª, qué tipo de séptima es. La fundamental y la 5.ª se pueden dejar al bajo o quitar: las notas guía solas ya dicen el acorde.
+
+<Keyboard low="E4" high="C5" highlight={["F4", "C5"]} labels="name" label="Notas guía de Dm7: Fa (3.ª) y Do (7.ª)" />
+<Keyboard low="E4" high="C5" highlight={["F4", "B4"]} labels="name" label="Notas guía de G7: Fa (7.ª) y Si (3.ª)" />
+<Keyboard low="E4" high="C5" highlight={["E4", "B4"]} labels="name" label="Notas guía de Cmaj7: Mi (3.ª) y Si (7.ª)" />
+
+| | Dm7 | → | G7 | → | Cmaj7 |
+|---|-----|---|----|---|-------|
+| Voz de arriba | Do (7.ª) | baja ½ | Si (3.ª) | se queda | Si (7.ª) |
+| Voz de abajo | Fa (3.ª) | se queda | Fa (7.ª) | baja ½ | Mi (3.ª) |
+
+<Staff client:visible abc={'X:1\nL:1/2\nK:C\n[Fc] [FB] [EB] |]'} label="Notas guía del ii–V–I en Do: Fa–Do, Fa–Si, Mi–Si" />
+
+## Strudel: dos voces independientes en `stack`
+
+Cada voz es su propio patrón; `stack` las hace sonar juntas. Así ves y escuchas cada línea por separado:
+
+<Listen client:visible code='stack(note("<c4 b3 b3 b3>"), note("<f3 f3 e3 e3>"), note("<d2 g2 c2 c2>")).s("piano")' label="Escuchar las notas guía de ii–V–I con el bajo" />
+
+<StrudelRef name="pianoroll" summary="Dibuja las notas como un rollo de pianola; en el Dojo aparece debajo de cada ejemplo." />
+
+En el pianoroll de este ejemplo, las dos voces de arriba casi no se mueven, mientras que el bajo salta. Para que eso sea fácil de leer, el Dojo ya dibuja el pianoroll debajo del editor y de cada ejemplo: no necesitas llamarlo.
+
+El diccionario `guidetones` hace lo mismo a partir del cifrado: toca solo la 3.ª y la 7.ª, eligiendo la posición más cercana.
+
+<Example client:visible code='stack(chord("<Dm7 G7 C^7 C^7>").dictionary("guidetones").voicing(), note("<d2 g2 c2 c2>")).s("piano")' />
+
+## Cuatro voces con movimiento mínimo
+
+Con los cuatro sonidos del acorde, mantén las notas comunes y mueve el resto a la nota más cercana. En Do mayor:
+
+<Listen client:visible code='note("<[f3,a3,c4,d4] [f3,g3,b3,d4] [e3,g3,b3,c4] [e3,g3,b3,c4]>").s("piano")' label="Escuchar ii–V–I en Do con ninguna voz saltando más de 2 semitonos" />
+
+Compáralo con los tres acordes en estado fundamental, donde todo salta:
+
+<Listen client:visible code='note("<[d3,f3,a3,c4] [g3,b3,d4,f4] [c3,e3,g3,b3] [c3,e3,g3,b3]>").s("piano")' label="Escuchar el mismo ii–V–I con saltos" />
+
+<details>
+  <summary>¿Por qué funciona tan bien el ii–V–I?</summary>
+
+Las fundamentales bajan por quintas (Re → Sol → Do), y en cada paso una nota guía se queda y la otra baja medio tono. Por eso el ii–V–I suena tan fluido y es la base del jazz: puedes encadenarlo en otra tonalidad y las notas guía siguen bajando de a semitono.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Escribir las notas guía (3.ª y 7.ª) de cualquier acorde maj7, 7, m7 o ø7, decir adónde va cada nota guía en ii → V y en V → I, y repasar tríadas, el campo armónico y la escala mayor.
+</Callout>

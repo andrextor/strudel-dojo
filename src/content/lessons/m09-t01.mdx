@@ -1,0 +1,74 @@
+---
+topic: M09-T01
+title: Menor armónica y melódica
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  La **menor armónica** (*harmonic minor*) es la menor natural con el 7.º grado subido: aparece la sensible y el V se vuelve mayor. La **menor melódica** (*melodic minor*) sube además el 6.º. De sus modos salen tres escalas que el jazz usa todo el tiempo: **frigio dominante**, **lidio dominante** y **alterada**.
+</Callout>
+
+## Por qué existe la menor armónica
+
+En La menor natural, Sol está a un tono de La: no hay **sensible** que empuje hacia la tónica, y el v (Em) suena blando. Subir Sol a **Sol♯** convierte ese acorde en **E mayor** (E7 con séptima), un dominante de verdad.
+
+| Grado | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|-------|---|---|---|---|---|---|---|
+| Menor natural | La | Si | Do | Re | Mi | Fa | Sol |
+| Menor armónica | La | Si | Do | Re | Mi | Fa | **Sol♯** |
+| Menor melódica | La | Si | Do | Re | Mi | **Fa♯** | **Sol♯** |
+
+<Keyboard low="A3" high="A4" highlight={["A3", "B3", "C4", "D4", "E4", "F4", "G#4", "A4"]} labels="name" label="La menor armónica: La, Si, Do, Re, Mi, Fa, Sol♯, La" />
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 7").scale("<A3:minor A3:harmonic:minor>").s("piano")' label="Escuchar La menor natural y luego La menor armónica" />
+
+Entre Fa y Sol♯ queda una **segunda aumentada** (tres semitonos): ese salto le da el sabor "oriental" a la menor armónica.
+
+## La menor melódica
+
+Para suavizar ese salto, la menor melódica sube también el 6.º grado. Queda como una escala mayor con la tercera menor: **La Si Do Re Mi Fa♯ Sol♯**.
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 7").scale("<A3:harmonic:minor A3:melodic:minor>").s("piano")' label="Escuchar la menor armónica y luego la melódica" />
+
+<details>
+  <summary>¿Y al bajar?</summary>
+
+En la música clásica, la menor melódica baja como la natural (Sol y Fa vuelven a su lugar). En el jazz se usa igual en las dos direcciones, y así la entiende Strudel y esta prueba: siempre con 6.º y 7.º subidos.
+</details>
+
+## Tres modos clave
+
+Como con la mayor y sus modos, puedes tocar estas escalas desde otro grado:
+
+| Modo | Sale de | Desde Do | Sobre qué acorde |
+|------|---------|----------|------------------|
+| **Frigio dominante** (*phrygian dominant*) | 5.º grado de la menor armónica | Do Re♭ Mi Fa Sol La♭ Si♭ | V7 de una tonalidad menor |
+| **Lidio dominante** (*lydian dominant*) | 4.º grado de la menor melódica | Do Re Mi Fa♯ Sol La Si♭ | 7(♯11) |
+| **Alterada** (*altered*) | 7.º grado de la menor melódica | Do Re♭ Re♯ Mi Fa♯ La♭ Si♭ | 7alt (♭9, ♯9, ♯11, ♭13) |
+
+Mi frigio dominante tiene las mismas notas que La menor armónica: es la escala del E7 que resuelve en Am.
+
+<Example client:visible code={`stack(
+  chord("<E7 Am>").voicing().s("piano"),
+  n("0 1 2 3 4 5 6 7").scale("<E4:phrygian:dominant A4:harmonic:minor>").s("piano")
+)`} />
+
+<Callout tone="warning" title="Nombres con espacio en Strudel">
+  En `scale`, cada espacio del nombre se escribe con dos puntos: `"A:harmonic:minor"`, `"C:melodic:minor"`, `"E:phrygian:dominant"`, `"C:lydian:dominant"`. Con un espacio, la mini-notation lo parte en dos y no suena lo que esperas.
+</Callout>
+
+<details>
+  <summary>¿Por qué la alterada se escribe con Re♯ y no con Mi♭?</summary>
+
+La alterada se piensa como las tensiones de un dominante: fundamental, **♭9** (Re♭), **♯9** (Re♯), **3** (Mi), **♯11** (Fa♯), **♭13** (La♭) y **♭7** (Si♭). Por eso tiene dos "Re" y ningún Sol. La app la deletrea así, como `tonal`.
+</details>
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 7").scale("<C4:lydian:dominant C4:altered>").s("piano")' label="Escuchar Do lidio dominante y luego Do alterada" />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Escribir la menor armónica y la melódica desde cualquier tónica, los modos frigio dominante, lidio dominante y alterada, y repasar las armaduras y relativas menores.
+</Callout>

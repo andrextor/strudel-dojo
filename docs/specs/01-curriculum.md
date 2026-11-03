@@ -144,6 +144,10 @@ Desde M01, cada tema incluye un set de oído. Progresión: intervalos melódicos
 
 Todos los ejercicios de notas, intervalos, escalas y acordes aceptan respuesta en **teclado**, **diapasón** o **texto**, según la preferencia del perfil. Las lecciones muestran ambos instrumentos lado a lado cuando aplica (formas de escala y acordes en guitarra, digitaciones en piano).
 
+## Estado de implementación
+
+Los diez cinturones están listos (P08 y P11). Los combates usan una tonalidad o modo fijo, y algunos generadores cambiaron de nombre o se sumaron respecto de la lista de arriba: el detalle por módulo está en `docs/plans/P11-content-recipe.md`.
+
 ## Fuentes de verdad
 
 - Cálculo musical: [`tonal`](https://github.com/tonaljs/tonal). Nunca se escriben a mano listas de notas en los generadores.

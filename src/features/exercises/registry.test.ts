@@ -14,9 +14,9 @@ function readModule(id: string): Module {
   return parsed.data
 }
 
-const ready = [readModule('M01'), readModule('M02')]
+const ready = ['M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08', 'M09', 'M10'].map(readModule)
 
-test('every graded mix in M01–M02 builds a full set with no duplicates across 100 seeds', () => {
+test('every graded mix builds a full set with no duplicates across 100 seeds', () => {
   for (const m of ready) {
     if (m.status !== 'ready') continue
     for (const topic of m.topics) {
@@ -34,7 +34,7 @@ test('every graded mix in M01–M02 builds a full set with no duplicates across 
   }
 })
 
-test('every generator and params in all M01–M02 mixes validate', () => {
+test('every generator and params in every mix validate', () => {
   for (const m of ready) {
     const mixes = [
       ...(m.status === 'ready' && m.placement ? [m.placement.mix] : []),
@@ -58,7 +58,9 @@ test('unknown generator throws a clear error', () => {
 test('placement mixes build without duplicates', () => {
   for (const m of ready) {
     if (m.status !== 'ready' || !m.placement) continue
-    const set = buildSet(m.placement.mix, m.placement.questions, `${m.id}:placement:0`)
-    assert.equal(new Set(set.map((q) => q.key)).size, m.placement.questions)
+    for (let s = 0; s < 30; s++) {
+      const set = buildSet(m.placement.mix, m.placement.questions, `${m.id}:placement:${s}`)
+      assert.equal(new Set(set.map((q) => q.key)).size, m.placement.questions, `${m.id} seed ${s}`)
+    }
   }
 })

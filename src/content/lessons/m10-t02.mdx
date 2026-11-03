@@ -1,0 +1,68 @@
+---
+topic: M10-T02
+title: Arreglo en capas
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Un **arreglo** (*arrangement*) reparte la música en **capas** con papeles distintos: **ritmo**, **bajo**, **armonía** y **melodía**. Cada capa ocupa su **registro** (grave, medio, agudo) y su **densidad** (cuántas notas por ciclo). En Strudel las apilas con `stack` y las mezclas con `gain`, `pan` y `orbit`.
+</Callout>
+
+## Cuatro papeles
+
+| Capa | Papel | Registro típico | Densidad típica |
+|------|-------|-----------------|-----------------|
+| Ritmo | Marca el pulso y el estilo | Sin altura | Alta (hi-hat) o media |
+| Bajo | Fundamentales, apoyo armónico | Grave (octavas 1–2) | Baja: 1–4 notas por ciclo |
+| Armonía | Acordes, el colchón | Medio (octavas 3–4) | Baja o media |
+| Melodía | La idea que se recuerda | Agudo (octavas 4–5) | Media |
+
+<Listen client:visible code={`stack(
+  s("bd*4, ~ sd, hh*8"),
+  chord("<C Am F G>").rootNotes(2).s("sawtooth"),
+  chord("<C Am F G>").voicing().s("piano"),
+  n("<[0 2 4 2] [5 4 2 0] [3 5 4 3] [4 ~ 1 ~]>").scale("C5:major").s("piano")
+)`} label="Escuchar las cuatro capas juntas" />
+
+## Registro y densidad
+
+Si dos capas viven en el mismo registro, se tapan. Si todas son densas, el oído no sabe a qué mirar. La regla práctica: **una capa densa a la vez** y cada una en su franja.
+
+## Contrapunto entre capas
+
+El **contrapunto** es la relación entre líneas que se mueven a la vez. Funciona mejor cuando las capas se complementan:
+
+- **Movimiento contrario**: si la melodía sube, el bajo baja.
+- **Ritmo complementario**: una capa suena donde la otra calla.
+- **Pregunta y respuesta**: la melodía dice algo y otra capa contesta en el hueco.
+
+<Listen client:visible code={`stack(
+  n("0 ~ 2 ~ 4 ~ 5 ~").scale("C4:major").s("piano"),
+  n("~ 7 ~ 6 ~ 5 ~ 4").scale("C2:major").s("sawtooth")
+)`} label="Escuchar dos líneas en movimiento contrario y ritmo complementario" />
+
+## Strudel: la mezcla
+
+<StrudelRef name="gain" summary="El volumen de la capa: 1 es normal, menos baja el volumen." />
+<StrudelRef name="pan" summary="La posición en el estéreo: 0 izquierda, 0.5 centro, 1 derecha." />
+<StrudelRef name="orbit" summary="Manda la capa a un bus de efectos propio: su reverb y su delay no se mezclan con los de otras." />
+
+<Example client:visible code={`stack(
+  s("bd*4, hh*8").gain(0.8),
+  chord("<C Am F G>").rootNotes(2).s("sawtooth").gain(0.7),
+  chord("<C Am F G>").voicing().s("piano").pan(0.3).room(0.6).orbit(2),
+  n("0 2 4 2").scale("C5:major").s("piano").pan(0.7)
+)`} />
+
+<details>
+  <summary>¿Para qué sirve `orbit`?</summary>
+
+Los efectos de espacio (`room`, `delay`, que verás en el próximo tema) se calculan por órbita. Si el piano tiene mucha reverb y la batería poca, ponlos en órbitas distintas; si no, la batería hereda la reverb del piano.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Reconocer el papel de cada capa de un `stack`, decir qué papel le falta a un arreglo y cuál es la capa más densa, y repasar el campo armónico y el ritmo.
+</Callout>

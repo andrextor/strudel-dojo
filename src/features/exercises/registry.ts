@@ -1,4 +1,4 @@
-import { createRng, type Rng } from '../../lib/random.ts'
+import { createRng } from '../../lib/random.ts'
 import type { MixEntry } from '../curriculum/schema.ts'
 import { chordName } from './generators/chord-name.ts'
 import { chordSpelling } from './generators/chord-spelling.ts'
@@ -6,38 +6,25 @@ import { diatonicChord, diatonicChordMinor } from './generators/diatonic-chord.t
 import { earChord } from './generators/ear-chord.ts'
 import { earInterval } from './generators/ear-interval.ts'
 import { enharmonic } from './generators/enharmonic.ts'
+import { erase, type Registered } from './generators/erase.ts'
 import { intervalBuild } from './generators/interval-build.ts'
 import { intervalInvert } from './generators/interval-invert.ts'
 import { intervalName } from './generators/interval-name.ts'
 import { keySignatureGen } from './generators/key-signature.ts'
+import { m04 } from './generators/m04.ts'
+import { m05 } from './generators/m05.ts'
+import { m06 } from './generators/m06.ts'
+import { m07 } from './generators/m07.ts'
+import { m08 } from './generators/m08.ts'
+import { m09 } from './generators/m09.ts'
+import { m10 } from './generators/m10.ts'
 import { noteName } from './generators/note-name.ts'
 import { relativeKey } from './generators/relative-key.ts'
 import { rhythmMatch } from './generators/rhythm-match.ts'
 import { scaleDegree } from './generators/scale-degree.ts'
 import { scaleSpelling } from './generators/scale-spelling.ts'
 import { semitoneCount } from './generators/semitone-count.ts'
-import type { Generator, Question } from './types.ts'
-
-// Type-erased generator: hides the per-generator params type behind the id.
-interface Registered {
-  id: string
-  skill: string
-  validate(raw: unknown): boolean
-  run(raw: unknown, rng: Rng): Question
-}
-
-function erase<P>(gen: Generator<P>): Registered {
-  return {
-    id: gen.id,
-    skill: gen.skill,
-    validate: (raw) => gen.parseParams(raw) !== null,
-    run: (raw, rng) => {
-      const params = gen.parseParams(raw)
-      if (params === null) throw new Error(`invalid params for ${gen.id}: ${JSON.stringify(raw)}`)
-      return gen.generate(params, rng)
-    },
-  }
-}
+import type { Question } from './types.ts'
 
 const REGISTERED: Registered[] = [
   erase(noteName),
@@ -57,6 +44,14 @@ const REGISTERED: Registered[] = [
   erase(diatonicChord),
   erase(diatonicChordMinor),
   erase(earChord),
+  // M04–M10: each module file registers its own generators.
+  ...m04,
+  ...m05,
+  ...m06,
+  ...m07,
+  ...m08,
+  ...m09,
+  ...m10,
 ]
 
 export const registry: Map<string, Registered> = new Map(REGISTERED.map((r) => [r.id, r]))

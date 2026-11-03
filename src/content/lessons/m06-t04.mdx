@@ -1,0 +1,57 @@
+---
+topic: M06-T04
+title: Progresiones modales
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Un modo se sostiene con pocos acordes que repiten su nota característica sin caer en la tonalidad mayor o menor: **i–IV** dórico, **I–♭VII** mixolidio, **i–♭II** frigio, **I–II** lidio, **i–♭VI–♭VII** eólico. Un **dron** (*drone*), una nota grave que no se mueve, fija la tónica.
+</Callout>
+
+## Cinco vamps, cinco colores
+
+| Modo | Vamp | En Re | Dónde está el color |
+|---|---|---|---|
+| dórico | i–IV | Dm – G | Si, la 3.ª de G |
+| mixolidio | I–♭VII | D – C | Do, la fundamental de C |
+| frigio | i–♭II | Dm – E♭ | Mi♭, la fundamental de E♭ |
+| lidio | I–II | D – E | Sol♯, la 3.ª de E |
+| eólico | i–♭VI–♭VII | Dm – B♭ – C | Si♭, la fundamental de B♭ |
+
+<Listen client:visible code='chord("<Dm G>").voicing().s("piano")' label="Escuchar i–IV en Re dórico" />
+
+<Listen client:visible code='chord("<D C>").voicing().s("piano")' label="Escuchar I–♭VII en Re mixolidio" />
+
+<Listen client:visible code='chord("<Em F>").voicing().s("piano")' label="Escuchar i–♭II en Mi frigio" />
+
+<Callout tone="hint" title="Evita el V">
+  En dórico o mixolidio, el acorde del 5.º grado es menor (Am en Re dórico, Am en Re mixolidio). Si lo cambias por A mayor, aparece la sensible Do♯ y el oído se va a Re menor o Re mayor de siempre.
+</Callout>
+
+## Drones y pedales
+
+Un dron largo en la tónica hace que cualquier nota de arriba se escuche contra ella: así el color del modo aparece aunque toques una sola línea. En Strudel lo construyes con un sinte (`s("sawtooth")`) y tres controles:
+
+<StrudelRef name="sustain" summary="Nivel de la envolvente mientras la nota sigue sonando (0 a 1): con 1 el dron no se apaga hasta el final del evento." />
+
+<StrudelRef name="lpf" summary="Filtro paso bajo: corta los agudos por encima de la frecuencia que indicas (en Hz)." />
+
+<StrudelRef name="room" summary="Cantidad de reverberación (0 a 1): da espacio al sonido." />
+
+<Example client:visible code='stack(note("d2").s("sawtooth").sustain(1).lpf(500).room(0.6), n("<[0 2 4 5] [4 5 7 5]>").scale("D3:dorian").s("piano"))' />
+
+<Fretboard highlight={["D", "E", "F", "G", "A", "B", "C"]} frets={7} label="Re dórico del traste 0 al 7: toca sobre la cuerda Re al aire como dron" />
+
+<details>
+  <summary>¿Por qué el i–♭VI–♭VII suena tan épico?</summary>
+
+En eólico, ♭VI y ♭VII suben por tonos hacia la tónica (Si♭ → Do → Re), sin la sensible de la menor armónica. Esa subida sin tensión de dominante es la marca del rock y de muchas bandas sonoras.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Reconocer qué modo sugiere una vamp, leyendo sus acordes o de oído, y repasar los acordes de las tonalidades mayor y menor de M03.
+</Callout>

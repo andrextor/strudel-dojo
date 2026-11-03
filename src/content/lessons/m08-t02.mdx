@@ -1,0 +1,56 @@
+---
+topic: M08-T02
+title: Intercambio modal
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  El **intercambio modal** (*modal interchange*) es tomar prestado un acorde de la **menor paralela**: la tonalidad menor con la misma tónica (Do mayor ↔ Do menor). Los préstamos más usados son **iv, ♭VI, ♭VII y ♭III**. No cambian de tonalidad: solo oscurecen el color un momento.
+</Callout>
+
+## Misma tónica, otra escala
+
+Do mayor y Do menor comparten la tónica pero no la escala: Do menor tiene Mi♭, La♭ y Si♭. Los acordes que usan esas notas son los préstamos:
+
+| Grado prestado | iv | ♭VI | ♭VII | ♭III |
+|----------------|----|-----|------|------|
+| En Do mayor | Fm | A♭ | B♭ | E♭ |
+| En lugar de | F (IV) | Am (vi) | B° (vii°) | Em (iii) |
+
+El ♭ delante del romano dice que la fundamental está medio tono abajo de la del grado de la tonalidad mayor: el ♭VI de Do es La♭, no La.
+
+<Keyboard low="F3" high="E4" highlight={["F", "Ab", "C"]} labels="name" label="Fm, el iv prestado de Do menor: Fa, La♭ y Do" />
+
+## El iv menor y la cadencia ♭VI–♭VII–I
+
+El iv menor después del IV mayor es uno de los sonidos más reconocibles del pop y del cine: solo baja una nota (La → La♭).
+
+<Listen client:visible code='chord("<C F Fm C>").voicing().s("piano")' label="Escuchar C F Fm C: el iv menor prestado" />
+
+<Listen client:visible code='chord("<C Ab Bb C>").voicing().s("piano")' label="Escuchar C A♭ B♭ C: la cadencia ♭VI–♭VII–I" />
+
+## Strudel: comparar versiones con `< >` y `sometimes`
+
+Un `< >` dentro de otro avanza una vez por cada vuelta del de fuera. Así `<C <F Fm> G C>` toca la progresión con F la primera vez y con Fm la segunda: escuchas las dos versiones seguidas.
+
+<Example client:visible code='chord("<C <F Fm> G C>").voicing().s("piano")' />
+
+`sometimes` aplica un cambio solo a veces, más o menos la mitad de los eventos. Aquí, algunos acordes suben una octava:
+
+<StrudelRef name="sometimes" summary="Aplica una función a algunos eventos al azar, más o menos la mitad." />
+
+<Example client:visible code='chord("<C <F Fm> G C>").voicing().sometimes(x => x.add(note(12))).s("piano")' />
+
+<details>
+  <summary>¿Y si el préstamo va al revés?</summary>
+
+También se puede tomar prestado de la mayor estando en menor: el V mayor de La menor (E en lugar de Em) es el caso más común. En este cinturón trabajas el sentido más usado, de la menor paralela hacia la mayor.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Reconocer cuál de varios acordes viene de la menor paralela en cualquier tonalidad mayor y decir qué grado es (iv, ♭VI, ♭VII o ♭III). También repasas dominantes secundarias y los campos armónicos mayor y menor.
+</Callout>

@@ -101,6 +101,10 @@ Cada una devuelve `{ pass: boolean; message: string }` en español, y el mensaje
 | `rhythmEquals` | `reference` (mini-notation) | Los onsets por ciclo coinciden con los de la referencia. |
 | `matchesReference` | `code`, `transposeBy?` | Mismos eventos (altura, inicio, duración) que el patrón de referencia, opcionalmente transportado. |
 | `characteristicNoteRatio` | `mode`, `minRatio` | Fracción de eventos melódicos que son la nota característica del modo. |
+| `chordFunctionAt` | `key` (tónica mayor), `cycle`, `function` (`secondary-dominant` / `borrowed` / `tritone-sub`) | En ese ciclo suenan todas las notas de algún acorde con esa función en la tonalidad (dominante de ii…vi, acorde de la menor paralela que la mayor no tiene, o sustituto tritonal de una dominante). La melodía encima no estorba. (M08) |
+| `scalePerCycle` | `scales[]`, `minRatio?` | Las notas de cada ciclo caen en su escala (`scales[c % n]`). (M09) |
+| `sectionsDistinct` | `min` | Al menos `min` ciclos distintos (qué suena y cuándo): hay secciones que contrastan. (M10) |
+| `layerCount` | `min` | Al menos `min` fuentes de sonido distintas (`s`: bd, hh, piano, sawtooth…). (M10) |
 
 Si la evaluación falla (error de sintaxis o de runtime), la kata muestra el error y no corre ninguna aserción. Para evitar bucles infinitos y patrones gigantes, `query.ts` corta en 5 000 eventos y, de pasar ese tope, devuelve un error claro.
 

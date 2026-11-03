@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { createRng } from '../../lib/random.ts'
+import type { Module } from '../curriculum/schema.ts'
 import {
   answerQuestion,
   bestScore,
@@ -66,9 +67,18 @@ test('rule 1: M01 starts unlocked, M02 unlocks when M01 is passed', () => {
 })
 
 test('draft modules report draft', () => {
-  const draft = curriculum.find((m) => m.status === 'draft')
-  assert.ok(draft)
-  assert.equal(moduleStatus(fresh(), curriculum, draft), 'draft')
+  // Every belt is ready now, so the rule is checked on a made-up next module.
+  const draft: Module = {
+    id: 'M11',
+    order: 11,
+    belt: 'dan',
+    title: 'Próximo',
+    summary: 'Próximo',
+    status: 'draft',
+    prerequisite: 'M10',
+    topics: [],
+  }
+  assert.equal(moduleStatus(fresh(), [...curriculum, draft], draft), 'draft')
 })
 
 test('rule 2: a passed test with a pending kata does not pass the topic, in either order', () => {

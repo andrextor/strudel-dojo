@@ -1,0 +1,80 @@
+---
+topic: M04-T04
+title: Armonizar una melodía
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  **Armonizar** (*harmonize*) es elegir acordes para una melodía. La regla básica: en cada compás, busca un acorde que contenga las notas importantes de la melodía. Con solo **I, IV y V** cubres todas las notas de la escala mayor.
+</Callout>
+
+## I, IV y V cubren la escala
+
+En Do mayor, I = Do–Mi–Sol, IV = Fa–La–Do y V = Sol–Si–Re. Entre los tres están las siete notas:
+
+| Nota de la melodía | Do | Re | Mi | Fa | Sol | La | Si |
+|--------------------|----|----|----|----|-----|----|----|
+| Acorde que la tiene | I o IV | V | I | IV | I o V | IV | V |
+
+Re, Mi, Fa, La y Si están en un solo acorde: la elección es clara. Do y Sol están en dos, y ahí decides por el camino: si vienes de la dominante, el I cierra; si quieres seguir, el IV o el V mantienen el movimiento.
+
+<Keyboard low="C4" high="C5" highlight={["F4", "A4", "C5"]} labels="name" label="IV de Do mayor: Fa, La y Do. Armoniza Fa y La" />
+
+## Escuchar la diferencia
+
+La misma melodía con Do mayor en todos los compases, y luego con el acorde que corresponde a cada uno:
+
+<Listen client:visible code={`stack(
+  note("<[e5 g5] [f5 a5] [d5 b4] c5>").s("piano"),
+  chord("<C C C C>").voicing().s("piano")
+)`} label="Escuchar la melodía con C en todos los compases" />
+
+<Listen client:visible code={`stack(
+  note("<[e5 g5] [f5 a5] [d5 b4] c5>").s("piano"),
+  chord("<C F G C>").voicing().s("piano")
+)`} label="Escuchar la melodía armonizada con I–IV–V–I" />
+
+En el compás 2, Fa y La chocan con Do mayor. Con Fa mayor encajan. Y fíjate: el final V → I con Do arriba es una cadencia auténtica perfecta.
+
+## Ritmo armónico
+
+El **ritmo armónico** (*harmonic rhythm*) es cada cuánto cambia el acorde. Hasta ahora fue uno por compás, pero si la melodía cambia de zona a mitad de compás, también puede cambiar el acorde:
+
+<Listen client:visible code={`stack(
+  note("<[c5 d5] [e5 f5] [g5 b4] c5>").s("piano"),
+  chord("<[C G] [C F] [C G] C>").voicing().s("piano")
+)`} label="Escuchar dos acordes por compás siguiendo la melodía" />
+
+<details>
+  <summary>¿Y las notas que no están en el acorde?</summary>
+
+No todas las notas tienen que estar en el acorde. Las que caen en tiempo débil y van de paso entre dos notas del acorde se llaman **notas de paso** (*passing tones*): suenan bien porque se mueven enseguida. Lo que importa es que las notas de los tiempos fuertes pertenezcan al acorde.
+</details>
+
+## Strudel: acompañar con ritmo
+
+Un acompañamiento (*comping*) no tiene que tocar en cada tiempo. Con `euclid(3,8)` los acordes suenan en 3 golpes repartidos en 8 pasos, un ritmo que se usa mucho en el pop y la música latina.
+
+<Example client:visible code={`stack(
+  note("<[e5 g5] [f5 a5] [d5 b4] c5>").s("piano"),
+  chord("<C F G C>").voicing().euclid(3,8).s("piano"),
+  chord("<C F G C>").rootNotes(2).s("piano")
+)`} />
+
+`mask` deja sonar el patrón donde hay `1` y lo calla donde hay `0`. Con `< >` puedes callar una capa en compases enteros, por ejemplo el hi-hat del último compás para que el final respire:
+
+<StrudelRef name="mask" summary="Silencia el patrón donde la máscara tiene 0 y lo deja sonar donde tiene 1." />
+
+<Example client:visible code={`stack(
+  s("bd ~ sd ~"),
+  s("hh*8").mask("<1 1 1 0>"),
+  chord("<C F G C>").voicing().euclid(3,8).s("piano")
+)`} />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Elegir entre I, IV y V el acorde que contiene una nota de la melodía, en cualquier tonalidad mayor. Repasarás también las funciones, las cadencias, las escalas mayores y el deletreo de tríadas.
+</Callout>

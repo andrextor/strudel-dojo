@@ -1,0 +1,49 @@
+---
+topic: M08-T03
+title: Sustitución tritonal
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  La **sustitución tritonal** (*tritone substitution*) cambia un V7 por el acorde de séptima de dominante que está a un tritono (quinta disminuida) de él: G7 → **D♭7**. Funciona porque los dos comparten la tercera y la séptima. Respecto a la tónica es un **♭II7**, y su bajo baja medio tono hasta ella.
+</Callout>
+
+## El tritono compartido
+
+El corazón de G7 es el tritono entre Si (tercera) y Fa (séptima): es lo que pide resolver. D♭7 (Re♭, Fa, La♭, Do♭) tiene las mismas dos notas, cambiadas de papel: Fa es su tercera y Do♭, que suena como Si, su séptima.
+
+<Keyboard low="C4" high="B4" highlight={["F", "B"]} labels="name" label="El tritono Fa–Si que comparten G7 y D♭7" />
+
+| V7 | G7 | C7 | D7 | A7 | E7 |
+|----|----|----|----|----|----|
+| Sustituto | D♭7 | G♭7 | A♭7 | E♭7 | B♭7 |
+
+Para encontrarlo, cuenta una quinta disminuida desde la fundamental: de Sol a Re♭, de Do a Sol♭. Cuando el nombre sale con doble alteración o con Fa♭/Do♭ (de B♭7 saldría F♭7), se escribe con su enharmónico: E7.
+
+## Reharmonizar un ii–V–I
+
+El ii–V–I de Do mayor es Dm7 G7 Cmaj7. Con el sustituto, Dm7 D♭7 Cmaj7, el bajo baja por semitonos: Re, Re♭, Do.
+
+<Listen client:visible code='note("<[d3,f3,a3,c4] [g2,b2,d3,f3] [c3,e3,g3,b3]>").s("piano")' label="Escuchar Dm7 G7 Cmaj7" />
+
+<Listen client:visible code='note("<[d3,f3,a3,c4] [db3,f3,ab3,cb4] [c3,e3,g3,b3]>").s("piano")' label="Escuchar Dm7 D♭7 Cmaj7, con el sustituto tritonal" />
+
+Separa el bajo con `stack` para que se oiga el cromatismo, y aplica el truco a una cadena de dominantes: cambiando A7 por E♭7 y G7 por D♭7, el bajo baja de Mi a Do sin saltos.
+
+<Example client:visible code={`stack(
+  note("<[d3,g3,b3] [db3,g3,bb3] [c3,f3,a3] [cb3,f3,ab3] [b2,e3,g3]>"),
+  note("<e2 eb2 d2 db2 c2>")
+).s("piano")`} />
+
+<details>
+  <summary>¿Por qué escribo cb4 y no b3?</summary>
+
+Suenan igual, pero el acorde es D♭7 y su séptima es Do♭. Strudel acepta `cb4`, y así el código dice la verdad sobre el acorde. Las comprobaciones comparan el sonido, así que `b3` también pasaría.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Encontrar el sustituto tritonal del V7 de cualquier tonalidad, decir qué dos notas comparte con él y usarlo en un ii–V–I. También repasas dominantes secundarias, préstamos e inversiones.
+</Callout>

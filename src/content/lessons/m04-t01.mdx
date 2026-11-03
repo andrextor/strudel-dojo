@@ -1,0 +1,67 @@
+---
+topic: M04-T01
+title: Tónica, subdominante, dominante
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Los acordes de una tonalidad cumplen tres papeles. La **tónica** (*tonic*: I, vi) es reposo, la casa. La **subdominante** (*subdominant*: IV, ii) se aleja de casa. La **dominante** (*dominant*: V, vii°) crea tensión y pide volver a la tónica. Casi toda la música tonal es un viaje T → S → D → T.
+</Callout>
+
+## Tensión y reposo
+
+Escucha I–IV–V–I en Do mayor. El primer Do suena a casa, el Fa abre el camino, el Sol deja algo en el aire y el último Do lo resuelve.
+
+<Listen client:visible code='chord("<C F G C>").voicing().s("piano")' label="Escuchar I–IV–V–I en Do mayor" />
+
+Prueba a cortarlo en el Sol: la frase queda pidiendo un final. Esa necesidad de volver es la **función dominante**.
+
+## Los tres grupos
+
+| Función | Grados | En Do mayor | Qué hace |
+|---------|--------|-------------|----------|
+| Tónica (T) | I, vi | C, Am | Reposo |
+| Subdominante (S) | IV, ii | F, Dm | Se aleja de casa |
+| Dominante (D) | V, vii° | G, B° | Tensión que pide volver |
+
+Los acordes del mismo grupo comparten notas, y por eso se pueden sustituir. El **ii** (Re–Fa–La) comparte Fa y La con el IV (Fa–La–Do). El **vi** (La–Do–Mi) comparte Do y Mi con el I (Do–Mi–Sol), pero suena más débil: es un reposo a medias.
+
+<Listen client:visible code='chord("<C Dm G Am>").voicing().s("piano")' label="Escuchar T–S–D–T con sustitutos: C Dm G Am" />
+
+<details>
+  <summary>¿Y el iii?</summary>
+
+El iii (Mi–Sol–Si en Do) comparte Mi y Sol con el I y Sol y Si con el V. Por eso a veces se cuenta como tónica y a veces como dominante. Es un acorde ambiguo: en la prueba no te preguntaremos por su función.
+</details>
+
+## El tritono del V
+
+¿Por qué el V empuja tanto hacia el I? Agrégale su séptima: **G7** = Sol, Si, Re, Fa. Entre Si y Fa hay un **tritono** (*tritone*, 6 semitonos), el intervalo más inestable de la escala. Se resuelve por semitonos: Si sube a Do y Fa baja a Mi, justo dos notas de Do mayor.
+
+<Keyboard low="G3" high="G4" highlight={["G3", "B3", "D4", "F4"]} labels="name" label="G7: Sol, Si, Re y Fa. Si–Fa es el tritono" />
+
+<Listen client:visible code='note("<[b3,f4] [c4,e4]>").s("piano")' label="Escuchar el tritono Si–Fa resolviendo a Do–Mi" />
+
+<Listen client:visible code='chord("<G G7 C C>").voicing().s("piano")' label="Escuchar G, G7 y la resolución a C" />
+
+El vii° (Si–Re–Fa) tiene el mismo tritono, y por eso también es dominante. Los acordes de séptima los verás a fondo en M07.
+
+## Strudel: una banda en capas
+
+Con `stack` superpones capas que suenan a la vez: batería, acordes y bajo. Para el bajo, `rootNotes(2)` toca la fundamental de cada acorde en la octava 2, así la función se oye clara aunque el `voicing` ponga otra nota abajo.
+
+<StrudelRef name="stack" summary="Toca varios patrones a la vez, uno encima de otro: cada uno es una capa." />
+
+<Example client:visible code={`stack(
+  s("bd ~ sd ~, hh*8"),
+  chord("<C F G C>").voicing().s("piano"),
+  chord("<C F G C>").rootNotes(2).s("piano")
+)`} />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Decir la función (tónica, subdominante o dominante) de los grados I, ii, IV, V, vi y vii° en cualquier tonalidad mayor, y repasar el campo armónico y el deletreo de tríadas.
+</Callout>

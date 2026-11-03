@@ -87,6 +87,11 @@ export const SCALE_TYPE_ES: Record<string, string> = {
   'minor pentatonic': 'pentatónica menor',
   blues: 'blues',
   'whole tone': 'tonos enteros',
+  diminished: 'disminuida (tono-semitono)',
+  'half-whole diminished': 'disminuida (semitono-tono)',
+  altered: 'alterada',
+  'phrygian dominant': 'frigio dominante',
+  'lydian dominant': 'lidio dominante',
   chromatic: 'cromática',
 }
 

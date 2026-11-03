@@ -1,0 +1,56 @@
+---
+topic: M06-T03
+title: Modos paralelos
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Los modos **paralelos** (*parallel modes*) comparten tónica: Do lidio, Do jónico, Do mixolidio… Ordenados de más brillante a más oscuro, cada uno baja **una sola nota** del anterior: lidio → jónico → mixolidio → dórico → eólico → frigio → locrio.
+</Callout>
+
+## La escalera de la luz
+
+| Paso | Modo de Do | Qué nota baja | Notas |
+|---|---|---|---|
+| — | lidio | — | Do Re Mi Fa♯ Sol La Si |
+| 1 | jónico | 4.ª (Fa♯ → Fa) | Do Re Mi Fa Sol La Si |
+| 2 | mixolidio | 7.ª (Si → Si♭) | Do Re Mi Fa Sol La Si♭ |
+| 3 | dórico | 3.ª (Mi → Mi♭) | Do Re Mi♭ Fa Sol La Si♭ |
+| 4 | eólico | 6.ª (La → La♭) | Do Re Mi♭ Fa Sol La♭ Si♭ |
+| 5 | frigio | 2.ª (Re → Re♭) | Do Re♭ Mi♭ Fa Sol La♭ Si♭ |
+| 6 | locrio | 5.ª (Sol → Sol♭) | Do Re♭ Mi♭ Fa Sol♭ La♭ Si♭ |
+
+Los tres primeros tienen tercera mayor (suenan "mayores"); dórico, eólico y frigio, tercera menor; el locrio tiene además la quinta disminuida, por eso casi nunca hace de tónica estable.
+
+<Keyboard low="C4" high="C5" highlight={["C", "D", "E", "F#", "G", "A", "B"]} labels="name" label="Do lidio, el más brillante: Fa♯" />
+
+<Keyboard low="C4" high="C5" highlight={["C", "Db", "Eb", "F", "Gb", "Ab", "Bb"]} labels="name" label="Do locrio, el más oscuro: cinco notas bajadas" />
+
+## Strudel: un modo por ciclo
+
+Con `<>` dentro de `scale`, la misma línea cambia de modo en cada ciclo. Escucha cómo se oscurece:
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 7").scale("<C:lydian C:ionian C:mixolydian C:dorian C:aeolian C:phrygian C:locrian>").s("piano")' label="Escuchar los siete modos de Do, de brillante a oscuro" />
+
+La tríada de la tónica también cambia: mayor en lidio, jónico y mixolidio; menor en dórico, eólico y frigio; disminuida en locrio.
+
+<Listen client:visible code='n("[0,2,4]").scale("<C:ionian C:dorian C:locrian>").s("piano")' label="Escuchar la tríada de Do en jónico, dórico y locrio" />
+
+<Example client:visible code='n("0 2 4 5 4 2 1 0").scale("<D:dorian D:aeolian>").s("piano")' />
+
+## De oído
+
+Para reconocer un modo, primero decide si su tercera es mayor o menor. Luego busca su color: ¿la 4.ª sube (lidio)? ¿la 7.ª baja (mixolidio)? ¿la 6.ª es luminosa (dórico) o triste (eólico)? ¿la 2.ª está pegada a la tónica (frigio)?
+
+<details>
+  <summary>¿Relativos o paralelos?</summary>
+
+**Relativos**: mismas notas, distinta tónica (Do jónico y Re dórico). **Paralelos**: misma tónica, distintas notas (Do jónico y Do dórico). Para escribirlos piensas en relativos; para oírlos y compararlos, en paralelos.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Ordenar los modos de brillante a oscuro, decir qué nota cambia entre dos vecinos, reconocer un modo por sus notas o de oído, y repasar los acordes de una tonalidad (M03).
+</Callout>

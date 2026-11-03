@@ -1,0 +1,83 @@
+---
+topic: M09-T04
+title: Escala-acorde
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  La relación **escala-acorde** (*chord-scale*) responde a una pregunta: ¿qué notas puedo tocar sobre este acorde? Dentro de una tonalidad, cada cuatriada tiene su modo. Fuera de ella, el tipo de acorde manda: 7alt → alterada, 7(♯11) → lidio dominante, m(maj7) → menor melódica, V7 en menor → frigio dominante.
+</Callout>
+
+## Los siete modos sobre los acordes de la tonalidad
+
+Si tocas solo las notas de Do mayor, cada acorde del campo armónico "elige" el modo que empieza en su fundamental:
+
+| Grado | Imaj7 | iim7 | iiim7 | IVmaj7 | V7 | vim7 | viiø7 |
+|-------|-------|------|-------|--------|----|------|-------|
+| En Do | Cmaj7 | Dm7 | Em7 | Fmaj7 | G7 | Am7 | Bø7 |
+| Modo | jónico | dórico | frigio | lidio | mixolidio | eólico | locrio |
+
+Es la misma colección de notas; lo que cambia es qué nota sientes como centro. Sobre Dm7, el Si natural (6.ª mayor) es el color dórico.
+
+<Listen client:visible code={`stack(
+  chord("<Dm7 G7 C^7 C^7>").voicing().s("piano"),
+  n("0 2 4 6 7 6 4 2").scale("<D4:dorian G3:mixolydian C4:major C4:major>").s("piano")
+)`} label="Escuchar un ii–V–I en Do con su modo en cada acorde" />
+
+<Callout tone="warning" title="Cifrado en Strudel">
+  En `chord`, el maj7 se escribe `^7` (`C^7`), el menor con séptima mayor `m^7` (`Cm^7`) y el semidisminuido `m7b5` (`Bm7b5`).
+</Callout>
+
+## Fuera de la tonalidad: el tipo de acorde manda
+
+Mismo acorde, otra escala según lo que suene en él. Sobre una sola raíz, Do:
+
+| Acorde | Escala | Lo que la distingue |
+|--------|--------|---------------------|
+| Cmaj7 | jónico (o lidio, con ♯11) | 3 y 7 mayores |
+| C7 | mixolidio | 7 menor |
+| C7(♯11) | lidio dominante | 7 menor y ♯4 |
+| C7alt | alterada | ♭9, ♯9, ♯11, ♭13 |
+| Cm7 | dórico | 3 y 7 menores, 6 mayor |
+| Cm(maj7), Cm6 | menor melódica | 3 menor, 6 y 7 mayores |
+| Cø7 | locrio | 3, 5 y 7 bajadas |
+
+<Example client:visible code={`stack(
+  chord("<C^7 C7 Cm7 Cm^7>").voicing().s("piano"),
+  n("0 1 2 3 4 5 6 7").scale("<C4:major C4:mixolydian C4:dorian C4:melodic:minor>").s("piano")
+)`} />
+
+## El ii–V–i menor
+
+En una tonalidad menor, la escala cambia en cada acorde porque el V7 necesita la sensible. En La menor:
+
+| Acorde | Bø7 (Bm7♭5) | E7 | Am6 |
+|--------|-------------|----|-----|
+| Escala | Si locrio | Mi frigio dominante | La menor melódica |
+| Notas | Si Do Re Mi Fa Sol La | Mi Fa Sol♯ La Si Do Re | La Si Do Re Mi Fa♯ Sol♯ |
+
+<Keyboard low="E4" high="E5" highlight={["E4", "F4", "G#4", "A4", "B4", "C5", "D5", "E5"]} labels="name" label="Mi frigio dominante sobre E7: la ♭9 (Fa) y la sensible Sol♯" />
+
+## Strudel: un improvisador que sigue los acordes
+
+Pon los acordes con `<>` y, en el mismo orden, sus escalas dentro de `scale`. Los grados al azar de `irand` caen siempre en la escala del acorde que suena.
+
+<Listen client:visible code={`stack(
+  chord("<Bm7b5 E7 Am6 Am6>").voicing().s("piano"),
+  chord("<Bm7b5 E7 Am6 Am6>").rootNotes(2).s("piano"),
+  n(irand(8).segment(8)).scale("<B3:locrian E3:phrygian:dominant A3:melodic:minor A3:melodic:minor>").s("piano")
+)`} label="Escuchar un solo al azar sobre el ii–V–i de La menor" />
+
+<details>
+  <summary>¿Por qué Am6 y no Am7?</summary>
+
+Am7 tiene Sol natural, que choca con el Sol♯ de la menor melódica. Am6 (La Do Mi Fa♯) cabe entero en ella, igual que Am(maj7). Si prefieres Am7, la escala es La dórico o La eólico.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Elegir el modo de cada acorde de una tonalidad mayor y la escala de un 7alt, un 7(♯11), un m(maj7) y un V7 en menor; repasar la menor armónica y la melódica y los acordes del campo armónico mayor y menor.
+</Callout>

@@ -1,0 +1,84 @@
+---
+topic: M05-T02
+title: Transportar entre tonalidades
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Para llevar una melodía de una tonalidad a otra, piensa en **grados**: si en Do mayor toca 1–3–5–3, en La mayor toca también 1–3–5–3, con las notas de La mayor. El **capo** de la guitarra y los **instrumentos transpositores** (B♭, E♭, F) son transportes que pasan todo el tiempo.
+</Callout>
+
+## Por grados
+
+Escribe debajo de cada nota su grado en la tonalidad de origen, y luego busca esos grados en la de destino:
+
+| | 1 | 3 | 5 | 3 | 4 | 2 | 7 | 1 |
+|---|---|---|---|---|---|---|---|---|
+| Do mayor | Do | Mi | Sol | Mi | Fa | Re | Si | Do |
+| La mayor | La | Do♯ | Mi | Do♯ | Re | Si | Sol♯ | La |
+
+La armadura de destino pone las alteraciones sola: en La mayor, Fa♯, Do♯ y Sol♯.
+
+<Keyboard low="A3" high="A4" highlight={["A", "B", "C#", "D", "E", "F#", "G#"]} labels="degree" tonic="A" label="La mayor con sus grados: el 3 es Do♯ y el 7 es Sol♯" />
+
+<Listen client:visible code='n("<[0 2 4 2] [3 1 -1 0]>").scale("<C4:major C4:major A3:major A3:major>").s("piano")' label="Escuchar la melodía en Do mayor y luego en La mayor" />
+
+## Strudel: cambiar la escala y mantener los grados
+
+Con `n` y `scale`, los números son grados. Si cambias solo la escala, la melodía se transporta con el deletreo correcto:
+
+<Example client:visible code='n("0 2 4 2 3 1 -1 0").scale("D4:major").s("piano")' />
+
+`scaleTranspose` es otra cosa: mueve la melodía por grados **dentro** de la misma escala. No cambia de tonalidad; hace una **secuencia** (*sequence*), el mismo dibujo sobre otro grado.
+
+<StrudelRef name="scaleTranspose" summary="Mueve las notas por grados dentro de la escala actual, sin salir de la tonalidad." />
+
+<Example client:visible code='n("0 2 4").scale("C4:major").scaleTranspose("<0 1 2 3>").s("piano")' />
+
+Fíjate en que el segundo ciclo suena Re–Fa–La (menor) y no Re–Fa♯–La: se queda en Do mayor.
+
+## El capo
+
+El **capo** aprieta todas las cuerdas en un traste. Tú tocas las formas de siempre, y suenan tantos semitonos más arriba como el traste del capo.
+
+<Fretboard highlight={["A", "C#", "E"]} frets={7} label="Con el capo en el traste 2, la forma de Sol suena La mayor: La, Do♯ y Mi" />
+
+| Forma que tocas | Capo | Suena |
+|-----------------|------|-------|
+| Sol (G) | 2 | La (A) |
+| Do (C) | 3 | Mi♭ (E♭) |
+| Mi menor (Em) | 5 | La menor (Am) |
+| Re (D) | 2 | Mi (E) |
+
+Para el camino inverso, resta: si quieres que suene Fa con capo en el traste 5, toca la forma de Do (Fa menos 5 semitonos).
+
+<Listen client:visible code='chord("<G A>").voicing().s("piano")' label="Escuchar la forma de Sol sin capo y lo que suena con capo en el traste 2" />
+
+## Instrumentos transpositores
+
+Algunos instrumentos leen una nota y suena otra. Se nombran por la nota que suena cuando leen Do:
+
+| Instrumento | Lee Do y suena | Para escribir su parte |
+|-------------|----------------|------------------------|
+| Clarinete y trompeta en Si♭ | Si♭ (una 2.ª mayor abajo) | sube una 2.ª mayor |
+| Saxo alto en Mi♭ | Mi♭ (una 6.ª mayor abajo) | sube una 6.ª mayor |
+| Corno en Fa | Fa (una 5.ª justa abajo) | sube una 5.ª justa |
+
+El saxo tenor también está en Si♭, pero suena una novena mayor abajo: la misma nota, una octava más grave.
+
+<Listen client:visible code='note("<[c4 d4 e4 f4] [d4 e4 f#4 g4]>").s("piano")' label="Escuchar la melodía de concierto y la parte escrita para clarinete en Si♭ (una 2.ª mayor arriba)" />
+
+<details>
+  <summary>¿Por qué existen los instrumentos transpositores?</summary>
+
+Para que un músico pueda cambiar de instrumento de la misma familia sin aprender otra lectura: un mismo Do escrito se toca con la misma digitación en el saxo alto y en el tenor, aunque suenen distinto. El precio lo paga quien escribe los arreglos, que transporta cada parte.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Transportar una melodía de una tonalidad mayor a otra por grados, decir qué suena con capo (y qué forma tocar), y pasar notas entre concierto y la parte escrita de un instrumento en Si♭, Mi♭ o Fa.
+</Callout>

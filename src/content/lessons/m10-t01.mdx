@@ -1,0 +1,77 @@
+---
+topic: M10-T01
+title: Forma y motivo
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Staff from '../../components/music/Staff.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Una pieza se construye con una idea corta, el **motivo** (*motif*), que se repite y se transforma. Los motivos forman **frases**, dos frases que se responden forman un **período**, y las secciones (A, B…) dan la **forma** (*form*): AABA, verso–coro–puente. En Strudel, `arrange` encadena secciones y `off`, `jux` y `superimpose` crean variaciones.
+</Callout>
+
+## Motivo, frase y período
+
+Un **motivo** son 2 a 6 notas con un ritmo reconocible. Una **frase** es una idea completa, que respira al final, como una oración. Un **período** son dos frases: la primera (antecedente) termina abierta, en el V; la segunda (consecuente) cierra en el I.
+
+<Listen client:visible code='n("<[0 2 4 2] [4 3 1 ~] [0 2 4 2] [3 1 0 ~]>").scale("C4:major").s("piano")' label="Escuchar un período: antecedente que queda abierto y consecuente que cierra en Do" />
+
+## Desarrollar un motivo
+
+Las transformaciones clásicas conservan algo del motivo para que se reconozca:
+
+| Transformación | Qué cambia | Qué se conserva |
+|----------------|-----------|-----------------|
+| Transposición (secuencia) | La altura: todo sube o baja por grados | El dibujo y el ritmo |
+| Inversión | La dirección de cada salto | El tamaño de los saltos y el ritmo |
+| Retrogradación | El orden: de atrás hacia adelante | Las notas y las duraciones |
+| Aumentación | Cada nota dura el doble | Las notas |
+| Disminución | Cada nota dura la mitad | Las notas |
+
+<Staff client:visible abc={'X:1\nL:1/4\nK:C\nC E D G | D F E A | C A, B, F, | G D E C |]'} label="Motivo Do Mi Re Sol, su secuencia un grado arriba, su inversión y su retrogradación" />
+
+<Listen client:visible code='n("<[0 2 1 4] [1 3 2 5] [0 -2 -1 -4] [4 1 2 0]>").scale("C4:major").s("piano")' label="Escuchar el motivo, su secuencia, su inversión y su retrogradación" />
+
+<Listen client:visible code='arrange([1, n("0 2 1 4")], [2, n("0 2 1 4").slow(2)]).scale("C4:major").s("piano")' label="Escuchar el motivo y su aumentación: el mismo dibujo, con cada nota el doble de larga" />
+
+<details>
+  <summary>¿Por qué no basta con repetir?</summary>
+
+La repetición exacta da unidad, pero cansa pronto. La transformación da **unidad y variedad** a la vez: el oído reconoce el dibujo aunque cambie la altura o el ritmo. Casi todas las melodías que recuerdas usan una idea y dos o tres variaciones.
+</details>
+
+## Formas de una pieza
+
+- **AABA** (forma de canción de 32 compases): una idea, su repetición, un contraste (el puente) y la vuelta.
+- **Verso–coro–puente**: el verso cuenta, el coro es lo que se canta; el puente aparece una vez, antes del último coro.
+- **Rondó** (ABACA): una sección que vuelve entre contrastes.
+
+## Strudel: secciones con `arrange`
+
+`arrange` recibe pares `[ciclos, patrón]` y los toca en orden. Cada patrón es una sección.
+
+<StrudelRef name="arrange" summary="Encadena secciones: cada par [ciclos, patrón] suena esa cantidad de ciclos, en orden." />
+
+<Example client:visible code={`arrange(
+  [2, n("0 2 4 2").scale("C4:major")],
+  [1, n("3 5 4 3").scale("C4:major")],
+  [1, n("0 2 4 2").scale("C4:major")]
+).s("piano")`} />
+
+## Strudel: variaciones
+
+<StrudelRef name="off" summary="Superpone una copia retrasada del patrón, transformada: un canon o un eco con otra nota." />
+<StrudelRef name="superimpose" summary="Superpone una copia transformada del patrón, al mismo tiempo." />
+<StrudelRef name="jux" summary="Toca el patrón original en un lado del estéreo y una versión transformada en el otro." />
+
+<Example client:visible code='note("c4 e4 g4 e4").off(1/8, (x) => x.add(note(12))).s("piano")' />
+
+<Listen client:visible code='n("0 2 4 2").scale("C4:major").superimpose((x) => x.add(note(4))).s("piano")' label="Escuchar el motivo con una copia superpuesta" />
+
+<Listen client:visible code='n("0 2 1 4").scale("C4:major").jux(rev).s("piano")' label="Escuchar el motivo y su retrogradación, uno en cada oído" />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Reconocer si una variación es transposición, inversión, retrogradación, aumentación o disminución de un motivo, y repasar intervalos y el campo armónico mayor.
+</Callout>

@@ -1,0 +1,75 @@
+---
+topic: M04-T03
+title: Progresiones clásicas
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Unas pocas **progresiones** (*chord progressions*) sostienen miles de canciones: **I–V–vi–IV** y **I–vi–IV–V** en el pop, **ii–V–I** en el jazz y el **blues de 12 compases** (*12-bar blues*). En cifrado romano son iguales en todas las tonalidades: apréndelas una vez y tócalas en cualquiera.
+</Callout>
+
+## Las progresiones del pop
+
+**I–V–vi–IV** es quizá la más usada del pop actual. **I–vi–IV–V** es la de las baladas de los años 50. Tienen los mismos cuatro acordes en otro orden, y suenan distintas.
+
+<Listen client:visible code='chord("<C G Am F>").voicing().s("piano")' label="Escuchar I–V–vi–IV en Do mayor" />
+
+<Listen client:visible code='chord("<C Am F G>").voicing().s("piano")' label="Escuchar I–vi–IV–V en Do mayor" />
+
+Fíjate en las funciones: las dos salen de la tónica, pasan por la subdominante (IV) y la dominante (V) y vuelven a empezar.
+
+## ii–V–I
+
+**ii–V–I** es subdominante → dominante → tónica, el viaje completo en tres acordes. Es el corazón del jazz. En Do mayor: Dm → G → C.
+
+<Listen client:visible code='chord("<Dm G C C>").voicing().s("piano")' label="Escuchar ii–V–I en Do mayor" />
+
+## El blues de 12 compases
+
+El blues usa solo I, IV y V, uno por compás, en una forma fija de 12 compases:
+
+| Compases 1–4 | Compases 5–8 | Compases 9–12 |
+|--------------|--------------|---------------|
+| I · I · I · I | IV · IV · I · I | V · IV · I · V |
+
+El último V (la **vuelta**, *turnaround*) empuja de regreso al compás 1. En blues los tres acordes suelen llevar séptima: C7, F7 y G7 en Do.
+
+<Listen client:visible code='chord("<C7!4 F7!2 C7!2 G7 F7 C7 G7>").voicing().s("piano")' label="Escuchar el blues de 12 compases en Do" />
+
+En Strudel, `!` repite un elemento: `C7!4` son cuatro compases de C7.
+
+<Fretboard highlight={["A", "D", "E"]} frets={5} label="La, Re y Mi: las fundamentales de I, IV y V del blues en La, en las primeras posiciones" />
+
+<details>
+  <summary>Variantes del blues</summary>
+
+Una variante muy común es el **cambio rápido** (*quick change*): el compás 2 va al IV y vuelve al I (I IV I I · IV IV I I · V IV I V). Y en el compás 12 a veces suena el I en lugar del V, cuando la pieza termina.
+</details>
+
+## Strudel: ordenar secciones
+
+`cat` pone patrones uno detrás de otro, un ciclo cada uno. `seq` hace lo mismo pero los comprime todos en un solo ciclo.
+
+<StrudelRef name="cat" summary="Encadena patrones: cada uno ocupa un ciclo completo, uno tras otro." />
+<StrudelRef name="seq" summary="Encadena patrones dentro de un mismo ciclo, repartiendo el tiempo entre ellos." />
+
+<Example client:visible code='cat(chord("Dm"), chord("G"), chord("C")).voicing().s("piano")' />
+
+<Example client:visible code='seq(chord("Dm"), chord("G"), chord("C")).voicing().s("piano")' />
+
+Para una canción con secciones, `arrange` toca cada patrón el número de ciclos que le digas: `[ciclos, patrón]`.
+
+<StrudelRef name="arrange" summary="Arma una forma con secciones: cada una es [ciclos, patrón] y suenan en orden." />
+
+<Example client:visible code={`arrange(
+  [4, chord("<C G Am F>")],
+  [4, chord("<Am F C G>")]
+).voicing().s("piano")`} />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Nombrar en cifrado romano una progresión escrita en cualquier tonalidad mayor y decir qué acorde va en cada compás del blues de 12 compases. Repasarás también el campo armónico y las tonalidades relativas.
+</Callout>

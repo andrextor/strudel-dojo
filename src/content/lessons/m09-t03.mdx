@@ -1,0 +1,63 @@
+---
+topic: M09-T03
+title: Simétricas
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Una escala **simétrica** repite el mismo patrón de distancias. La de **tonos enteros** (*whole tone*) son seis tonos seguidos. La **disminuida** alterna tono y semitono (**T-S**) o semitono y tono (**S-T**), con ocho notas. La **cromática** son los doce semitonos. Como se repiten, tienen muy pocas transposiciones distintas.
+</Callout>
+
+## Tonos enteros
+
+Seis notas, todas a un tono: **Do Re Mi Fa♯ Sol♯ La♯**. No hay tónica que mande: cualquier nota suena igual de "central", y por eso flota, como en un sueño.
+
+<Keyboard low="C4" high="B4" highlight={["C4", "D4", "E4", "F#4", "G#4", "A#4"]} labels="name" label="Do tonos enteros: Do, Re, Mi, Fa♯, Sol♯, La♯" />
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 5 4 3 2 1").scale("C4:whole:tone").s("piano")' label="Escuchar la escala de tonos enteros desde Do" />
+
+Re tonos enteros tiene las mismas notas que Do: solo hay **dos** escalas de tonos enteros distintas (la de Do y la de Re♭). Dentro caben tríadas aumentadas (Do–Mi–Sol♯) y suena sobre dominantes con ♯5.
+
+## Disminuida: T-S y S-T
+
+| Escala | Patrón | Desde Do | Sobre qué acorde |
+|--------|--------|----------|------------------|
+| Disminuida T-S (*diminished*) | T S T S T S T S | Do Re Mi♭ Fa Sol♭ La♭ La Si | °7 (disminuido) |
+| Disminuida S-T (*half-whole diminished*) | S T S T S T S T | Do Re♭ Mi♭ Mi Fa♯ Sol La Si♭ | 7(♭9) (dominante) |
+
+Cada una se repite cada tercera menor: Do, Mi♭, Sol♭ y La disminuida T-S son la misma escala. Por eso solo hay **tres** disminuidas distintas. Dentro hay dos acordes °7 entrelazados.
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 7 8").scale("<C4:diminished C4:half-whole:diminished>").s("piano")' label="Escuchar Do disminuida T-S y luego S-T" />
+
+<details>
+  <summary>¿Cómo se deletrea una escala de seis u ocho notas?</summary>
+
+Con siete letras no hay "una letra por grado": a la de tonos enteros le sobra una letra y a la disminuida le falta una. No hay un deletreo único; la app sigue el de `tonal`, que es el que verás en las respuestas: Do tonos enteros **Do Re Mi Fa♯ Sol♯ La♯** (sin Si), Do disminuida T-S **Do Re Mi♭ Fa Sol♭ La♭ La Si** (La dos veces) y Do disminuida S-T **Do Re♭ Mi♭ Mi Fa♯ Sol La Si♭** (Mi dos veces). La prueba elige tónicas donde ese deletreo no necesita dobles alteraciones.
+</details>
+
+La **cromática** (*chromatic*) usa las doce notas: es simétrica en cada semitono y sirve para notas de paso.
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 7 8 9 10 11 12").scale("C4:chromatic").s("piano")' label="Escuchar la escala cromática desde Do" />
+
+## Strudel: patrones simétricos
+
+Una escala simétrica pide patrones que también se repitan. `ply` repite cada nota las veces que le pidas, dentro de su espacio. `iter` divide el patrón en partes y en cada ciclo empieza por la siguiente: el motivo rota.
+
+<StrudelRef name="ply" summary="Repite cada evento n veces dentro de su espacio." />
+<StrudelRef name="iter" summary="Divide el ciclo en n partes y en cada vuelta empieza por la siguiente." />
+
+<Example client:visible code='n("0 2 4 6").ply(2).scale("C4:diminished").s("piano")' />
+
+<Example client:visible code='n("0 1 2 3").iter(4).scale("C4:whole:tone").s("piano")' />
+
+<Callout tone="hint" title="Para el oído">
+  Tonos enteros: flota, sin dirección. Disminuida: tensa, como música de suspenso. Si al escuchar no encuentras dónde "descansa" la escala, piensa en una simétrica.
+</Callout>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Escribir la escala de tonos enteros y las dos disminuidas desde las tónicas de la prueba, repasar pentatónicas, deletrear tríadas disminuidas y aumentadas, e identificar intervalos.
+</Callout>

@@ -1,5 +1,5 @@
 // Kata/boss assertions over queried events (docs/specs/04). Each message says what is missing.
-import { Chord, Interval, Note, Scale } from 'tonal'
+import { Chord, Interval, Key, Note, Scale } from 'tonal'
 import type { Assertion } from '../curriculum/schema.ts'
 import { formatNote } from '../theory/notes.ts'
 import { evaluatePattern } from './evaluate.ts'
@@ -91,7 +91,7 @@ function eventsPerCycle(
   return ok(`Cada ciclo tiene ${range} ${what}.`)
 }
 
-const scaleName = (s: string) => s.replace(':', ' ')
+const scaleName = (s: string) => s.replaceAll(':', ' ') // "A:harmonic:minor" as Strudel writes it
 
 function notesWithinScale(
   events: NoteEvent[],
@@ -308,6 +308,117 @@ const CHARACTERISTIC: Record<string, string> = {
   locrian: '5d',
 }
 
+// The chords that count as each reharmonization device in a major key (M08).
+function functionCandidates(tonic: string, fn: Of<'chordFunctionAt'>['function']): string[] {
+  const major = Key.majorKey(tonic)
+  const fifthAbove = (pc: string) => Note.pitchClass(Note.transpose(pc, '5P'))
+  // V/ii … V/vi (and V itself): a major triad or dominant seventh a fifth above the target.
+  const dominants = [...major.scale.slice(1, 6), major.scale[0] ?? tonic].map(fifthAbove)
+  if (fn === 'secondary-dominant') {
+    // V/IV as a plain triad is the tonic itself, so only its seventh counts (C7 in C).
+    return dominants.slice(0, 5).flatMap((r, i) => (i === 2 ? [`${r}7`] : [`${r}7`, r]))
+  }
+  if (fn === 'tritone-sub') {
+    return dominants.map((r) => `${Note.pitchClass(Note.transpose(r, '5d'))}7`)
+  }
+  // Borrowed: chords of the parallel minor that the major key does not have.
+  const own = new Set([...major.triads, ...major.chords].map((c) => chordSet(c)))
+  const minor = Key.minorKey(tonic).natural
+  return [...minor.triads, ...minor.chords].filter((c) => !own.has(chordSet(c)))
+}
+
+const chordSet = (symbol: string) =>
+  Chord.get(symbol)
+    .notes.map((n) => chroma(n))
+    .sort((x, y) => (x ?? 0) - (y ?? 0))
+    .join(',')
+
+const FUNCTION_ES = {
+  'secondary-dominant': 'una dominante secundaria',
+  borrowed: 'un acorde prestado de la menor paralela',
+  'tritone-sub': 'un sustituto tritonal',
+} as const
+
+function chordFunctionAt(
+  events: NoteEvent[],
+  _: string,
+  a: Of<'chordFunctionAt'>,
+): AssertionResult {
+  const heard = new Set(
+    events
+      .filter((e) => e.cycle === a.cycle && e.pitchClass)
+      .map((e) => chroma(e.pitchClass ?? '')),
+  )
+  // The chord may come with melody notes on top: it is enough that all its notes sound.
+  const match = functionCandidates(a.key, a.function).find((c) =>
+    Chord.get(c).notes.every((n) => heard.has(chroma(n))),
+  )
+  const where = `En el ciclo ${a.cycle + 1}`
+  return match
+    ? ok(`${where} suena ${prettyChord(match)}, ${FUNCTION_ES[a.function]} en ${keyEs(a.key)}.`)
+    : fail(`${where} debería sonar ${FUNCTION_ES[a.function]} de ${keyEs(a.key)}.`)
+}
+
+const keyEs = (tonic: string) => `${formatNote(tonic, 'latin')} mayor`
+
+const prettyChord = (symbol: string) => {
+  const t = Chord.get(symbol).tonic ?? ''
+  return `${pretty(t)}${symbol.slice(t.length)}`
+}
+
+function scalePerCycle(
+  events: NoteEvent[],
+  _: string,
+  a: Of<'scalePerCycle'>,
+  cycles: number,
+): AssertionResult {
+  const min = a.minRatio ?? 1
+  for (let c = 0; c < cycles; c++) {
+    const name = scaleName(a.scales[c % a.scales.length] ?? '')
+    const inside = new Set(Scale.get(name).notes.map(chroma))
+    const pitched = events.filter((e) => e.cycle === c && e.pitchClass !== null)
+    if (pitched.length === 0) return fail(`En el ciclo ${c + 1} no suena ninguna nota de ${name}.`)
+    const outside = pitched.filter((e) => !inside.has(chroma(e.pitchClass ?? '')))
+    if (1 - outside.length / pitched.length < min) {
+      const wrong = [...new Set(outside.map((e) => e.pitchClass ?? ''))]
+      return fail(`En el ciclo ${c + 1} se pide ${name}, y suenan notas fuera: ${notes(wrong)}.`)
+    }
+  }
+  return ok(`Cada ciclo usa su escala: ${a.scales.map(scaleName).join(', ')}.`)
+}
+
+// A section is a cycle's content: what sounds, and when. Repeated cycles are one section.
+function sectionsDistinct(
+  events: NoteEvent[],
+  _: string,
+  a: Of<'sectionsDistinct'>,
+  cycles: number,
+): AssertionResult {
+  const signatures = new Set<string>()
+  for (let c = 0; c < cycles; c++) {
+    signatures.add(
+      events
+        .filter((e) => e.cycle === c)
+        .map((e) => `${Math.round((e.begin - c) * 1e4)}:${e.midi ?? e.sound}`)
+        .sort()
+        .join('|'),
+    )
+  }
+  return signatures.size >= a.min
+    ? ok(`Tu pieza tiene ${signatures.size} compases distintos: hay contraste.`)
+    : fail(
+        `Solo hay ${signatures.size} compases distintos en ${cycles}; se piden al menos ${a.min}. Cambia algo entre secciones (notas, ritmo o capas).`,
+      )
+}
+
+// Layers = distinct sound sources (bd, hh, piano, sawtooth…).
+function layerCount(events: NoteEvent[], _: string, a: Of<'layerCount'>): AssertionResult {
+  const sounds = [...new Set(events.map((e) => e.sound ?? 'synth'))]
+  return sounds.length >= a.min
+    ? ok(`Suenan ${sounds.length} capas: ${list(sounds)}.`)
+    : fail(`Suenan ${sounds.length} capas (${list(sounds)}); se piden al menos ${a.min}.`)
+}
+
 function characteristicNoteRatio(
   events: NoteEvent[],
   _: string,
@@ -382,6 +493,14 @@ export async function checkAssertion(
       return matchesReference(events, await referenceEvents(a.code, cycles), a)
     case 'characteristicNoteRatio':
       return characteristicNoteRatio(events, source, a)
+    case 'chordFunctionAt':
+      return chordFunctionAt(events, source, a)
+    case 'scalePerCycle':
+      return scalePerCycle(events, source, a, cycles)
+    case 'sectionsDistinct':
+      return sectionsDistinct(events, source, a, cycles)
+    case 'layerCount':
+      return layerCount(events, source, a)
   }
 }
 

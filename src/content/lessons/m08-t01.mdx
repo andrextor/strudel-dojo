@@ -1,0 +1,51 @@
+---
+topic: M08-T01
+title: Dominantes secundarias
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Cualquier acorde mayor o menor de la tonalidad puede tener su propio V7 por un momento. A ese acorde prestado se le llama **dominante secundaria** (*secondary dominant*) y se escribe **V/x**: V/ii, V/iii, V/IV, V/V y V/vi. Se construye una quinta justa arriba del acorde al que va, y casi siempre resuelve a él.
+</Callout>
+
+## El V de otro grado
+
+En Do mayor, el V7 es G7 y resuelve a C. Si quieres que el Re menor suene igual de "esperado", lo precedes con *su* V7: una quinta arriba de Re es La, así que **V/ii = A7**. La nota nueva, Do♯, es la sensible de Re: está medio tono abajo y sube.
+
+| V/x | V/ii | V/iii | V/IV | V/V | V/vi |
+|-----|------|-------|------|-----|------|
+| En Do | A7 → Dm | B7 → Em | C7 → F | D7 → G | E7 → Am |
+
+<Listen client:visible code='note("<[c3,e3,g3] [a2,c#3,e3,g3] [d3,f3,a3] [g2,b2,d3,f3]>").s("piano")' label="Escuchar C A7 Dm G7: el V/ii prepara el Re menor" />
+
+<Keyboard low="A3" high="G4" highlight={["A", "C#", "E", "G"]} labels="name" label="A7, el V/ii de Do mayor: La, Do♯, Mi y Sol" />
+
+Cada dominante secundaria trae una nota de fuera de la escala, casi siempre su tercera, que funciona como sensible del acorde siguiente: Do♯ va a Re, Re♯ va a Mi, Fa♯ va a Sol y Sol♯ va a La. El V/IV es el propio acorde de tónica con séptima menor (C7): el Si♭ es lo que lo convierte en dominante.
+
+## Insertar dominantes en una progresión
+
+La receta: toma una progresión diatónica y, antes del acorde que quieras resaltar, pon su V7. Escucha la misma progresión sin y con el V/vi:
+
+<Listen client:visible code='chord("<C Em Am F>").voicing().s("piano")' label="Escuchar C Em Am F, todo diatónico" />
+
+<Listen client:visible code='chord("<C E7 Am F>").voicing().s("piano")' label="Escuchar C E7 Am F: el Sol♯ de E7 empuja hacia La" />
+
+Con `stack` puedes sumar el bajo con `rootNotes`, como en el cinturón naranja, y encadenar dos dominantes secundarias seguidas:
+
+<Example client:visible code={`stack(
+  chord("<C A7 Dm E7 Am G7>").voicing(),
+  chord("<C A7 Dm E7 Am G7>").rootNotes(2)
+).s("piano")`} />
+
+<details>
+  <summary>¿Por qué no hay V/vii°?</summary>
+
+Un acorde solo puede ser "tónica por un momento" si es mayor o menor. El vii° es disminuido, no suena a reposo, así que no se le prepara con una dominante. Por eso las dominantes secundarias van a ii, iii, IV, V y vi.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Construir el V7 de cualquier grado (ii, iii, IV, V, vi) en cualquier tonalidad mayor, y reconocer a qué grado prepara una dominante que no es de la tonalidad. También repasas los acordes diatónicos y el deletreo de tríadas.
+</Callout>

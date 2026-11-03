@@ -1,0 +1,75 @@
+---
+topic: M07-T01
+title: Acordes de séptima
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Staff from '../../components/music/Staff.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Un **acorde de séptima** (*seventh chord*) es una tríada con una tercera más encima: **fundamental, 3.ª, 5.ª y 7.ª**. Hay seis tipos frecuentes: **maj7, 7, m7, m7♭5 (ø7), dim7 (°7) y mMaj7**. Cada uno sale de combinar una tríada con una séptima mayor, menor o disminuida.
+</Callout>
+
+## Una tercera más
+
+Sobre Do mayor (Do, Mi, Sol), salta otra letra: **Si**. Do–Si es una séptima mayor (11 semitonos): **Cmaj7**. Si bajas el Si a Si♭ (séptima menor, 10 semitonos), el acorde es **C7**.
+
+<Keyboard low="C4" high="B4" highlight={["C4", "E4", "G4", "B4"]} labels="name" label="Cmaj7: Do, Mi, Sol, Si" />
+
+<Staff client:visible abc={'X:1\nL:1/2\nK:C\n[CEGB] [CEG_B] [C_EG_B] [C_E_G_B] [C_E_G__B] [C_EGB] |]'} label="Cmaj7, C7, Cm7, Cø7, C°7 y CmMaj7" />
+
+| Tipo | Tríada | 7.ª | Sobre Do | Cifrado |
+|------|--------|-----|----------|---------|
+| Mayor séptima | Mayor | Mayor (11) | Do Mi Sol Si | Cmaj7 |
+| Séptima de dominante | Mayor | Menor (10) | Do Mi Sol Si♭ | C7 |
+| Menor séptima | Menor | Menor (10) | Do Mi♭ Sol Si♭ | Cm7 |
+| Semidisminuido | Disminuida | Menor (10) | Do Mi♭ Sol♭ Si♭ | Cø7 (Cm7♭5) |
+| Séptima disminuida | Disminuida | Disminuida (9) | Do Mi♭ Sol♭ Si𝄫 | C°7 (Cdim7) |
+| Menor con 7.ª mayor | Menor | Mayor (11) | Do Mi♭ Sol Si | CmMaj7 |
+
+<Listen client:visible code='note("<[c3,e3,g3,b3] [c3,e3,g3,bb3] [c3,eb3,g3,bb3] [c3,eb3,gb3,bb3] [c3,eb3,gb3,a3] [c3,eb3,g3,b3]>").s("piano")' label="Escuchar los seis tipos sobre Do" />
+
+<Callout tone="hint" title="Para el oído">
+  maj7 suena suave y luminoso; 7 tiene un roce que pide resolver; m7 es cálido; ø7 es oscuro e inestable; °7 es simétrico y muy tenso; mMaj7 suena a misterio de película.
+</Callout>
+
+<details>
+  <summary>¿Por qué Si𝄫 y no La?</summary>
+
+La séptima de Do se escribe siempre con la letra Si. La séptima disminuida está un semitono por debajo de la séptima menor (Si♭), así que es **Si𝄫**: suena igual que La, pero el deletreo mantiene las letras alternas Do–Mi–Sol–Si. En Strudel escribes `a3` porque solo cuenta el sonido.
+</details>
+
+## En la guitarra
+
+En la cuerda de La, la forma de C7 con cejilla en el traste 3 junta Do, Mi, Sol y Si♭:
+
+<Fretboard highlight={["C", "E", "G", "Bb"]} frets={5} label="Do, Mi, Sol y Si♭: las notas de C7 en las primeras posiciones" />
+
+## Strudel: séptimas con `chord`
+
+`chord` y `voicing` ya los conoces. El diccionario de voicings de Strudel tiene su propio cifrado para las séptimas:
+
+| Acorde | En `chord` |
+|--------|------------|
+| Cmaj7 | `C^7` |
+| C7 | `C7` |
+| Cm7 | `Cm7` |
+| Cø7 | `Cm7b5` |
+| C°7 | `Co7` |
+| CmMaj7 | `Cm^7` |
+
+<Example client:visible code='chord("<G^7 G7 Gm7 Gm7b5 Go7 Gm^7>").voicing().s("piano")' />
+
+<Callout tone="warning" title="Cifrado en Strudel">
+  `voicing` no reconoce `Cmaj7` ni `CmMaj7`: escribe `C^7` y `Cm^7`. Igual que en las tríadas, el disminuido va con `o`.
+</Callout>
+
+<Listen client:visible code='chord("<C^7 Dm7 G7 C^7>").voicing().s("piano")' label="Escuchar séptimas encadenadas con voicing" />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Escribir las cuatro notas de cualquier acorde maj7, 7, m7, m7♭5, dim7 o mMaj7 con el deletreo correcto (con 𝄫 si hace falta), y repasar tríadas e intervalos de módulos anteriores.
+</Callout>
