@@ -1,0 +1,13 @@
+---
+import { getCurriculum } from '../features/curriculum/index.ts'
+import ProgressView from '../features/progress-view/ProgressView.tsx'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const curriculum = await getCurriculum()
+---
+
+<BaseLayout title="Progreso">
+  <ProgressView client:only="preact" curriculum={curriculum}>
+    <div slot="fallback" class="min-h-96"></div>
+  </ProgressView>
+</BaseLayout>

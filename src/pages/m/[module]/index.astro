@@ -1,0 +1,22 @@
+---
+import { getCurriculum } from '../../../features/curriculum/index.ts'
+import { segment } from '../../../features/curriculum/paths.ts'
+import ModuleView from '../../../features/module/ModuleView.tsx'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const curriculum = await getCurriculum()
+  return curriculum.map((module) => ({
+    params: { module: segment(module.id, 0) },
+    props: { module, curriculum },
+  }))
+}
+
+const { module, curriculum } = Astro.props
+---
+
+<BaseLayout title={module.title} description={module.summary}>
+  <ModuleView client:only="preact" module={module} curriculum={curriculum}>
+    <div slot="fallback" class="min-h-96"></div>
+  </ModuleView>
+</BaseLayout>

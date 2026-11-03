@@ -1,0 +1,37 @@
+---
+import { getCurriculum } from '../../../features/curriculum/index.ts'
+import { moduleHref, segment } from '../../../features/curriculum/paths.ts'
+import TestView from '../../../features/test/TestView.tsx'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const curriculum = await getCurriculum()
+  return curriculum.flatMap((module) =>
+    module.status === 'ready' && module.placement
+      ? [
+          {
+            params: { module: segment(module.id, 0) },
+            props: { module, placement: module.placement, curriculum },
+          },
+        ]
+      : [],
+  )
+}
+
+const { module, placement, curriculum } = Astro.props
+---
+
+<BaseLayout title={`Ubicación: ${module.title}`}>
+  <TestView
+    client:only="preact"
+    kind="placement"
+    scopeId={module.id}
+    title={module.title}
+    graded={placement}
+    module={module}
+    curriculum={curriculum}
+    backHref={moduleHref(module.id)}
+  >
+    <div slot="fallback" class="min-h-96"></div>
+  </TestView>
+</BaseLayout>

@@ -1,0 +1,23 @@
+---
+import BossView from '../../../features/boss/BossView.tsx'
+import { getCurriculum } from '../../../features/curriculum/index.ts'
+import { segment } from '../../../features/curriculum/paths.ts'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const curriculum = await getCurriculum()
+  return curriculum.flatMap((module) =>
+    module.status === 'ready'
+      ? [{ params: { module: segment(module.id, 0) }, props: { module, curriculum } }]
+      : [],
+  )
+}
+
+const { module, curriculum } = Astro.props
+---
+
+<BaseLayout title={`Combate: ${module.boss.title}`}>
+  <BossView client:only="preact" module={module} curriculum={curriculum}>
+    <div slot="fallback" class="min-h-96"></div>
+  </BossView>
+</BaseLayout>

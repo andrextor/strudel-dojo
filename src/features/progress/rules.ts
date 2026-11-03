@@ -53,6 +53,21 @@ const isPlacementPassed = (p: ProgressState, moduleId: string) =>
 const isBossPassed = (p: ProgressState, bossId: string) =>
   (p.bosses[bossId] ?? []).some((r) => r.passed)
 
+// Best submitted score of a test or placement, or null if none was submitted.
+export function bestScore(
+  p: ProgressState,
+  kind: TestAttempt['kind'],
+  scopeId: string,
+): { correct: number; total: number } | null {
+  let best: { correct: number; total: number } | null = null
+  for (const a of submitted(p, kind, scopeId)) {
+    if (a.correct !== null && (best === null || a.correct > best.correct)) {
+      best = { correct: a.correct, total: a.questions.length }
+    }
+  }
+  return best
+}
+
 export function kataStatus(p: ProgressState, kataId: string): KataStatus {
   const record = p.katas[kataId]
   if (record === undefined || record.attempts === 0) return 'not_started'
@@ -245,6 +260,24 @@ export function markSolutionSeen(p: ProgressState, kataId: string): ProgressStat
   const record = p.katas[kataId]
   if (record === undefined || !canSeeSolution(p, kataId)) return p
   return { ...p, katas: { ...p.katas, [kataId]: { ...record, solutionSeen: true } } }
+}
+
+// Self-assessed rubric: each criterion 0–10, weighted mean. Integer math for the pass check,
+// like tests: Σ(w·v) ≥ passScore · Σw.
+export function rubricScore(
+  rubric: readonly { id: string; weight: number }[],
+  values: Record<string, number>,
+  passScore: number,
+): { score: number; passed: boolean } {
+  const total = rubric.reduce((s, c) => s + c.weight, 0)
+  const sum = rubric.reduce(
+    (s, c) => s + c.weight * Math.min(10, Math.max(0, values[c.id] ?? 0)),
+    0,
+  )
+  return {
+    score: total > 0 ? Math.round((sum * 10) / total) / 10 : 0,
+    passed: total > 0 && sum >= passScore * total,
+  }
 }
 
 export function recordBoss(p: ProgressState, bossId: string, record: BossRecord): ProgressState {

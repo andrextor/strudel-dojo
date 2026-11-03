@@ -4,6 +4,8 @@ import '@fontsource-variable/lexend'
 import '@fontsource-variable/jetbrains-mono'
 import '../styles/global.css'
 import ThemeToggle from '../components/ui/ThemeToggle.astro'
+import { getCurriculum } from '../features/curriculum/index.ts'
+import AppHeader from '../features/shell/AppHeader.tsx'
 
 interface Props {
   title: string
@@ -14,6 +16,7 @@ const {
   title,
   description = 'Aprende teoría musical y live coding con Strudel, cinturón por cinturón.',
 } = Astro.props
+const curriculum = await getCurriculum()
 ---
 
 <!doctype html>
@@ -36,10 +39,13 @@ const {
   </head>
   <body class="flex min-h-dvh flex-col">
     <header class="border-b border-dojo-hairline">
-      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 md:px-8">
-        <a href="/" class="font-display text-xl font-bold text-dojo-text">
-          Strudel <span class="text-dojo-torii">Dojo</span>
+      <div class="mx-auto flex w-full max-w-6xl items-center gap-3 px-4 py-4 md:px-8">
+        <a href="/" class="mr-auto shrink-0 font-display text-xl font-bold text-dojo-text">
+          <span class="hidden sm:inline">Strudel</span> <span class="text-dojo-torii">Dojo</span>
         </a>
+        <AppHeader client:only="preact" curriculum={curriculum}>
+          <div slot="fallback" class="h-11"></div>
+        </AppHeader>
         <ThemeToggle />
       </div>
     </header>

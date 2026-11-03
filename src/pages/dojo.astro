@@ -1,0 +1,10 @@
+---
+import DojoRepl from '../features/dojo/DojoRepl.tsx'
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout title="Dojo libre">
+  <DojoRepl client:only="preact">
+    <div slot="fallback" class="min-h-96"></div>
+  </DojoRepl>
+</BaseLayout>

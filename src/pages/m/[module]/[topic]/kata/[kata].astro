@@ -1,0 +1,32 @@
+---
+import { getCurriculum } from '../../../../../features/curriculum/index.ts'
+import { segment } from '../../../../../features/curriculum/paths.ts'
+import KataView from '../../../../../features/kata/KataView.tsx'
+import BaseLayout from '../../../../../layouts/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const curriculum = await getCurriculum()
+  return curriculum.flatMap((module) =>
+    module.status === 'ready'
+      ? module.topics.flatMap((topic) =>
+          topic.katas.map((kata) => ({
+            params: {
+              module: segment(module.id, 0),
+              topic: segment(topic.id, 1),
+              kata: segment(kata.id, 2),
+            },
+            props: { module, topic, kata, curriculum },
+          })),
+        )
+      : [],
+  )
+}
+
+const { module, topic, kata, curriculum } = Astro.props
+---
+
+<BaseLayout title={`Kata: ${kata.title}`}>
+  <KataView client:only="preact" kata={kata} topicId={topic.id} module={module} curriculum={curriculum}>
+    <div slot="fallback" class="min-h-96"></div>
+  </KataView>
+</BaseLayout>

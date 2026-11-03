@@ -1,0 +1,17 @@
+---
+import { Ear } from 'lucide-preact'
+import { buttonClass } from '../components/ui/button.ts'
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout title="Oído">
+  <section class="mx-auto max-w-2xl space-y-4 rounded-card bg-dojo-surface p-5 md:p-6">
+    <h1 class="flex items-center gap-3 font-display text-3xl font-bold">
+      <Ear size={28} aria-hidden="true" />
+      Oído
+    </h1>
+    <p class="text-lg">Disponible pronto.</p>
+    <p class="text-dojo-muted">El gimnasio de oído entrena intervalos, acordes y escalas sin límite.</p>
+    <a href="/" class={buttonClass('secondary')}>Volver al inicio</a>
+  </section>
+</BaseLayout>

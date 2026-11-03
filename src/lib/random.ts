@@ -74,3 +74,6 @@ export function randomId(rng: Rng): string {
   const part = () => rng.int(0, 0xffffffff).toString(16).padStart(8, '0')
   return part() + part()
 }
+
+// A browser-seeded RNG for ids and new attempts; tests pass a fixed createRng instead.
+export const freshRng = (): Rng => createRng(globalThis.crypto.randomUUID())

@@ -36,8 +36,15 @@ const SHORTCUTS: [string, string][] = [
   ['Alt+↑ / Alt+↓', 'Mover la línea arriba o abajo'],
 ]
 
+export interface EditorApi {
+  getCode: () => string
+  setCode: (code: string) => void
+}
+
 interface Props {
   initialCode: string
+  playLabel?: string // e.g. "Probar el código" in katas
+  onReady?: (api: EditorApi) => void
   onCodeChange?: (code: string) => void
   onEvaluate?: (result: EvalResult) => void
   onTrigger?: (hap: unknown) => void
@@ -60,6 +67,8 @@ export default function StrudelEditor({
   onTrigger,
   visual: initialVisual = 'pianoroll',
   compact = false,
+  playLabel = 'Reproducir',
+  onReady,
 }: Props) {
   const host = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
@@ -162,6 +171,8 @@ export default function StrudelEditor({
       instance.setFontFamily('var(--font-mono)')
       instance.setFontSize(compact ? 14 : 16)
       mirror.current = instance
+      const editor = instance
+      onReady?.({ getCode: () => editor.code, setCode: (code) => editor.setCode(code) })
       setLoading(false)
     })
     return () => {
@@ -228,7 +239,7 @@ export default function StrudelEditor({
           ) : (
             <Play size={18} aria-hidden="true" />
           )}
-          {playing ? 'Parar' : audio ? 'Reproducir' : 'Activar sonido'}
+          {playing ? 'Parar' : audio ? playLabel : 'Activar sonido'}
         </button>
         <details class="text-sm text-dojo-muted">
           <summary class="cursor-pointer">

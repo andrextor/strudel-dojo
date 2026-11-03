@@ -6,6 +6,7 @@ import { validateEntry } from '../exercises/registry.ts'
 import { runKata } from '../strudel/assertions.ts'
 import { evaluatePattern } from '../strudel/evaluate.ts'
 import { type Module, moduleSchema } from './schema.ts'
+import { SKILL_NAME_ES } from './skills.ts'
 
 const modulesDir = fileURLToPath(new URL('../../content/modules', import.meta.url))
 const lessonsDir = fileURLToPath(new URL('../../content/lessons', import.meta.url))
@@ -132,6 +133,14 @@ test('each lesson Listen/Example code evaluates without error', async () => {
       const code = match[1] ?? match[2] ?? match[3] ?? ''
       const result = await evaluatePattern(code)
       assert.ok(result.ok, `${file}: ${code}: ${result.ok ? '' : result.error.message}`)
+    }
+  }
+})
+
+test('every skill has a Spanish name', () => {
+  for (const m of modules) {
+    for (const t of m.topics) {
+      for (const skill of t.skills) assert.ok(SKILL_NAME_ES[skill], `no name for skill ${skill}`)
     }
   }
 })

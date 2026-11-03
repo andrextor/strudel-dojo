@@ -3,6 +3,7 @@ import { test } from 'node:test'
 import { createRng } from '../../lib/random.ts'
 import {
   answerQuestion,
+  bestScore,
   bossUnlocked,
   bumpSkill,
   canSeeSolution,
@@ -21,6 +22,7 @@ import {
   recordBoss,
   recordKata,
   recordPractice,
+  rubricScore,
   saveAttempt,
   startTest,
   submitTest,
@@ -237,4 +239,22 @@ test('skills move up a Leitner box when right and back to 1 when wrong', () => {
   })
   p = recordPractice(p, '2026-03-10', 'intervals', true, NOW)
   assert.deepEqual(p.practiceDays['2026-03-10'], { answered: 1, correct: 1 })
+})
+
+test('rubricScore: weighted mean, integer pass check', () => {
+  const rubric = [
+    { id: 'a', weight: 3 },
+    { id: 'b', weight: 1 },
+  ]
+  assert.deepEqual(rubricScore(rubric, { a: 7, b: 7 }, 7), { score: 7, passed: true })
+  assert.deepEqual(rubricScore(rubric, { a: 8, b: 3 }, 7), { score: 6.8, passed: false })
+  assert.deepEqual(rubricScore(rubric, { a: 20 }, 7), { score: 7.5, passed: true })
+})
+
+test('bestScore keeps the highest submitted attempt', () => {
+  const scope = { kind: 'test' as const, scopeId: t1.id }
+  let p = fresh()
+  assert.equal(bestScore(p, 'test', t1.id), null)
+  for (const right of [7, 9, 8]) p = takeTest(p, scope, t1.test, right).progress
+  assert.deepEqual(bestScore(p, 'test', t1.id), { correct: 9, total: 10 })
 })

@@ -121,7 +121,7 @@ export default function QuestionCard({ question, mode, prefs, onPrefs, onAnswer,
   const { notation } = prefs
   const isNotes = input.kind === 'note' || input.kind === 'note-set'
   const vias = isNotes
-    ? input.via.filter((v) => v !== 'midi' || midiSupport().supported)
+    ? input.via.filter((v) => v !== 'midi' || (prefs.midi && midiSupport().supported))
     : ([] as InputVia[])
   const [via, setVia] = useState<InputVia>(() => {
     if (prefs.via && vias.includes(prefs.via)) return prefs.via

@@ -1,0 +1,71 @@
+---
+import { getEntry, render } from 'astro:content'
+import { ArrowLeft, ArrowRight } from 'lucide-preact'
+import { getCurriculum } from '../../../../features/curriculum/index.ts'
+import { moduleHref, segment, topicHref } from '../../../../features/curriculum/paths.ts'
+import TopicPanel from '../../../../features/topic/TopicPanel.tsx'
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const curriculum = await getCurriculum()
+  const ready = curriculum.flatMap((m) => (m.status === 'ready' ? [m] : []))
+  const flat = ready.flatMap((m) => m.topics.map((t) => ({ module: m, topic: t })))
+  return flat.map(({ module, topic }, i) => ({
+    params: { module: segment(module.id, 0), topic: segment(topic.id, 1) },
+    props: {
+      module,
+      topic,
+      curriculum,
+      prev: flat[i - 1]?.topic ?? null,
+      next: flat[i + 1]?.topic ?? null,
+    },
+  }))
+}
+
+const { module, topic, curriculum, prev, next } = Astro.props
+const lesson = await getEntry('lessons', topic.lesson)
+if (lesson === undefined) throw new Error(`missing lesson ${topic.lesson}`)
+const { Content } = await render(lesson)
+---
+
+<BaseLayout title={topic.title} description={topic.goal}>
+  <nav class="mb-4 text-sm text-dojo-muted">
+    <a href={moduleHref(module.id)} class="hover:text-dojo-neon">{module.title}</a>
+  </nav>
+  <article class="space-y-4">
+    <header class="space-y-2">
+      <h1 class="font-display text-3xl font-bold md:text-4xl">{topic.title}</h1>
+      <p class="max-w-2xl text-lg text-dojo-muted">{topic.goal}</p>
+    </header>
+    <div class="lesson max-w-3xl space-y-4">
+      <Content />
+    </div>
+  </article>
+
+  <div class="mt-10">
+    <TopicPanel client:only="preact" module={module} topicId={topic.id} curriculum={curriculum}>
+      <div slot="fallback" class="min-h-96 rounded-card bg-dojo-surface"></div>
+    </TopicPanel>
+  </div>
+
+  <nav class="mt-10 flex flex-wrap justify-between gap-3" aria-label="Temas">
+    {
+      prev ? (
+        <a href={topicHref(prev.id)} class="inline-flex min-h-11 items-center gap-2 text-dojo-neon hover:underline">
+          <ArrowLeft size={18} aria-hidden="true" />
+          {prev.title}
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      next && (
+        <a href={topicHref(next.id)} class="inline-flex min-h-11 items-center gap-2 text-dojo-neon hover:underline">
+          {next.title}
+          <ArrowRight size={18} aria-hidden="true" />
+        </a>
+      )
+    }
+  </nav>
+</BaseLayout>

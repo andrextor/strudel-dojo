@@ -1,0 +1,13 @@
+---
+import { buttonClass } from '../components/ui/button.ts'
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout title="No encontrada">
+  <section class="mx-auto max-w-xl space-y-4 py-10 text-center">
+    <p class="font-display text-7xl font-extrabold text-dojo-torii">404</p>
+    <h1 class="font-display text-2xl font-bold">Esta sala del dojo no existe</h1>
+    <p class="text-dojo-muted">Puede que el enlace esté mal escrito o que el tema todavía no esté listo.</p>
+    <a href="/" class={buttonClass('primary')}>Volver al inicio</a>
+  </section>
+</BaseLayout>

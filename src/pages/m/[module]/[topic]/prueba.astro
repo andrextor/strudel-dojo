@@ -1,0 +1,35 @@
+---
+import { getCurriculum } from '../../../../features/curriculum/index.ts'
+import { segment, topicHref } from '../../../../features/curriculum/paths.ts'
+import TestView from '../../../../features/test/TestView.tsx'
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const curriculum = await getCurriculum()
+  return curriculum.flatMap((module) =>
+    module.status === 'ready'
+      ? module.topics.map((topic) => ({
+          params: { module: segment(module.id, 0), topic: segment(topic.id, 1) },
+          props: { module, topic, curriculum },
+        }))
+      : [],
+  )
+}
+
+const { module, topic, curriculum } = Astro.props
+---
+
+<BaseLayout title={`Prueba: ${topic.title}`}>
+  <TestView
+    client:only="preact"
+    kind="test"
+    scopeId={topic.id}
+    title={topic.title}
+    graded={topic.test}
+    module={module}
+    curriculum={curriculum}
+    backHref={topicHref(topic.id)}
+  >
+    <div slot="fallback" class="min-h-96"></div>
+  </TestView>
+</BaseLayout>

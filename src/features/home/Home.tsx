@@ -1,0 +1,131 @@
+import { ArrowRight, Ear, Lock, Repeat, Swords, Terminal, TrendingUp } from 'lucide-preact'
+import BeltBadge from '../../components/ui/BeltBadge.tsx'
+import { buttonClass } from '../../components/ui/button.ts'
+import StatusBadge, { type Status } from '../../components/ui/StatusBadge.tsx'
+import { bossHref, moduleHref, topicHref } from '../curriculum/paths.ts'
+import type { Module } from '../curriculum/schema.ts'
+import ProfilePicker from '../profiles/ProfilePicker.tsx'
+import { isTopicPassed, moduleStatus, recommendedNext } from '../progress/rules.ts'
+import type { ModuleStatus } from '../progress/types.ts'
+import { useProgress } from '../progress/use-progress.ts'
+
+const MODULE_STATUS: Record<ModuleStatus, { status: Status; label: string }> = {
+  locked: { status: 'locked', label: 'Bloqueado' },
+  available: { status: 'in-progress', label: 'Disponible' },
+  boss_ready: { status: 'in-progress', label: 'Combate listo' },
+  passed: { status: 'passed', label: 'Aprobado' },
+  draft: { status: 'not-started', label: 'Próximamente' },
+}
+
+const SHORTCUTS = [
+  { href: '/repaso', label: 'Repaso', Icon: Repeat },
+  { href: '/oido', label: 'Oído', Icon: Ear },
+  { href: '/dojo', label: 'Dojo libre', Icon: Terminal },
+  { href: '/progreso', label: 'Progreso', Icon: TrendingUp },
+]
+
+export default function Home({ curriculum }: { curriculum: Module[] }) {
+  const { active, progress } = useProgress()
+  if (active === null || progress === null) return <ProfilePicker />
+
+  const next = recommendedNext(progress, curriculum)
+  const nextModule = next && curriculum.find((m) => m.id === next.moduleId)
+  const nextTopic =
+    next?.kind === 'topic' ? nextModule?.topics.find((t) => t.id === next.topicId) : undefined
+
+  return (
+    <div class="space-y-10">
+      <section class="enter space-y-2">
+        <h1 class="font-display text-3xl font-bold md:text-4xl">Hola, {active.name}</h1>
+        <p class="text-dojo-muted">Un cinturón por módulo; cada tema aprobado suma una raya.</p>
+      </section>
+
+      {next && nextModule && (
+        <section class="enter rounded-card bg-dojo-surface p-5 md:p-6" style="--i: 1">
+          <p class="text-sm text-dojo-muted">Continuar · {nextModule.title}</p>
+          <p class="mt-1 font-display text-2xl font-bold">
+            {next.kind === 'boss'
+              ? `Combate: ${nextModule.status === 'ready' ? nextModule.boss.title : ''}`
+              : nextTopic?.title}
+          </p>
+          {nextTopic && <p class="mt-1 text-dojo-muted">{nextTopic.goal}</p>}
+          <a
+            href={next.kind === 'boss' ? bossHref(next.moduleId) : topicHref(next.topicId)}
+            class={buttonClass('primary', 'mt-4')}
+          >
+            {next.kind === 'boss' ? (
+              <Swords size={18} aria-hidden="true" />
+            ) : (
+              <ArrowRight size={18} aria-hidden="true" />
+            )}
+            {next.kind === 'boss' ? 'Ir al combate' : 'Continuar'}
+          </a>
+        </section>
+      )}
+      {next === null && (
+        <section class="rounded-card bg-dojo-surface p-5 md:p-6">
+          <p class="font-display text-2xl font-bold">Aprobaste todo lo disponible.</p>
+          <p class="text-dojo-muted">
+            Los próximos cinturones llegan pronto. Mientras, al Dojo libre.
+          </p>
+        </section>
+      )}
+
+      <section class="enter space-y-4" style="--i: 2">
+        <h2 class="font-display text-2xl font-bold">Camino de cinturones</h2>
+        <ol class="space-y-2">
+          {curriculum.map((m) => {
+            const status = moduleStatus(progress, curriculum, m)
+            const stripes = m.topics.filter((t) => isTopicPassed(progress, m, t)).length
+            const open = status !== 'locked' && status !== 'draft'
+            const current = next?.moduleId === m.id
+            const body = (
+              <>
+                <BeltBadge belt={m.belt} stripes={stripes} showName={false} />
+                <span class="min-w-0 flex-1">
+                  <span class="block font-semibold">{m.title}</span>
+                  <span class="block truncate text-sm text-dojo-muted">{m.summary}</span>
+                </span>
+                {status === 'locked' ? (
+                  <Lock size={18} class="shrink-0 text-dojo-muted" aria-label="Bloqueado" />
+                ) : (
+                  <>
+                    <span class="hidden shrink-0 sm:inline-flex">
+                      <StatusBadge {...MODULE_STATUS[status]} />
+                    </span>
+                    <span class="sr-only sm:hidden">{MODULE_STATUS[status].label}</span>
+                  </>
+                )}
+              </>
+            )
+            const row = `flex items-center gap-4 rounded-card border-2 p-4 ${current ? 'border-dojo-torii shadow-glow-torii' : 'border-dojo-hairline'} ${open ? 'bg-dojo-surface hover:border-dojo-neon' : 'opacity-40'}`
+            return (
+              <li key={m.id}>
+                {open ? (
+                  <a href={moduleHref(m.id)} class={row}>
+                    {body}
+                  </a>
+                ) : (
+                  <div class={row}>{body}</div>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+      </section>
+
+      <section class="enter grid grid-cols-2 gap-3 md:grid-cols-4" style="--i: 3">
+        {SHORTCUTS.map(({ href, label, Icon }) => (
+          <a
+            key={href}
+            href={href}
+            class="flex min-h-16 items-center gap-3 rounded-card bg-dojo-surface px-4 font-semibold hover:text-dojo-neon"
+          >
+            <Icon size={20} aria-hidden="true" />
+            {label}
+          </a>
+        ))}
+      </section>
+    </div>
+  )
+}

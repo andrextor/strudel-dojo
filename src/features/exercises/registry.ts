@@ -80,13 +80,20 @@ export function generateQuestion(entry: MixEntry, seed: string, used: Set<string
   throw new Error(`no fresh ${entry.generator} question after 20 tries (content space too small)`)
 }
 
+// One question from a weighted mix: the i-th of a test set, or the next one of a practice run.
+export function pickQuestion(
+  mix: MixEntry[],
+  seedPrefix: string,
+  i: number,
+  used: Set<string>,
+): Question {
+  const entry = createRng(`${seedPrefix}:pick:${i}`).weighted(
+    mix.map((e) => ({ value: e, weight: e.weight })),
+  )
+  return generateQuestion(entry, `${seedPrefix}:${i}`, used)
+}
+
 export function buildSet(mix: MixEntry[], count: number, seedPrefix: string): Question[] {
   const used = new Set<string>()
-  const questions: Question[] = []
-  const entries = mix.map((e) => ({ value: e, weight: e.weight }))
-  for (let i = 0; i < count; i++) {
-    const entry = createRng(`${seedPrefix}:pick:${i}`).weighted(entries)
-    questions.push(generateQuestion(entry, `${seedPrefix}:${i}`, used))
-  }
-  return questions
+  return Array.from({ length: count }, (_, i) => pickQuestion(mix, seedPrefix, i, used))
 }
