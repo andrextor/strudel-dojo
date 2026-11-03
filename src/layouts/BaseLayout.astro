@@ -3,6 +3,7 @@ import '@fontsource-variable/unbounded'
 import '@fontsource-variable/lexend'
 import '@fontsource-variable/jetbrains-mono'
 import '../styles/global.css'
+import lexendUrl from '@fontsource-variable/lexend/files/lexend-latin-wght-normal.woff2?url'
 import ThemeToggle from '../components/ui/ThemeToggle.astro'
 import { getCurriculum } from '../features/curriculum/index.ts'
 import AppHeader from '../features/shell/AppHeader.tsx'
@@ -28,6 +29,8 @@ const curriculum = await getCurriculum()
     <meta name="theme-color" content="#0d0e17" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#f5f4fb" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {/* Body text in Lexend wraps differently than the fallback; loading it early stops the jump. */}
+    <link rel="preload" href={lexendUrl} as="font" type="font/woff2" crossorigin />
     <title>{title} · Strudel Dojo</title>
     {/* Set the saved theme before paint to avoid a flash of the wrong one. */}
     <script is:inline>

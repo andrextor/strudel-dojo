@@ -78,3 +78,12 @@ declare module '@strudel/codemirror' {
   import type { Compartment } from '@codemirror/state'
   export const compartments: Record<string, Compartment>
 }
+declare module '@strudel/hydra' {
+  export function initHydra(options?: Record<string, unknown>): Promise<unknown>
+  export function clearHydra(): void
+  export const H: (pattern: unknown) => () => unknown
+}
+declare module 'hydra-synth' {
+  const HydraRenderer: new (options: Record<string, unknown>) => unknown
+  export default HydraRenderer
+}

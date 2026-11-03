@@ -49,7 +49,7 @@ export default function ReferencePanel({ onInsert }: { onInsert: (code: string) 
     .slice(0, 40)
 
   return (
-    <section class="space-y-3 rounded-card bg-dojo-surface p-4">
+    <section class="min-w-0 space-y-3 self-start rounded-card bg-dojo-surface p-4 xl:sticky xl:top-4">
       <h2 class="flex items-center gap-2 font-semibold">
         <BookOpen size={18} aria-hidden="true" />
         Referencia de Strudel
@@ -69,15 +69,18 @@ export default function ReferencePanel({ onInsert }: { onInsert: (code: string) 
       {all === null ? (
         <p class="text-sm text-dojo-muted">Cargando la referencia…</p>
       ) : (
-        <ul class="max-h-[28rem] space-y-3 overflow-y-auto pr-1" aria-live="polite">
+        <ul
+          class="max-h-[28rem] space-y-3 overflow-x-hidden overflow-y-auto pr-1 [scrollbar-color:var(--color-dojo-border)_transparent] [scrollbar-width:thin] xl:max-h-[calc(100dvh-12rem)]"
+          aria-live="polite"
+        >
           {found.map((d) => (
-            <li key={d.name} class="space-y-1 border-b border-dojo-hairline pb-3">
-              <p class="font-mono font-semibold text-dojo-violet">{d.name}</p>
-              {d.text && <p class="line-clamp-3 text-sm text-dojo-muted">{d.text}</p>}
+            <li key={d.name} class="min-w-0 space-y-1 border-b border-dojo-hairline pb-3">
+              <p class="font-mono font-semibold break-all text-dojo-violet">{d.name}</p>
+              {d.text && <p class="line-clamp-3 text-sm break-words text-dojo-muted">{d.text}</p>}
               {d.example && (
                 <button
                   type="button"
-                  class="block w-full rounded-control bg-dojo-raised p-2 text-left font-mono text-xs hover:text-dojo-neon"
+                  class="block w-full rounded-control bg-dojo-raised p-2 text-left font-mono text-xs break-all whitespace-pre-wrap hover:text-dojo-neon"
                   onClick={() => onInsert(d.example ?? '')}
                   title="Abrir el ejemplo en el editor"
                 >

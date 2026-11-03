@@ -9,6 +9,7 @@ import {
   encodeBackup,
   mergeBackup,
   mergeProgress,
+  needsBackupReminder,
   parseBackup,
   parseProgress,
   readBackupFile,
@@ -141,4 +142,19 @@ test('merge unions boss records by date and keeps more than 20 scrolls', () => {
     mergeProgress(x, y).bosses['M01-BOSS']?.map((r) => r.submittedAt),
     ['2026-03-01', '2026-03-02', '2026-03-03'],
   )
+})
+
+test('the backup reminder waits for progress and then for 14 days', () => {
+  const now = new Date('2026-03-20T12:00:00Z')
+  const empty = emptyProgress()
+  assert.equal(needsBackupReminder(empty, now), false)
+  const busyOne = {
+    ...empty,
+    katas: {
+      'M01-T01-K1': { code: 'x', attempts: 1, passedAt: null, helped: false, solutionSeen: false },
+    },
+  }
+  assert.equal(needsBackupReminder(busyOne, now), true)
+  assert.equal(needsBackupReminder({ ...busyOne, backedUpAt: '2026-03-10T12:00:00Z' }, now), false)
+  assert.equal(needsBackupReminder({ ...busyOne, backedUpAt: '2026-03-01T12:00:00Z' }, now), true)
 })

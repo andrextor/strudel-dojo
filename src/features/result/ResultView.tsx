@@ -13,6 +13,7 @@ import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
 import { bossHref, moduleHref, placementHref, testHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
+import { SKILL_NAME_ES } from '../curriculum/skills.ts'
 import { formatAnswer, formatResponse } from '../exercises/format.ts'
 import { grade } from '../exercises/grade.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
@@ -68,6 +69,14 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
   const total = attempt.questions.length
   const correct = attempt.correct ?? 0
   const passed = attempt.passed === true
+  const failedSkills = [
+    ...new Set(
+      attempt.questions.flatMap((q, i) => {
+        const r = attempt.responses[i] ?? null
+        return r === null || !grade(q, r).correct ? [q.skill] : []
+      }),
+    ),
+  ]
   const review = placementAdvice(attempt, module)
     .map((tid) => module.topics.find((t) => t.id === tid))
     .filter((t) => t !== undefined)
@@ -154,6 +163,12 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
       {review.length > 0 && (
         <section class="space-y-2">
           <h2 class="font-display text-xl font-bold">Para repasar</h2>
+          <p class="text-dojo-muted">
+            Fallaste en: {failedSkills.map((s) => SKILL_NAME_ES[s] ?? s).join(', ')}.{' '}
+            {attempt.kind === 'placement'
+              ? 'Haz estos temas antes de intentar de nuevo la ubicación:'
+              : 'Practica estos temas:'}
+          </p>
           <ul class="flex flex-wrap gap-2">
             {review.map((t) => (
               <li key={t.id}>

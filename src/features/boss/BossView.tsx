@@ -2,6 +2,7 @@ import { ArrowLeft, LoaderCircle, Lock, Sparkles, Swords } from 'lucide-preact'
 import { useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
+import { BELT_NAME_ES } from '../curriculum/belts.ts'
 import { moduleHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import { AssertionList, useAssertions } from '../kata/challenge.tsx'
@@ -10,6 +11,7 @@ import { bossUnlocked, recordBoss, rubricScore } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
 import { askReview, useSenseiEnabled } from '../sensei/client.ts'
 import StrudelEditor, { type EditorApi } from '../strudel/StrudelEditor.tsx'
+import BeltCeremony from './BeltCeremony.tsx'
 import ReviewCard from './ReviewCard.tsx'
 
 type ReadyModule = Extract<Module, { status: 'ready' }>
@@ -35,6 +37,7 @@ export default function BossView({
   const [reviewing, setReviewing] = useState(false)
   const [reviewError, setReviewError] = useState<string | null>(null)
   const sensei = useSenseiEnabled()
+  const [ceremony, setCeremony] = useState(false)
 
   if (active === null || progress === null) return <NeedProfile />
   const back = (
@@ -71,6 +74,7 @@ export default function BossView({
     const assertionsOk = result.state === 'done' && result.passed
     const { score, passed: rubricOk } = rubricScore(boss.rubric, values, boss.passScore)
     const passed = assertionsOk && rubricOk
+    if (passed && !win) setCeremony(true)
     updateProgress((p) =>
       recordBoss(p, boss.id, {
         submittedAt: new Date().toISOString(),
@@ -100,6 +104,7 @@ export default function BossView({
     setReviewing(false)
     if (!r.ok) return setReviewError(r.error)
     const { review: rv, assertions, passed } = r.data
+    if (passed && !win) setCeremony(true)
     updateProgress((p) =>
       recordBoss(p, boss.id, {
         submittedAt: new Date().toISOString(),
@@ -119,6 +124,23 @@ export default function BossView({
           : 'Todavía no cumple los requisitos. Ajusta el código y pide otra revisión.',
     )
   }
+
+  const nextModule = curriculum.find((m) => m.order === module.order + 1)
+  const ceremonyCard = ceremony && (
+    <BeltCeremony
+      belt={module.belt}
+      order={module.order}
+      next={
+        nextModule
+          ? `Ahora vas por el cinturón ${BELT_NAME_ES[nextModule.belt].toLowerCase()}: ${nextModule.title}.`
+          : null
+      }
+      onContinue={() => {
+        setCeremony(false)
+        location.href = '/'
+      }}
+    />
+  )
 
   return (
     <div class="space-y-6">
@@ -239,6 +261,7 @@ export default function BossView({
         </aside>
       </div>
 
+      {ceremonyCard}
       {lastReview && (
         <ReviewCard review={lastReview} rubric={boss.rubric} passScore={boss.passScore} />
       )}

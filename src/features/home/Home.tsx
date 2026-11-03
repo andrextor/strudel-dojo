@@ -1,13 +1,24 @@
-import { ArrowRight, Ear, Lock, Repeat, Swords, Terminal, TrendingUp } from 'lucide-preact'
+import {
+  ArrowRight,
+  Download,
+  Ear,
+  Lock,
+  Repeat,
+  Swords,
+  Terminal,
+  TrendingUp,
+} from 'lucide-preact'
 import BeltBadge from '../../components/ui/BeltBadge.tsx'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge, { type Status } from '../../components/ui/StatusBadge.tsx'
 import { bossHref, moduleHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import ProfilePicker from '../profiles/ProfilePicker.tsx'
+import { needsBackupReminder } from '../progress/persist.ts'
 import { isTopicPassed, moduleStatus, recommendedNext } from '../progress/rules.ts'
 import type { ModuleStatus } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
+import { dueSkills, reviewMixes } from '../review/schedule.ts'
 
 const MODULE_STATUS: Record<ModuleStatus, { status: Status; label: string }> = {
   locked: { status: 'locked', label: 'Bloqueado' },
@@ -28,6 +39,9 @@ export default function Home({ curriculum }: { curriculum: Module[] }) {
   const { active, progress } = useProgress()
   if (active === null || progress === null) return <ProfilePicker />
 
+  const now = new Date()
+  const due = dueSkills(progress.skillStats, new Set(reviewMixes(progress, curriculum).keys()), now)
+  const remindBackup = needsBackupReminder(progress, now)
   const next = recommendedNext(progress, curriculum)
   const nextModule = next && curriculum.find((m) => m.id === next.moduleId)
   const nextTopic =
@@ -71,7 +85,44 @@ export default function Home({ curriculum }: { curriculum: Module[] }) {
         </section>
       )}
 
-      <section class="enter space-y-4" style="--i: 2">
+      {(due.length > 0 || remindBackup) && (
+        <div class="enter grid gap-3 md:grid-cols-2" style="--i: 2">
+          {due.length > 0 && (
+            <a
+              href="/repaso"
+              class="flex min-h-16 items-center gap-3 rounded-card border-2 border-dojo-gold bg-dojo-surface px-5 py-3 hover:border-dojo-neon"
+            >
+              <Repeat size={22} class="shrink-0 text-dojo-gold" aria-hidden="true" />
+              <span>
+                <span class="block font-semibold">
+                  {due.length === 1
+                    ? '1 habilidad para repasar hoy'
+                    : `${due.length} habilidades para repasar hoy`}
+                </span>
+                <span class="block text-sm text-dojo-muted">
+                  Diez preguntas, empezando por lo que más te cuesta.
+                </span>
+              </span>
+            </a>
+          )}
+          {remindBackup && (
+            <a
+              href="/progreso"
+              class="flex min-h-16 items-center gap-3 rounded-card border-2 border-dojo-hairline bg-dojo-surface px-5 py-3 hover:border-dojo-neon"
+            >
+              <Download size={22} class="shrink-0 text-dojo-muted" aria-hidden="true" />
+              <span>
+                <span class="block font-semibold">Haz un respaldo de tu progreso</span>
+                <span class="block text-sm text-dojo-muted">
+                  Solo vive en este navegador. Descárgalo o cópialo en Progreso.
+                </span>
+              </span>
+            </a>
+          )}
+        </div>
+      )}
+
+      <section class="enter space-y-4" style="--i: 3">
         <h2 class="font-display text-2xl font-bold">Camino de cinturones</h2>
         <ol class="space-y-2">
           {curriculum.map((m) => {
@@ -114,7 +165,7 @@ export default function Home({ curriculum }: { curriculum: Module[] }) {
         </ol>
       </section>
 
-      <section class="enter grid grid-cols-2 gap-3 md:grid-cols-4" style="--i: 3">
+      <section class="enter grid grid-cols-2 gap-3 md:grid-cols-4" style="--i: 4">
         {SHORTCUTS.map(({ href, label, Icon }) => (
           <a
             key={href}

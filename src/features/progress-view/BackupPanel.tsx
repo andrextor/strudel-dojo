@@ -6,16 +6,17 @@ import { freshRng } from '../../lib/random.ts'
 import { createProfile } from '../profiles/profiles.ts'
 import {
   BACKUP_INVALID,
+  BACKUP_REMIND_DAYS,
   type Backup,
   createBackup,
   decodeBackup,
   encodeBackup,
   mergeBackup,
+  needsBackupReminder,
   readBackupFile,
 } from '../progress/persist.ts'
 import { useProgress } from '../progress/use-progress.ts'
 
-const REMIND_DAYS = 14
 type Notice = { ok: boolean; text: string } | null
 
 export default function BackupPanel() {
@@ -98,11 +99,7 @@ export default function BackupPanel() {
     setNotice({ ok: true, text: `Perfil «${name}» restaurado. Ya es el perfil activo.` })
   }
 
-  const stale =
-    progress !== null &&
-    progress.attempts.length > 0 &&
-    (progress.backedUpAt === null ||
-      Date.now() - Date.parse(progress.backedUpAt) > REMIND_DAYS * 86_400_000)
+  const stale = progress !== null && needsBackupReminder(progress, new Date())
 
   return (
     <section class="space-y-4 rounded-card bg-dojo-surface p-5 md:p-6">
@@ -113,7 +110,8 @@ export default function BackupPanel() {
       </p>
       {stale && (
         <Callout tone="warning" title="Hace tiempo que no respaldas">
-          Pasaron más de {REMIND_DAYS} días desde tu último respaldo.
+          Pasaron más de {BACKUP_REMIND_DAYS} días desde tu último respaldo, o todavía no haces
+          ninguno.
         </Callout>
       )}
 

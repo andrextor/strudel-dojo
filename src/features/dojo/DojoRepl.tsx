@@ -7,6 +7,7 @@ import { useProgress } from '../progress/use-progress.ts'
 import { useSenseiEnabled } from '../sensei/client.ts'
 import ExplainCode from '../sensei/ExplainCode.tsx'
 import StrudelEditor, { type EditorApi } from '../strudel/StrudelEditor.tsx'
+import { disableHydra, enableHydra } from './hydra.ts'
 import ReferencePanel from './ReferencePanel.tsx'
 import { deleteScroll, MAX_SCROLLS, SCROLL_NAME_MAX, saveScroll, strudelUrl } from './scrolls.ts'
 
@@ -22,6 +23,21 @@ export default function DojoRepl() {
   const [name, setName] = useState('')
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null)
   const sensei = useSenseiEnabled()
+  const [hydra, setHydra] = useState<'off' | 'loading' | 'on' | 'failed'>('off')
+
+  async function toggleHydra(on: boolean) {
+    if (!on) {
+      setHydra('off')
+      return disableHydra()
+    }
+    setHydra('loading')
+    try {
+      await enableHydra()
+      setHydra('on')
+    } catch {
+      setHydra('failed')
+    }
+  }
   if (active === null || progress === null) return <NeedProfile />
 
   const scrolls = [...progress.scrolls].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
@@ -43,7 +59,28 @@ export default function DojoRepl() {
 
   return (
     <div class="space-y-6">
-      <h1 class="font-display text-3xl font-bold">Dojo libre</h1>
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h1 class="font-display text-3xl font-bold">Dojo libre</h1>
+        <label class="flex items-start gap-3">
+          <input
+            type="checkbox"
+            class="mt-1 size-5 accent-dojo-neon"
+            checked={hydra === 'on' || hydra === 'loading'}
+            disabled={hydra === 'loading'}
+            onChange={(e) => void toggleHydra(e.currentTarget.checked)}
+          />
+          <span>
+            Visuales Hydra
+            <span class="block text-sm text-dojo-muted">
+              {hydra === 'on'
+                ? 'Escribe por ejemplo osc(10, 0.1, 1.2).out() antes de tu patrón.'
+                : hydra === 'failed'
+                  ? 'No se pudo iniciar Hydra en este navegador (necesita WebGL).'
+                  : 'Usa la tarjeta gráfica: puede calentar o gastar batería.'}
+            </span>
+          </span>
+        </label>
+      </div>
       <div class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div class="min-w-0 space-y-4">
           <StrudelEditor

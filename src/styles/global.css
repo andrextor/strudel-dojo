@@ -243,3 +243,21 @@
     margin-bottom: 0.5rem;
   }
 }
+
+/* Belt ceremony: the knot draws itself in 1.2 s (DESIGN.md). Reduced motion shows it tied. */
+@keyframes tie {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@utility knot {
+  stroke-dasharray: 1;
+  animation: tie 1.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}

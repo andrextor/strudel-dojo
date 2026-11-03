@@ -1,17 +1,13 @@
 ---
-import { Repeat } from 'lucide-preact'
-import { buttonClass } from '../components/ui/button.ts'
+import { getCurriculum } from '../features/curriculum/index.ts'
+import ReviewSession from '../features/review/ReviewSession.tsx'
 import BaseLayout from '../layouts/BaseLayout.astro'
+
+const curriculum = await getCurriculum()
 ---
 
-<BaseLayout title="Repaso">
-  <section class="mx-auto max-w-2xl space-y-4 rounded-card bg-dojo-surface p-5 md:p-6">
-    <h1 class="flex items-center gap-3 font-display text-3xl font-bold">
-      <Repeat size={28} aria-hidden="true" />
-      Repaso
-    </h1>
-    <p class="text-lg">Disponible pronto.</p>
-    <p class="text-dojo-muted">El repaso espaciado elige 10 preguntas de lo que ya desbloqueaste, priorizando lo que más fallas.</p>
-    <a href="/" class={buttonClass('secondary')}>Volver al inicio</a>
-  </section>
+<BaseLayout title="Repaso" description="Diez preguntas de lo que más te cuesta, a su debido tiempo.">
+  <ReviewSession client:only="preact" curriculum={curriculum}>
+    <div slot="fallback" class="min-h-96"></div>
+  </ReviewSession>
 </BaseLayout>

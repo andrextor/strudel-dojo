@@ -389,3 +389,12 @@ export function mergeBackup(
   const addedAttempts = backup.progress.attempts.filter((a) => !known.has(a.id)).length
   return { ok: true, progress: mergeProgress(current, backup.progress), addedAttempts }
 }
+
+export const BACKUP_REMIND_DAYS = 14
+
+// Spec 05: a gentle reminder once there is progress worth keeping and no backup in 14 days.
+export function needsBackupReminder(p: ProgressState, now: Date): boolean {
+  if (p.attempts.length === 0 && Object.keys(p.katas).length === 0) return false
+  if (p.backedUpAt === null) return true
+  return now.getTime() - Date.parse(p.backedUpAt) > BACKUP_REMIND_DAYS * 86_400_000
+}
