@@ -31,6 +31,9 @@ interface Props {
   onStop: () => void
 }
 
+// The onset tracker confirms a note `holdMs` (40) after its attack, plus up to a frame.
+const CONFIRM_MS = 80
+
 type Miss = { segment: number; step: number; why: string }
 
 // One beat per step after a one-bar count-in; any miss restarts the round (spec 08).
@@ -93,16 +96,26 @@ export default function TempoDrill(props: Props) {
     const metronome: Metronome = startMetronome(context, { bpm, subdivision })
     const stepMs = 60_000 / bpm / subdivision
     let n = 0
-    let hit: number | null = null
-    let early = false
     let previous: number | null = null
+    // Each note goes to its nearest beat, so a long window or latency can't spill into the next
+    // step; a beat is decided once a note played at the end of its window has been confirmed.
+    const heard = new Map<number, { hit: number | null; why: string }>()
     const at = (i: number) => metronome.beatTime(i) * 1000
 
     props.listen((e) => {
       if (stateRef.current.phase.kind !== 'play') return
-      const verdict = judge(at(n), e.time, { windowMs, latencyMs })
-      if (verdict === 'on-time' && hit === null) hit = e.midi
-      else if (verdict === 'early' && e.time - latencyMs > at(n) - stepMs / 2) early = true
+      const i = Math.round((e.time - latencyMs - at(0)) / stepMs)
+      if (i < n) return
+      const prior = heard.get(i)
+      if (prior && prior.hit !== null) return
+      const verdict = judge(at(i), e.time, { windowMs, latencyMs })
+      if (verdict === 'on-time') heard.set(i, { hit: e.midi, why: '' })
+      else if (!prior) {
+        heard.set(i, {
+          hit: null,
+          why: verdict === 'early' ? 'Antes de tiempo.' : 'Tarde.',
+        })
+      }
     })
 
     let frame = 0
@@ -112,24 +125,22 @@ export default function TempoDrill(props: Props) {
       if (current.phase.kind === 'done') return
       if (current.phase.kind === 'play') {
         // A played step is decided once its window has closed.
-        if (now >= at(n) + windowMs + latencyMs) {
+        if (now >= at(n) + windowMs + latencyMs + CONFIRM_MS) {
           const step = stepOf(current)
           if (current.phase.step === 0) previous = null
-          const ok = !early && hit !== null && step?.accepts(hit, previous) === true
+          const got = heard.get(n)
+          heard.delete(n)
+          const hit = got?.hit ?? null
+          const ok = hit !== null && step?.accepts(hit, previous) === true
           if (ok) previous = hit
           else {
+            heard.clear()
             setMiss({
               segment: current.phase.segment,
               step: current.phase.step,
-              why: early
-                ? 'Antes de tiempo.'
-                : hit === null
-                  ? 'No sonó nada a tiempo.'
-                  : 'Esa no era la nota.',
+              why: got?.why || (hit === null ? 'No sonó nada a tiempo.' : 'Esa no era la nota.'),
             })
           }
-          hit = null
-          early = false
           apply(ok ? 'ok' : 'miss')
           n++
           setBeat(n)

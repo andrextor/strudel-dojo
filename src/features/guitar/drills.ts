@@ -1,13 +1,14 @@
 // Exercise 1 (one note on every string) and the round state machine both exercises share. Pure.
-import { Interval, Note } from 'tonal'
+import { Interval, Note, Scale } from 'tonal'
 import type { Rng } from '../../lib/random.ts'
 import { spellTriad, type TriadQuality } from '../theory/chords.ts'
-import { fretToNote, STANDARD_TUNING } from '../theory/instruments.ts'
+import { fretToNote, noteToFrets, STANDARD_TUNING } from '../theory/instruments.ts'
 
 export type NotePool = 'naturals' | 'sharps' | 'flats' | 'all'
-const NATURALS = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
-const SHARPS = ['C#', 'D#', 'F#', 'G#', 'A#']
-const FLATS = ['Db', 'Eb', 'Gb', 'Ab', 'Bb']
+const NATURALS = Scale.get('C major').notes
+const isNatural = (pc: string) => NATURALS.some((n) => Note.chroma(n) === Note.chroma(pc))
+const SHARPS = NATURALS.map((n) => Note.transpose(n, '1A')).filter((pc) => !isNatural(pc))
+const FLATS = SHARPS.map((pc) => Note.enharmonic(pc))
 
 export const POOLS: Record<NotePool, string[]> = {
   naturals: NATURALS,
@@ -35,29 +36,24 @@ export const zoneRange = (zone: FretZone): [number, number] => {
 // Strings are numbered as guitarists do: 6 = low E, 1 = high E.
 const indexOf = (stringNumber: number) => STANDARD_TUNING.length - stringNumber
 
+// Frets where note `pc` sits on that string inside the zone.
+function fretsOn(pc: string, stringNumber: number, zone: FretZone): number[] {
+  const [lo, hi] = zoneRange(zone)
+  const string = indexOf(stringNumber)
+  return noteToFrets(pc, STANDARD_TUNING, hi)
+    .filter((p) => p.string === string && p.fret >= lo)
+    .map((p) => p.fret)
+}
+
 // Every exact pitch (MIDI) that note `pc` has on that string inside the fret zone.
 export function expectedPitches(pc: string, stringNumber: number, zone: FretZone): number[] {
-  const [lo, hi] = zoneRange(zone)
-  const want = Note.chroma(pc)
-  const out: number[] = []
-  for (let fret = lo; fret <= hi; fret++) {
-    const name = fretToNote(indexOf(stringNumber), fret)
-    const midi = name === null ? null : Note.midi(name)
-    if (name !== null && midi !== null && Note.chroma(name) === want) out.push(midi)
-  }
-  return out
+  const open = Note.midi(STANDARD_TUNING[indexOf(stringNumber)] ?? '') ?? 0
+  return fretsOn(pc, stringNumber, zone).map((fret) => open + fret)
 }
 
 // Where note `pc` is on that string in the zone, as fretboard places ("string:fret").
 export function positionsOf(pc: string, stringNumber: number, zone: FretZone): string[] {
-  const [lo, hi] = zoneRange(zone)
-  const out: string[] = []
-  for (let fret = lo; fret <= hi; fret++) {
-    const name = fretToNote(indexOf(stringNumber), fret)
-    if (name !== null && Note.chroma(name) === Note.chroma(pc))
-      out.push(`${indexOf(stringNumber)}:${fret}`)
-  }
-  return out
+  return fretsOn(pc, stringNumber, zone).map((fret) => `${indexOf(stringNumber)}:${fret}`)
 }
 
 export type Direction = 'up' | 'down' | 'both'
@@ -223,7 +219,12 @@ export function arpeggioSegments(
 ): Segment[] {
   return Array.from({ length: count }, () => {
     const quality = rng.pick(qualities)
-    const root = rng.pick(['C', 'D', 'E', 'F', 'G', 'A', 'Bb', 'Eb'])
+    // Roots whose triad needs no double sharp or flat.
+    const root = rng.pick(
+      POOLS.all.filter((r) =>
+        (spellTriad(r, quality) ?? []).every((n) => Math.abs(Note.get(n).alt) <= 1),
+      ),
+    )
     const triad = spellTriad(root, quality) ?? [root]
     const order = [...triad, root]
     const names = ['Fundamental', 'Tercera', 'Quinta', 'Fundamental (octava)']

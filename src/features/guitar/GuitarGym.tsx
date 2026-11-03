@@ -106,6 +106,7 @@ export default function GuitarGym() {
   const { active, progress, updateProgress } = useProgress()
   const guitar: GuitarState = progress?.guitar ?? { ...DEFAULT_GUITAR, best: {} }
   const listener = useRef<(e: NoteEvent) => void>(() => {})
+  const stopCalibration = useRef(() => {})
   const { status, live, open, close } = useGuitar(guitar.deviceId, guitar.minRms, (e) =>
     listener.current(e),
   )
@@ -142,8 +143,8 @@ export default function GuitarGym() {
       guitar: { ...(p.guitar ?? { ...DEFAULT_GUITAR, best: {} }), ...patch },
     }))
 
-  async function activate() {
-    await open()
+  async function activate(id?: string) {
+    await open(id)
     try {
       const { listGuitarInputs } = await import('./mic.ts')
       setDevices(await listGuitarInputs())
@@ -156,18 +157,29 @@ export default function GuitarGym() {
   function calibrate() {
     if (status.state !== 'on') return
     const { context } = status.input
+    stopCalibration.current()
     const metronome = startMetronome(context, { bpm: 60 })
     const offsets: number[] = []
     setCalibrating('Toca una nota en cada clic (8).')
-    listener.current = (e) => {
+    const handler = (e: NoteEvent) => {
       const n = Math.round((e.time / 1000 - metronome.beatTime(0)) / 1)
       if (n < 0 || n > 7) return
       const offset = e.time - metronome.beatTime(n) * 1000
       if (Math.abs(offset) < 300) offsets.push(offset)
     }
-    setTimeout(() => {
+    listener.current = handler
+    const release = () => {
+      clearTimeout(timer)
       metronome.stop()
-      listener.current = () => {}
+      if (listener.current === handler) listener.current = () => {}
+      stopCalibration.current = () => {}
+    }
+    stopCalibration.current = () => {
+      release()
+      setCalibrating(null)
+    }
+    const timer = setTimeout(() => {
+      release()
       if (offsets.length < 4) {
         setCalibrating('No se oyeron suficientes notas. Sube el nivel o baja el umbral y repite.')
         return
@@ -181,6 +193,7 @@ export default function GuitarGym() {
   }
 
   function startRun(r: Run) {
+    stopCalibration.current()
     setResult(null)
     setRun(r)
   }
@@ -378,7 +391,7 @@ export default function GuitarGym() {
                       onChange={(id) => {
                         saveGuitar({ deviceId: id })
                         close()
-                        setTimeout(() => void activate(), 50)
+                        setTimeout(() => void activate(id), 50)
                       }}
                     />
                   )}
@@ -789,7 +802,7 @@ function FindNote(props: {
   listen: (h: (e: NoteEvent) => void) => void
 }) {
   const ROUND = 10
-  const [seed, setSeed] = useState<string | null>(null)
+  const [list, setList] = useState<{ string: number; pc: string }[] | null>(null)
   const [i, setI] = useState(0)
   const [times, setTimes] = useState<number[]>([])
   const [misses, setMisses] = useState(0)
@@ -803,13 +816,11 @@ function FindNote(props: {
       pc: rng.pick(POOLS[props.pool]),
     }))
   }
-  const list = seed ? targets(seed) : []
-  const current = list[i]
+  const current = list?.[i]
 
   function begin() {
-    const s = randomId(freshRng())
-    const all = targets(s)
-    setSeed(s)
+    const all = targets(randomId(freshRng()))
+    setList(all)
     setI(0)
     setTimes([])
     setMisses(0)
@@ -832,7 +843,7 @@ function FindNote(props: {
     })
   }
 
-  const finished = seed !== null && i >= ROUND
+  const finished = list !== null && i >= ROUND
   const average = times.length ? times.reduce((a, b) => a + b, 0) / times.length / 1000 : 0
 
   return (
@@ -854,7 +865,7 @@ function FindNote(props: {
           onChange={props.setPool}
         />
       </div>
-      {seed !== null && current && !finished && (
+      {current && !finished && (
         <div class="space-y-2 rounded-card bg-dojo-surface p-5" aria-live="polite">
           <p class="text-sm text-dojo-muted">
             {i + 1} de {ROUND}
@@ -886,7 +897,7 @@ function FindNote(props: {
       />
       <button type="button" class={buttonClass('primary')} disabled={!props.ready} onClick={begin}>
         <Timer size={18} aria-hidden="true" />
-        {seed === null || finished ? 'Empezar' : 'Reiniciar'}
+        {list === null || finished ? 'Empezar' : 'Reiniciar'}
       </button>
     </div>
   )

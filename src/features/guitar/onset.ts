@@ -32,7 +32,10 @@ export function createOnsetTracker({ minRms, holdMs = 40, reattack = 1.8 }: Onse
       candidate = null
       return null
     }
-    if (attack) current = null
+    if (attack) {
+      current = null
+      candidate = null // restart the hold so the event carries this attack's time
+    }
     if (midi !== candidate) {
       candidate = midi
       since = time

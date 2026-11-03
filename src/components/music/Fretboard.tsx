@@ -26,7 +26,11 @@ const TOP = 26
 const MARKERS = [3, 5, 7, 9, 15]
 
 export default function Fretboard(props: Props) {
-  const { mode, notation, states, tuning = STANDARD_TUNING, frets = 15, lefty = false } = props
+  const { mode, notation, states, tuning = STANDARD_TUNING, lefty = false } = props
+  // Grows past fret 15 when a highlighted note sits higher (some scale positions reach 18).
+  const frets =
+    props.frets ??
+    Math.max(15, ...[...(states?.keys() ?? [])].map((at) => Number(at.split(':')[1]) || 0))
   const { labels = 'none', label } = props
   const svg = useRef<SVGSVGElement>(null)
   const { picker, press, choose, close } = usePress(props)

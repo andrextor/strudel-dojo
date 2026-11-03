@@ -8,6 +8,10 @@ export interface PitchReading {
   clarity: number // 1 − YIN's normalized difference at the period: 1 = pure periodic
 }
 
+// Scratch arrays reused across calls: this runs every animation frame.
+let d = new Float32Array(0)
+let cmnd = new Float32Array(0)
+
 export function detectPitch(buffer: Float32Array, sampleRate: number): PitchReading | null {
   const tauMin = Math.floor(sampleRate / MAX_HZ)
   const tauMax = Math.min(Math.floor(sampleRate / MIN_HZ), Math.floor(buffer.length / 2))
@@ -15,7 +19,10 @@ export function detectPitch(buffer: Float32Array, sampleRate: number): PitchRead
   if (tauMax <= tauMin || width <= 0) return null
 
   // Difference function, then its cumulative mean normalization (YIN steps 2 and 3).
-  const d = new Float32Array(tauMax + 1)
+  if (d.length !== tauMax + 1) {
+    d = new Float32Array(tauMax + 1)
+    cmnd = new Float32Array(tauMax + 1)
+  }
   for (let tau = 1; tau <= tauMax; tau++) {
     let sum = 0
     for (let j = 0; j < width; j++) {
@@ -24,7 +31,6 @@ export function detectPitch(buffer: Float32Array, sampleRate: number): PitchRead
     }
     d[tau] = sum
   }
-  const cmnd = new Float32Array(tauMax + 1)
   cmnd[0] = 1
   let running = 0
   for (let tau = 1; tau <= tauMax; tau++) {

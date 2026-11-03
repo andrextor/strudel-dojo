@@ -23,10 +23,10 @@ export function useGuitar(deviceId: string | null, minRms: number, onNote: (e: N
   const noteRef = useRef(onNote)
   noteRef.current = onNote
 
-  async function open() {
+  async function open(id: string | null = deviceId) {
     setStatus({ state: 'opening' })
     try {
-      setStatus({ state: 'on', input: await openGuitarInput(deviceId) })
+      setStatus({ state: 'on', input: await openGuitarInput(id) })
     } catch (err) {
       const name = err instanceof DOMException ? err.name : ''
       setStatus({

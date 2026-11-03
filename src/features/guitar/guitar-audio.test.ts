@@ -56,9 +56,11 @@ test('onset tracker: one event per note, none for the decay, again on a re-attac
   assert.equal(events.length, 2)
   feed(1100, 1300, 62, () => 0.3) // the same D4 plucked again
   assert.equal(events.length, 3)
+  assert.equal(events[2]?.time, 1100) // the re-attack's own time, not the first pluck's
   feed(1300, 1400, null, () => 0) // silence
   feed(1400, 1500, 62, () => 0.3) // D4 after silence
   assert.equal(events.length, 4)
+  assert.equal(events[3]?.time, 1400)
 })
 
 test('judge uses the window and takes the latency off', () => {
