@@ -1,0 +1,4 @@
+patchedDependencies:
+  # ponytail: adds the missing "exports" field so Node can import @strudel/core (Vite reads
+  # "module" and does not need it). Drop this patch once upstream publishes "exports".
+  '@kabelsalat/web@0.4.1': patches/@kabelsalat__web@0.4.1.patch

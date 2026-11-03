@@ -3,6 +3,8 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { validateEntry } from '../exercises/registry.ts'
+import { runKata } from '../strudel/assertions.ts'
+import { evaluatePattern } from '../strudel/evaluate.ts'
 import { type Module, moduleSchema } from './schema.ts'
 
 const modulesDir = fileURLToPath(new URL('../../content/modules', import.meta.url))
@@ -104,5 +106,32 @@ test('each generator in a mix exists in the registry and its params validate', (
 })
 
 // Completed in later phases:
-test.todo('each kata and boss solution passes its assertions (P05)')
-test.todo('each lesson Listen/Example code evaluates without error (P05/P08)')
+test('each kata solution passes its assertions and every starter evaluates', async () => {
+  for (const m of modules) {
+    if (m.status !== 'ready') continue
+    for (const kata of m.topics.flatMap((t) => t.katas)) {
+      const result = await runKata(kata.solution, kata.assertions, kata.cycles)
+      assert.ok(result.ok, `${kata.id} solution: ${result.ok ? '' : result.error.raw}`)
+      for (const r of result.results) assert.ok(r.pass, `${kata.id} ${r.type}: ${r.message}`)
+      const starter = await evaluatePattern(kata.starter)
+      assert.ok(starter.ok, `${kata.id} starter: ${starter.ok ? '' : starter.error.raw}`)
+    }
+    // Bosses have no reference solution (they are creative); their starter must still run.
+    const boss = await evaluatePattern(m.boss.starter)
+    assert.ok(boss.ok, `${m.boss.id} starter: ${boss.ok ? '' : boss.error.raw}`)
+  }
+})
+
+// <Listen code="..." />, <Example code='...' /> or code={`...`} in the lesson MDX.
+const SNIPPET = /<(?:Listen|Example)\b[^>]*?\bcode=(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`\})/g
+
+test('each lesson Listen/Example code evaluates without error', async () => {
+  for (const file of readdirSync(lessonsDir).filter((f) => f.endsWith('.mdx'))) {
+    const mdx = readFileSync(`${lessonsDir}/${file}`, 'utf8')
+    for (const match of mdx.matchAll(SNIPPET)) {
+      const code = match[1] ?? match[2] ?? match[3] ?? ''
+      const result = await evaluatePattern(code)
+      assert.ok(result.ok, `${file}: ${code}: ${result.ok ? '' : result.error.message}`)
+    }
+  }
+})

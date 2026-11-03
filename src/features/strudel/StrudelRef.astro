@@ -1,0 +1,30 @@
+---
+// Reference card for one Strudel function, rendered at build time so the reference data
+// never ships to the client. The description is the package's own (English) HTML.
+import { reference } from '@strudel/reference'
+import Listen from './Listen.tsx'
+
+interface Props {
+  name: string
+  summary?: string // our Spanish summary, shown above the original description
+}
+
+const { name, summary } = Astro.props
+const doc = reference.docs.find((d) => d.name === name)
+if (doc === undefined) throw new Error(`StrudelRef: unknown function ${name}`)
+const example = doc.examples?.[0]
+---
+
+<section class="my-4 rounded-card border border-dojo-hairline bg-dojo-surface p-5">
+  <h3 class="font-mono text-lg font-semibold text-dojo-violet">{name}</h3>
+  {summary && <p class="mt-2 text-dojo-text">{summary}</p>}
+  {
+    doc.description && (
+      <details class="mt-2 text-sm text-dojo-muted">
+        <summary class="cursor-pointer">Descripción original (inglés)</summary>
+        <div class="prose-sm mt-2" set:html={doc.description} />
+      </details>
+    )
+  }
+  {example && <Listen client:visible code={example} label={`Escuchar el ejemplo de ${name}`} />}
+</section>
