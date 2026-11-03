@@ -2,5 +2,51 @@
 topic: M02-T04
 title: Relativa menor y menor natural
 ---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Staff from '../../components/music/Staff.tsx'
+import Callout from '../../components/ui/Callout.tsx'
 
-Lección en preparación.
+<Callout tone="info" title="En 30 segundos">
+  Toda tonalidad mayor tiene una **relativa menor** que empieza en su **6.º grado** y usa las mismas notas (la misma armadura). La relativa de Do mayor es **La menor**. Su fórmula es **T-S-T-T-S-T-T**.
+</Callout>
+
+## Mismas notas, otro centro
+
+Do mayor y La menor usan exactamente las teclas blancas. Lo que cambia es la nota que se siente como "casa".
+
+<Keyboard low="A3" high="A4" highlight={["A", "B", "C", "D", "E", "F", "G"]} labels="name" label="La menor natural: La Si Do Re Mi Fa Sol" />
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 7").scale("<C:major A:minor>").s("piano")' label="Escuchar Do mayor y luego La menor" />
+
+<Callout tone="hint" title="Atajo">
+  La relativa menor está una **tercera menor abajo** (3 semitonos) de la tónica mayor. Al revés, la relativa mayor está una 3m arriba de la menor: de Mi menor sube a **Sol mayor**.
+</Callout>
+
+## La menor natural
+
+Con la fórmula T-S-T-T-S-T-T, los semitonos caen entre los grados 2–3 y 5–6. Por eso suena más oscura: su 3.ª, su 6.ª y su 7.ª son menores.
+
+<Staff client:visible abc={'X:1\nL:1/4\nK:Em\nE F G A | B c d e |]'} label="Mi menor natural, con la misma armadura de Sol mayor (Fa♯)" />
+
+<Fretboard highlight={["A", "B", "C", "D", "E", "F", "G"]} frets={5} label="La menor natural del traste 0 al 5: las mismas notas que Do mayor" />
+
+## Strudel: la misma melodía en mayor y en menor
+
+En Strudel, la menor natural es `minor`. Mismos grados con otra escala: la melodía cambia de carácter.
+
+<Example client:visible code='n("0 2 4 2 0 ~ 4 ~").scale("<C:major A:minor>").s("piano")' />
+
+<Listen client:visible code='n("0 1 2 3 4 5 6 7").scale("C:minor").s("piano")' label="Escuchar Do menor, la relativa de Mi♭ mayor" />
+
+<details>
+  <summary>¿Por qué "natural"?</summary>
+
+Porque hay otras menores: la **armónica** sube el 7.º grado para tener sensible, y la **melódica** sube también el 6.º. Las vas a ver en M09; la natural es la que comparte armadura sin cambios.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Encontrar la relativa menor o mayor de cualquier tonalidad (hasta siete alteraciones), escribir la escala menor natural y reconocer su armadura.
+</Callout>

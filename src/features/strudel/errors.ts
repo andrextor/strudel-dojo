@@ -20,6 +20,7 @@ export function suggest(name: string, known: readonly string[]): string | null {
   let best: string | null = null
   let bestDistance = max + 1
   for (const candidate of known) {
+    if (candidate === name) continue // a known name that is still undefined: no typo to fix
     const d = levenshtein(name.toLowerCase(), candidate.toLowerCase())
     if (d < bestDistance) {
       best = candidate

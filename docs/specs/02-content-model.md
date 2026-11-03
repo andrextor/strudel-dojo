@@ -108,11 +108,13 @@ Frontmatter mínimo: `topic: M01-T03`, `title`. El cuerpo es MDX y puede usar es
 |------------|-----|
 | `<Listen code="note('c4 g4')" />` | Botón que reproduce un fragmento Strudel (sin editor). |
 | `<Example code="…" />` | Mini-editor Strudel editable con su visual (pianoroll). |
-| `<Keyboard highlight={["C","E","G"]} labels="degrees" />` | Teclado de solo lectura con notas marcadas. |
-| `<Fretboard highlight={["C","E","G"]} frets={[0,12]} />` | Diapasón de solo lectura. |
-| `<Staff abc="C D E F|G4" />` | Pentagrama (ABC notation, abcjs). |
-| `<Callout kind="tip|warning|theory">` | Recuadro destacado. |
-| `<StrudelRef fn="scale" />` | Ficha de la función, desde `@strudel/reference`. |
+| `<Keyboard highlight={["C","E","G"]} labels="name" low="C4" high="B4" label="…" />` | Teclado de solo lectura (`components/lesson/LessonKeyboard.tsx`, sin JS). `"C"` marca todos los Do del rango, `"C4"` solo esa tecla. `labels`: `name` (con el deletreo dado), `degree` (con `tonic`) o `none`; solo se rotulan las teclas marcadas. |
+| `<Fretboard highlight={["C","G"]} frets={5} strings={[5]} label="…" />` | Diapasón de solo lectura (`LessonFretboard.tsx`): todas las posiciones de esas notas hasta `frets`, opcionalmente en algunas cuerdas. |
+| `<Staff client:visible abc={'X:1\nK:C\nC D E F|]'} label="…" />` | Pentagrama (ABC notation, abcjs); la clave y la armadura van en el ABC. |
+| `<Callout tone="info|hint|sensei|warning" title="…">` | Recuadro destacado. |
+| `<StrudelRef name="scale" summary="…" />` | Ficha de la función, desde `@strudel/reference`, con un resumen en español. |
+
+Cada lección importa sus componentes al inicio del MDX. `Listen`, `Example` y `Staff` llevan `client:visible`; `Keyboard`, `Fretboard`, `Callout` y `StrudelRef` se renderizan en build. El código Strudel va entre comillas simples (`code='note("c e g")'`) o en plantilla (``code={`…`}``) para que el test lo encuentre.
 
 Reglas para escribir lecciones:
 - Que sean cortas: lo que se lee en 5–8 minutos. La práctica enseña el resto.
@@ -125,5 +127,7 @@ Reglas para escribir lecciones:
 - ids únicos y con el prefijo correcto en todo el currículo;
 - que cada `generator` exista en el registro y que sus `params` pasen el validador de ese generador;
 - que cada `lesson` exista;
-- que cada `solution` de kata y combate pase sus aserciones (este test corre en Node con `@strudel/core` + `mini` + `tonal` + `transpiler`, sin audio);
+- que cada `solution` de kata pase sus aserciones, y que el `starter` evalúe pero **no** apruebe ya (este test corre en Node con `@strudel/core` + `mini` + `tonal` + `transpiler`, sin audio). Los combates no tienen `solution` en el contenido (son creativos y así no viaja al navegador): su pieza de referencia vive en el propio test;
+- que cada función que una kata o un combate exige (`usesFunction`) o usa en su solución aparezca antes en una lección del mismo módulo o de uno anterior (en un `<StrudelRef>` o en el código de un `<Listen>`/`<Example>`);
+- que ninguna lección de un módulo `ready` siga con texto provisional;
 - que la cadena de `prerequisite` siga el orden `order`.

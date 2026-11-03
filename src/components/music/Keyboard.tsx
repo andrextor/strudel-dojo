@@ -96,11 +96,12 @@ export default function Keyboard(props: Props) {
       .map((pc) => spokenNote(`${pc}${octave}`, notation))
       .join(' o ')
     const text =
-      labels === 'name'
+      props.names?.get(at) ??
+      (labels === 'name'
         ? formatNote(spellingsFor(key.midi)[0] ?? key.pitchClass, notation)
         : labels === 'degree'
           ? degreeLabel(key.midi, tonic)
-          : ''
+          : '')
     const textFill = state ? 'fill-dojo-ink' : key.isBlack ? 'fill-key-white' : 'fill-belt-on'
     const Icon = state === 'correct' ? Check : state === 'wrong' ? X : null
     const xPercent = ((x + w / 2) / width) * 100

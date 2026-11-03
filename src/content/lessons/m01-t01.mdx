@@ -2,5 +2,70 @@
 topic: M01-T01
 title: Notas y alteraciones
 ---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
 
-Lección en preparación.
+<Callout tone="info" title="En 30 segundos">
+  Hay siete nombres de nota: **Do Re Mi Fa Sol La Si**, que en inglés son **C D E F G A B**. El sostenido (♯) sube un semitono y el bemol (♭) baja uno. Una misma tecla puede tener dos nombres: Do♯ y Re♭ suenan igual. Eso se llama **enarmonía**.
+</Callout>
+
+## Dos idiomas para lo mismo
+
+En español usamos el sistema latino (Do, Re, Mi…). Strudel, `tonal` y casi toda la música en internet usan las letras americanas. Conviene pensar en los dos a la vez:
+
+| Latino | Do | Re | Mi | Fa | Sol | La | Si |
+|--------|----|----|----|----|-----|----|----|
+| Americano | C | D | E | F | G | A | B |
+
+<Keyboard low="C4" high="B4" highlight={["C", "D", "E", "F", "G", "A", "B"]} labels="name" label="Las teclas blancas son las siete notas naturales" />
+
+## Sostenidos, bemoles y dobles
+
+Las teclas negras están entre dos blancas, así que cada una tiene dos nombres: la de entre Do y Re es **Do♯** (Do sube) o **Re♭** (Re baja). Las dos suenan exactamente igual.
+
+<Keyboard low="C4" high="B4" highlight={["C#", "Eb", "F#", "Ab", "Bb"]} labels="name" label="Las cinco teclas negras, con uno de sus dos nombres" />
+
+<Listen client:visible code='note("f# gb").s("piano")' label="Escuchar Fa♯ y Sol♭: la misma tecla" />
+
+<details>
+  <summary>Mi♯, Do♭ y las dobles alteraciones</summary>
+
+Entre Mi y Fa, y entre Si y Do, no hay tecla negra. Por eso **Mi♯ es la tecla de Fa** y **Do♭ es la tecla de Si**. Parecen nombres raros, pero aparecen en tonalidades como Fa♯ mayor o Sol♭ mayor.
+
+El **doble sostenido** (𝄪) sube dos semitonos y el **doble bemol** (𝄫) baja dos: Fa𝄪 suena como Sol, y Si𝄫 suena como La.
+
+<Listen client:visible code='note("e# f cb b").s("piano")' label="Escuchar Mi♯ = Fa y Do♭ = Si" />
+</details>
+
+## En la guitarra
+
+Con la afinación estándar, las cuerdas al aire son, de la 6.ª (la más grave) a la 1.ª: **Mi La Re Sol Si Mi** (E A D G B E). Cada traste sube un semitono. Así se ven todos los Do hasta el traste 12:
+
+<Fretboard highlight={["C"]} frets={12} label="Todos los Do del diapasón hasta el traste 12" />
+
+<Callout tone="hint" title="Truco">
+  En el traste 12 se repiten las cuerdas al aire, una octava más arriba. Lo que aprendas del 0 al 11 vale igual del 12 al 23.
+</Callout>
+
+## Strudel: tus primeros sonidos
+
+Strudel toca **patrones**. `s` elige un sonido por su nombre: `bd` es el bombo, `sd` la caja y `hh` el hi-hat. Todo lo que va entre comillas dobles es **mini-notation**: cada palabra separada por un espacio es un paso del ciclo.
+
+<StrudelRef name="s" summary="Toca muestras (samples) por su nombre: bd, sd, hh, piano…" />
+
+<Example client:visible code='s("bd hh sd hh")' />
+
+Con `bank` cambias de caja de ritmos sin tocar el patrón, y con `cpm` cambias cuántos ciclos suenan por minuto (más alto, más rápido):
+
+<StrudelRef name="bank" summary="Elige la caja de ritmos de donde salen los sonidos, por ejemplo RolandTR909." />
+<StrudelRef name="cpm" summary="Ciclos por minuto: el tempo del patrón." />
+
+<Listen client:visible code='s("bd hh sd hh").bank("RolandTR909").cpm(45)' label="Escuchar con una TR-909, más rápido" />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Nombrar la nota marcada en el teclado o el diapasón, con su alteración, y dar el enarmónico de cualquier nota, incluidas las dobles (Fa𝄪, Si𝄫). Puedes responder en latino o americano.
+</Callout>

@@ -2,5 +2,56 @@
 topic: M01-T02
 title: Tonos, semitonos y escala cromática
 ---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Staff from '../../components/music/Staff.tsx'
+import Callout from '../../components/ui/Callout.tsx'
 
-Lección en preparación.
+<Callout tone="info" title="En 30 segundos">
+  Un **semitono** es la distancia más pequeña: la tecla de al lado o el traste siguiente. Un **tono** son dos semitonos. Si tocas los 12 semitonos seguidos, tienes la **escala cromática**.
+</Callout>
+
+## Semitono y tono
+
+En el teclado, de una tecla a la siguiente (blanca o negra) hay un semitono. En la guitarra, de un traste al siguiente en la misma cuerda, también.
+
+<Keyboard low="C4" high="B4" highlight={["E", "F", "B"]} labels="name" label="Mi–Fa y Si–Do son semitonos sin tecla negra en medio" />
+
+Ojo con esos dos lugares: entre **Mi y Fa** y entre **Si y Do** hay un semitono aunque las dos teclas sean blancas. En todos los demás pares de blancas vecinas (Do–Re, Re–Mi, Fa–Sol, Sol–La, La–Si) hay un tono.
+
+<Listen client:visible code='note("e4 f4 ~ c4 d4").s("piano")' label="Escuchar un semitono (Mi–Fa) y un tono (Do–Re)" />
+
+## La escala cromática
+
+Subiendo se escribe con **sostenidos**, y bajando con **bemoles**. Son las mismas teclas, con el nombre que sigue la dirección:
+
+<Staff client:visible abc={'X:1\nL:1/4\nK:C\nC ^C D ^D | E F ^F G | ^G A ^A B | c4 |]'} label="Escala cromática ascendente desde Do, con sostenidos" />
+
+<Staff client:visible abc={'X:1\nL:1/4\nK:C\nc B _B A | _A G _G F | E _E D _D | C4 |]'} label="Escala cromática descendente desde Do, con bemoles" />
+
+<Fretboard highlight={["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]} frets={12} strings={[5]} label="La cromática en la 5.ª cuerda: del La al aire hasta el traste 12" />
+
+## Strudel: notas con `note`
+
+`note` toca alturas. Puedes escribirlas con letras (`c d e`, con `#` y `b` para las alteraciones) y agregar la **octava** con un número: `c3`, `c4` (Do central), `c5`.
+
+<StrudelRef name="note" summary="Toca notas por nombre (c, f#, bb4) o por número MIDI (60 = Do central)." />
+
+<Example client:visible code='note("c3 c#3 d3 d#3 e3 f3 f#3 g3 g#3 a3 a#3 b3 c4").s("piano")' />
+
+También puedes usar números MIDI: el Do central es 60 y cada semitono suma 1. Así, contar semitonos es solo restar.
+
+<Listen client:visible code='note("60 62 64 65 67").s("piano")' label="Escuchar 60 62 64 65 67: Do Re Mi Fa Sol" />
+
+<details>
+  <summary>¿Cómo se cuentan los semitonos entre dos notas?</summary>
+
+Cuenta las teclas (o los trastes) que avanzas, sin contar la de salida. De Mi a Si♭: Fa, Fa♯, Sol, Sol♯, La, Si♭ son **6 semitonos**. Si las dos notas están en octavas distintas, suma 12 por cada octava completa.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Contar los semitonos entre dos notas, hasta una octava (12), con sostenidos o bemoles.
+</Callout>

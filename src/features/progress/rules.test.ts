@@ -39,6 +39,7 @@ import {
   ready,
   takeTest,
 } from './test-helpers.ts'
+import type { ProgressState } from './types.ts'
 
 const m01 = ready('M01')
 const m02 = ready('M02')
@@ -71,16 +72,20 @@ test('draft modules report draft', () => {
 })
 
 test('rule 2: a passed test with a pending kata does not pass the topic, in either order', () => {
-  const kata = t1.katas[0]
+  const [kata, ...others] = t1.katas
   assert.ok(kata)
-  let p = takeTest(fresh(), { kind: 'test', scopeId: t1.id }, t1.test, t1.test.questions).progress
+  const passOthers = (p: ProgressState) =>
+    others.reduce((acc, k) => recordKata(acc, k.id, k.solution, true, NOW), p)
+  let p = passOthers(
+    takeTest(fresh(), { kind: 'test', scopeId: t1.id }, t1.test, t1.test.questions).progress,
+  )
   assert.equal(isTopicPassed(p, m01, t1), false)
   assert.equal(topicStatus(p, curriculum, m01, t1), 'in_progress')
   p = recordKata(p, kata.id, kata.solution, true, NOW)
   assert.equal(topicStatus(p, curriculum, m01, t1), 'passed')
 
-  // Kata first, then the test.
-  let q = recordKata(fresh(), kata.id, kata.solution, true, NOW)
+  // Katas first, then the test.
+  let q = passOthers(recordKata(fresh(), kata.id, kata.solution, true, NOW))
   assert.equal(isTopicPassed(q, m01, t1), false)
   q = takeTest(q, { kind: 'test', scopeId: t1.id }, t1.test, t1.test.questions).progress
   assert.equal(isTopicPassed(q, m01, t1), true)
@@ -200,9 +205,9 @@ test('rules 8 and 9: answers are stored ungraded and an open attempt resumes', (
 })
 
 test('rule 10: the solution opens after 3 fails and a helped kata still passes the topic', () => {
-  const kata = t1.katas[0]
+  const [kata, ...others] = t1.katas
   assert.ok(kata)
-  let p = fresh()
+  let p = others.reduce((acc, k) => recordKata(acc, k.id, k.solution, true, NOW), fresh())
   assert.equal(kataStatus(p, kata.id), 'not_started')
   for (let i = 0; i < 2; i++) p = recordKata(p, kata.id, 's("x")', false, NOW)
   assert.equal(kataStatus(p, kata.id), 'attempted')

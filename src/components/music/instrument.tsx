@@ -28,6 +28,7 @@ export interface InstrumentProps {
   spelling?: Spelling
   sound?: boolean
   onPick?: (pick: Pick) => void
+  names?: ReadonlyMap<string, string> // label per place, overriding the default spelling (lessons)
   label: string // in display mode it has to say what is marked: the instrument never names it
 }
 

@@ -2,5 +2,54 @@
 topic: M02-T02
 title: Armaduras y círculo de quintas
 ---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Staff from '../../components/music/Staff.tsx'
+import Callout from '../../components/ui/Callout.tsx'
 
-Lección en preparación.
+<Callout tone="info" title="En 30 segundos">
+  La **armadura** son las alteraciones al inicio del pentagrama: dicen la tonalidad sin repetirlas en cada nota. Los sostenidos entran siempre en el orden **Fa Do Sol Re La Mi Si**; los bemoles, al revés: **Si Mi La Re Sol Do Fa**.
+</Callout>
+
+## Leer una armadura
+
+<Staff client:visible abc={'X:1\nL:1/4\nK:E\nE F G A | B c d e |]'} label="Mi mayor: cuatro sostenidos en la armadura (Fa, Do, Sol y Re)" />
+
+<Staff client:visible abc={'X:1\nL:1/4\nK:Ab\nA B c d | e f g a |]'} label="La♭ mayor: cuatro bemoles en la armadura (Si, Mi, La y Re)" />
+
+Dos trucos para encontrar la tonalidad mayor:
+
+- **Con sostenidos**: sube un semitono desde el último. Cuatro sostenidos terminan en Re♯, así que la tonalidad es **Mi mayor**.
+- **Con bemoles**: la tonalidad es el **penúltimo** bemol. Cuatro bemoles (Si, Mi, La, Re) dan **La♭ mayor**. La excepción es un solo bemol: Fa mayor.
+
+## El círculo de quintas
+
+Si subes una quinta justa desde Do, la nueva tonalidad suma un sostenido; si bajas una quinta (o subes una cuarta), suma un bemol.
+
+| Sostenidos | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|------------|---|---|---|---|---|---|---|---|
+| Mayor | Do | Sol | Re | La | Mi | Si | Fa♯ | Do♯ |
+
+| Bemoles | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---------|---|---|---|---|---|---|---|
+| Mayor | Fa | Si♭ | Mi♭ | La♭ | Re♭ | Sol♭ | Do♭ |
+
+Las tonalidades **vecinas** en el círculo comparten seis de sus siete notas: por eso pasar de Do a Sol suena tan natural.
+
+<Listen client:visible code='n("0 2 4 7").scale("<C G D A E>:major").s("piano")' label="Escuchar el arpegio subiendo por quintas: Do, Sol, Re, La, Mi" />
+
+## Strudel: una tonalidad por ciclo
+
+`< >` también funciona dentro de `scale`: cada ciclo usa la siguiente tonalidad de la lista.
+
+<Example client:visible code='n("0 1 2 3 4 5 6 7").scale("<F Bb Eb Ab>:major").s("piano")' />
+
+<details>
+  <summary>¿Y la armadura de una menor?</summary>
+
+Cada tonalidad menor comparte armadura con una mayor (su relativa, que ves en el tema 4). La menor y Do mayor no llevan alteraciones; Mi menor y Sol mayor llevan un sostenido.
+</details>
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Pasar de armadura a tonalidad y de tonalidad a armadura, hasta siete sostenidos o bemoles.
+</Callout>

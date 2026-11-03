@@ -136,7 +136,7 @@ export default function Fretboard(props: Props) {
               text-anchor="middle"
               class="pointer-events-none fill-dojo-ink font-sans text-[11px] font-semibold"
             >
-              {formatNote(spellingsFor(midi)[0] ?? name, notation)}
+              {props.names?.get(at) ?? formatNote(spellingsFor(midi)[0] ?? name, notation)}
             </text>
           )}
         </g>,

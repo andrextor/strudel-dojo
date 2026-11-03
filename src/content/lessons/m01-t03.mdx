@@ -2,5 +2,60 @@
 topic: M01-T03
 title: Intervalos
 ---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
+import Fretboard from '../../components/lesson/LessonFretboard.tsx'
+import Callout from '../../components/ui/Callout.tsx'
 
-Lección en preparación.
+<Callout tone="info" title="En 30 segundos">
+  Un intervalo es la distancia entre dos notas y tiene **número** y **calidad**. El número sale de contar letras: de Do a Mi hay una **tercera** (Do, Re, Mi). La calidad sale de contar semitonos: 4 semitonos hacen una **tercera mayor** (3M).
+</Callout>
+
+## Número: cuenta letras
+
+Cuenta la nota de salida y la de llegada: Do–Re es una segunda, Do–Sol una quinta, Do–Do' una octava. Las alteraciones **no cambian el número**: Do–Mi♭ y Do–Mi son terceras.
+
+## Calidad: cuenta semitonos
+
+Unísono, cuarta, quinta y octava son **justas** (J; en inglés *perfect*, P). Segundas, terceras, sextas y séptimas son **mayores** (M) o **menores** (m). Una justa o mayor con un semitono de más es **aumentada** (A); una justa o menor con uno de menos es **disminuida** (d).
+
+| Intervalo | 2m | 2M | 3m | 3M | 4J | 4A / 5d | 5J | 6m | 6M | 7m | 7M | 8J |
+|-----------|----|----|----|----|----|---------|----|----|----|----|----|----|
+| Semitonos | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+
+<Keyboard low="C4" high="B4" highlight={["C4", "E4", "G4"]} labels="name" label="Do–Mi es una 3M (4 semitonos) y Do–Sol una 5J (7 semitonos)" />
+
+<Listen client:visible code='note("c4 e4 ~ c4 g4 ~ c4 c5").s("piano")' label="Escuchar 3M, 5J y 8J subiendo desde Do" />
+
+<details>
+  <summary>Inversión de intervalos</summary>
+
+Invertir es pasar la nota de abajo una octava arriba. El número y su inversión suman **9** (una 3.ª se vuelve 6.ª), las mayores se vuelven menores (y al revés), las justas siguen justas, y las aumentadas se vuelven disminuidas. Por ejemplo, Do–Mi (3M) invertido es Mi–Do (6m).
+</details>
+
+## En la guitarra: formas que se repiten
+
+Las formas de los intervalos se mueven por el mástil sin cambiar. Una **quinta justa** está en la cuerda siguiente, dos trastes más arriba (como un *power chord*). Al cruzar de la 3.ª a la 2.ª cuerda la forma se corre un traste, porque esa cuerda está afinada una 3M (no una 4J) más arriba.
+
+<Fretboard highlight={["C", "G"]} frets={5} label="Do y Sol: la forma de quinta justa aparece en varias cuerdas" />
+
+## Strudel: mini-notation para intervalos
+
+Dentro de las comillas tienes un pequeño lenguaje de ritmo y armonía:
+
+- `~` es un silencio.
+- `[ ]` mete varios pasos en el espacio de uno.
+- `,` hace sonar notas a la vez: `[c4,e4]` es un intervalo **armónico**.
+- `*` repite un paso más rápido: `c4*2`.
+- `< >` toma un elemento distinto en cada ciclo.
+
+<Listen client:visible code='note("[c4,e4] ~ [c4,g4] ~").s("piano")' label="Escuchar 3M y 5J armónicas" />
+
+<Example client:visible code='note("c3 <e3 g3 c4>").s("piano")' />
+
+<Listen client:visible code='note("[c3,g3] [d3,a3] [e3,b3]*2 ~").s("piano")' label="Escuchar quintas en paralelo" />
+
+<Callout tone="info" title="Para la prueba necesitas…">
+  Nombrar intervalos hasta la octava, subiendo y bajando, construir la nota a un intervalo dado, invertir intervalos y reconocer de oído 2M, 3M, 4J, 5J y 8J **descendentes**.
+</Callout>

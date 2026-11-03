@@ -106,6 +106,7 @@ test('levenshtein and suggest', () => {
   assert.equal(levenshtein('scael', 'scale'), 2)
   assert.equal(suggest('scael', ['scale', 'stack', 'note']), 'scale')
   assert.equal(suggest('banana', ['note', 's']), null)
+  assert.equal(suggest('setcpm', ['setcpm', 'cpm']), null)
 })
 
 test('stripCode drops comments and string contents', () => {

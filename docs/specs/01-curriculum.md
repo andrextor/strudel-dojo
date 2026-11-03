@@ -16,8 +16,8 @@ Calibrado para quien ya leyó partitura: va rápido y rellena huecos. Tiene prue
 
 | Tema | Teoría | Strudel |
 |------|--------|---------|
-| T01 Notas y alteraciones | Nombres latinos y americanos (Do=C), sostenidos, bemoles, dobles, enarmonía, ubicar notas en teclado y diapasón (afinación estándar). | Primeros sonidos: `s("bd hh sd hh")`, `sound`, `bank`, `setcps`/`setcpm`. |
-| T02 Tonos, semitonos y escala cromática | Semitono/tono en teclado y trastes, escala cromática ascendente (♯) y descendente (♭). | `note("c d e f")`, octavas (`c3`, `c4`), `n()` con números. |
+| T01 Notas y alteraciones | Nombres latinos y americanos (Do=C), sostenidos, bemoles, dobles, enarmonía, ubicar notas en teclado y diapasón (afinación estándar). | Primeros sonidos: `s("bd hh sd hh")`, `bank`, tempo con `.cpm()`. |
+| T02 Tonos, semitonos y escala cromática | Semitono/tono en teclado y trastes, escala cromática ascendente (♯) y descendente (♭). | `note("c d e f")`, octavas (`c3`, `c4`), `note` con números MIDI (60 = Do central). |
 | T03 Intervalos | Número + calidad (2m…8J), conteo de semitonos, intervalos en teclado y en mástil (formas de guitarra), inversión de intervalos. | Mini-notation: `~`, `*`, `[ ]`, `< >`, `,` (polifonía) para tocar intervalos armónicos y melódicos. |
 | T04 Ritmo y métrica | Figuras y silencios, compases simples y compuestos, subdivisión, síncopa, tresillo. Relación figura ↔ ciclo de Strudel. | Ciclos, `/`, `!`, `@`, `?`, ritmos euclidianos `bd(3,8)`. |
 
@@ -35,7 +35,7 @@ Calibrado para quien ya leyó partitura: va rápido y rellena huecos. Tiene prue
 | T04 Relativa menor y menor natural | Relativa (6.º grado), fórmula de la menor natural, armadura compartida. | `scale("A:minor")`, melodía en mayor que se vuelve menor. |
 
 - Habilidades: `major-scale-spelling`, `key-signatures`, `scale-degrees`, `relative-minor`.
-- **Combate M02**: melodía de 8 compases en una tonalidad sorteada y luego en su relativa menor. Aserción: todas las notas dentro de cada escala; cambio de escala en el compás 5.
+- **Combate M02**: melodía de 8 compases sobre un bajo, compases 1–4 en Sol mayor y 5–8 en su relativa, Mi menor. Aserciones: todas las notas en la armadura de Sol, bajo Sol en los compases 1–4 y Mi en los 5–8 (`rootsPerBar`), al menos 3 intervalos distintos. (La tonalidad es fija: el contenido es estático; sortearla queda para cuando el combate pueda generarse.)
 
 ## M03 · Cinturón naranja · Acordes y campo armónico
 
