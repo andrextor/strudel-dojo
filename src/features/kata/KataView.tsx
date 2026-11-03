@@ -14,7 +14,9 @@ import {
   topicStatus,
 } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
-import StrudelEditor from '../strudel/StrudelEditor.tsx'
+import { useSenseiEnabled } from '../sensei/client.ts'
+import SenseiHint from '../sensei/SenseiHint.tsx'
+import StrudelEditor, { type EditorApi } from '../strudel/StrudelEditor.tsx'
 import { AssertionList, useAssertions } from './challenge.tsx'
 
 interface Props {
@@ -29,6 +31,8 @@ export default function KataView({ kata, topicId, module, curriculum }: Props) {
   const { check, test } = useAssertions(kata.assertions, kata.cycles)
   const [hints, setHints] = useState(0)
   const lastCode = useRef('')
+  const editor = useRef<EditorApi | null>(null)
+  const sensei = useSenseiEnabled()
   const topic = module.topics.find((t) => t.id === topicId)
   if (active === null || progress === null) return <NeedProfile />
   if (topic === undefined || topicStatus(progress, curriculum, module, topic) === 'locked') {
@@ -78,6 +82,9 @@ export default function KataView({ kata, topicId, module, curriculum }: Props) {
         <StrudelEditor
           initialCode={record?.code || kata.starter}
           playLabel="Probar el código"
+          onReady={(api) => {
+            editor.current = api
+          }}
           onCodeChange={(code) => {
             lastCode.current = code
           }}
@@ -107,6 +114,16 @@ export default function KataView({ kata, topicId, module, curriculum }: Props) {
                 </button>
               )}
             </section>
+          )}
+
+          {sensei && !passed && (
+            <SenseiHint
+              body={() => ({
+                context: 'kata',
+                kataId: kata.id,
+                code: editor.current?.getCode() || lastCode.current || kata.starter,
+              })}
+            />
           )}
 
           {!passed && (

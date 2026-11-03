@@ -1,4 +1,4 @@
-import { ArrowLeft, Lock, Sparkles, Swords } from 'lucide-preact'
+import { ArrowLeft, LoaderCircle, Lock, Sparkles, Swords } from 'lucide-preact'
 import { useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
@@ -8,7 +8,9 @@ import { AssertionList, useAssertions } from '../kata/challenge.tsx'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import { bossUnlocked, recordBoss, rubricScore } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
+import { askReview, useSenseiEnabled } from '../sensei/client.ts'
 import StrudelEditor, { type EditorApi } from '../strudel/StrudelEditor.tsx'
+import ReviewCard from './ReviewCard.tsx'
 
 type ReadyModule = Extract<Module, { status: 'ready' }>
 
@@ -30,6 +32,9 @@ export default function BossView({
   const [honest, setHonest] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [reviewing, setReviewing] = useState(false)
+  const [reviewError, setReviewError] = useState<string | null>(null)
+  const sensei = useSenseiEnabled()
 
   if (active === null || progress === null) return <NeedProfile />
   const back = (
@@ -54,7 +59,8 @@ export default function BossView({
   }
 
   const history = progress.bosses[boss.id] ?? []
-  const won = history.some((r) => r.passed)
+  const win = history.find((r) => r.passed)
+  const lastReview = [...history].reverse().find((r) => r.review !== null)?.review ?? null
   const preview = rubricScore(boss.rubric, values, boss.passScore)
 
   async function submit() {
@@ -85,6 +91,35 @@ export default function BossView({
     )
   }
 
+  // The server runs the checks and computes the score from the rubric weights (spec 06).
+  async function review() {
+    const code = editor.current?.getCode() ?? lastCode.current
+    setReviewing(true)
+    setReviewError(null)
+    const r = await askReview(boss.id, code)
+    setReviewing(false)
+    if (!r.ok) return setReviewError(r.error)
+    const { review: rv, assertions, passed } = r.data
+    updateProgress((p) =>
+      recordBoss(p, boss.id, {
+        submittedAt: new Date().toISOString(),
+        code,
+        assertions,
+        review: rv,
+        selfAssessed: false,
+        score: rv.score,
+        passed,
+      }),
+    )
+    setMessage(
+      passed
+        ? '¡Combate aprobado por el Sensei! Ganaste el cinturón.'
+        : assertions.every((a) => a.pass)
+          ? `El Sensei te dio ${rv.score}; se aprueba con ${boss.passScore}. Mira sus siguientes pasos.`
+          : 'Todavía no cumple los requisitos. Ajusta el código y pide otra revisión.',
+    )
+  }
+
   return (
     <div class="space-y-6">
       {back}
@@ -95,7 +130,16 @@ export default function BossView({
         </p>
         <h1 class="font-display text-2xl font-bold md:text-3xl">{boss.title}</h1>
         <p class="text-lg">{boss.brief}</p>
-        {won && <StatusBadge status="passed" label="Combate aprobado" />}
+        {win && (
+          <StatusBadge
+            status="passed"
+            label={
+              win.selfAssessed
+                ? 'Combate aprobado (autoevaluado)'
+                : 'Combate aprobado por el Sensei'
+            }
+          />
+        )}
       </header>
 
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
@@ -166,10 +210,26 @@ export default function BossView({
             >
               Entregar combate
             </button>
-            <button type="button" class={buttonClass('ghost', 'w-full')} disabled>
-              <Sparkles size={18} aria-hidden="true" />
-              El Sensei llega pronto
-            </button>
+            {sensei && (
+              <button
+                type="button"
+                class={buttonClass('secondary', 'w-full')}
+                disabled={reviewing}
+                onClick={() => void review()}
+              >
+                {reviewing ? (
+                  <LoaderCircle size={18} class="motion-safe:animate-spin" aria-hidden="true" />
+                ) : (
+                  <Sparkles size={18} aria-hidden="true" />
+                )}
+                {reviewing ? 'El Sensei está revisando…' : 'Pedir revisión al Sensei'}
+              </button>
+            )}
+            {reviewError && (
+              <p role="alert" class="text-sm text-dojo-danger">
+                {reviewError}
+              </p>
+            )}
             {message && (
               <p role="status" class="text-sm">
                 {message}
@@ -178,6 +238,10 @@ export default function BossView({
           </form>
         </aside>
       </div>
+
+      {lastReview && (
+        <ReviewCard review={lastReview} rubric={boss.rubric} passScore={boss.passScore} />
+      )}
     </div>
   )
 }

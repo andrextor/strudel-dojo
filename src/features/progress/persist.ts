@@ -59,7 +59,7 @@ export const emptyProgress = (): ProgressState => ({
 const VIAS: readonly string[] = ['keyboard', 'fretboard', 'text', 'midi'] satisfies InputVia[]
 const isVia = (x: string): x is InputVia => VIAS.includes(x)
 
-function readInput(v: unknown): InputSpec | null {
+export function readInput(v: unknown): InputSpec | null {
   if (!isObject(v)) return null
   switch (v.kind) {
     case 'choice':
@@ -87,7 +87,7 @@ function readInput(v: unknown): InputSpec | null {
   }
 }
 
-function readAnswer(v: unknown): Answer | null {
+export function readAnswer(v: unknown): Answer | null {
   if (!isObject(v)) return null
   if (v.kind === 'choice' && isInt(v.index)) return { kind: 'choice', index: v.index }
   if (v.kind === 'text' && isStrings(v.accepted)) return { kind: 'text', accepted: v.accepted }
@@ -121,7 +121,7 @@ function readQuestion(v: unknown): Question | null {
   }
 }
 
-function readResponse(v: unknown): Response | null {
+export function readResponse(v: unknown): Response | null {
   if (!isObject(v)) return null
   const hinted = v.hinted === true ? { hinted: true } : {}
   if (v.kind === 'choice' && isInt(v.index)) return { kind: 'choice', index: v.index, ...hinted }

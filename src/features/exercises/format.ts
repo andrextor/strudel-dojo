@@ -6,7 +6,11 @@ import type { Question, Response } from './types.ts'
 const notes = (list: string[], notation: Notation) =>
   list.map((n) => formatNote(parseNoteInput(n)?.pitchClass ?? n, notation)).join(' ')
 
-export function formatResponse(q: Question, r: Response | null, notation: Notation): string {
+export function formatResponse(
+  q: Pick<Question, 'input'>,
+  r: Response | null,
+  notation: Notation,
+): string {
   if (r === null) return 'Sin responder'
   switch (r.kind) {
     case 'choice': {
@@ -20,7 +24,7 @@ export function formatResponse(q: Question, r: Response | null, notation: Notati
   }
 }
 
-export function formatAnswer(q: Question, notation: Notation): string {
+export function formatAnswer(q: Pick<Question, 'input' | 'answer'>, notation: Notation): string {
   const a = q.answer
   switch (a.kind) {
     case 'choice':

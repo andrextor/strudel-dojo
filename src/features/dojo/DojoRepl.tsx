@@ -4,6 +4,8 @@ import { buttonClass } from '../../components/ui/button.ts'
 import { freshRng } from '../../lib/random.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import { useProgress } from '../progress/use-progress.ts'
+import { useSenseiEnabled } from '../sensei/client.ts'
+import ExplainCode from '../sensei/ExplainCode.tsx'
 import StrudelEditor, { type EditorApi } from '../strudel/StrudelEditor.tsx'
 import ReferencePanel from './ReferencePanel.tsx'
 import { deleteScroll, MAX_SCROLLS, SCROLL_NAME_MAX, saveScroll, strudelUrl } from './scrolls.ts'
@@ -19,6 +21,7 @@ export default function DojoRepl() {
   const editor = useRef<EditorApi | null>(null)
   const [name, setName] = useState('')
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null)
+  const sensei = useSenseiEnabled()
   if (active === null || progress === null) return <NeedProfile />
 
   const scrolls = [...progress.scrolls].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
@@ -49,6 +52,7 @@ export default function DojoRepl() {
               editor.current = api
             }}
           />
+          {sensei && <ExplainCode getCode={() => editor.current?.getCode() ?? ''} />}
           <form class="flex flex-wrap items-end gap-3" onSubmit={save}>
             <label class="block min-w-48 flex-1 space-y-1">
               <span class="text-sm text-dojo-muted">Nombre del pergamino</span>

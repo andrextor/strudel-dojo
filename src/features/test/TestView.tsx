@@ -156,6 +156,7 @@ export default function TestView(props: Props) {
           key={`${question.id}:${saved === null ? 'new' : 'again'}`}
           question={question}
           mode="test"
+          hintUsed={saved?.hinted === true}
           prefs={progress.prefs}
           onPrefs={patchPrefs}
           onAnswer={(response) => {

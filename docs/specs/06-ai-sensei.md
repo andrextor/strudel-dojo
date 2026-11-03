@@ -20,13 +20,15 @@ Los modelos se declaran como constantes en `src/lib/claude.ts`, con un comentari
 // hint
 request:  { context: 'question'; question: Pick<Question,'prompt'|'input'|'skill'|'answer'>; response?: Response }
           // `answer` solo lo usa el guard del servidor; nunca entra al prompt del modelo
-        | { context: 'kata'; kata: Pick<Kata,'brief'|'assertions'>; code: string; failing: string[] }
+        | { context: 'kata'; kataId: string; code: string }
+          // el servidor busca la kata y corre sus aserciones: el navegador no manda brief ni fallos
 response: { hint: string }              // 1–2 frases
 
 // review
-request:  { boss: Pick<Boss,'brief'|'rubric'|'passScore'>; code: string; summary: PatternSummary;
-            assertions: AssertionResult[]; moduleTitle: string; skills: string[] }
-response: SenseiReview
+request:  { bossId: string; code: string }
+          // el servidor busca el combate (brief, rúbrica, passScore, módulo y skills), corre las
+          // aserciones y arma el resumen del patrón: nada de eso se confía al navegador
+response: { review: SenseiReview; assertions: AssertionResult[]; passed: boolean }
 
 interface SenseiReview {
   criteria: { id: string; score: number /* 0–10 */; comment: string }[]
@@ -53,8 +55,11 @@ response: { overview: string; lines: { line: number; text: string }[] }
 - Errores: copiar el mapeo de `claudeError` (429/503/400/502) con mensajes en español. Ningún detalle del upstream llega al navegador.
 - `stop_reason === 'refusal'` o salida vacía → 422 con mensaje para reintentar.
 
+`GET /api/sensei/status` responde `{ enabled }` para que la UI sepa si mostrar los botones. Las rutas validan tamaño y forma antes de mirar la clave: un código de más de 8 000 caracteres es 413 con o sin clave.
+
 ## UI
 
 - "Pedir pista al Sensei" debajo de cada pregunta y kata (una por pregunta en prueba; ilimitadas en práctica). En pruebas, pedir pista queda registrado en la respuesta y la pregunta vale la mitad de XP.
 - La revisión del combate se muestra como una tarjeta: el puntaje grande, cada criterio con barra y comentario, fortalezas, siguientes pasos, y la variación con un botón "Escuchar variación".
 - Sin clave: el botón de pista no aparece y el combate muestra la rúbrica como checklist con escala 0–10 por criterio (autoevaluación honesta, marcada como tal).
+- Con clave, la autoevaluación sigue disponible junto a "Pedir revisión al Sensei"; la insignia del combate aprobado dice cuál de las dos lo aprobó.

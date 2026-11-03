@@ -25,6 +25,8 @@ import Tabs from '../../components/ui/Tabs.tsx'
 import { midiSupport } from '../midi/midi.ts'
 import { useMidi } from '../midi/use-midi.ts'
 import type { Prefs } from '../progress/types.ts'
+import { useSenseiEnabled } from '../sensei/client.ts'
+import SenseiHint from '../sensei/SenseiHint.tsx'
 import { playOnce } from '../strudel/engine.ts'
 import { fretToNote, STANDARD_TUNING, spellingsFor } from '../theory/instruments.ts'
 import { parseNoteList, sameSound, sameSpelling } from '../theory/notes.ts'
@@ -38,6 +40,7 @@ interface Props {
   onPrefs?: (patch: Partial<Prefs>) => void
   onAnswer: (response: Response, grade: Grade) => void
   onNext?: () => void
+  hintUsed?: boolean // test mode: a hint was already asked for this question
 }
 
 const VIA_TABS = {
@@ -116,7 +119,15 @@ function AudioControls({ code }: { code: string }) {
   )
 }
 
-export default function QuestionCard({ question, mode, prefs, onPrefs, onAnswer, onNext }: Props) {
+export default function QuestionCard({
+  question,
+  mode,
+  prefs,
+  onPrefs,
+  onAnswer,
+  onNext,
+  hintUsed = false,
+}: Props) {
   const { input, answer } = question
   const { notation } = prefs
   const isNotes = input.kind === 'note' || input.kind === 'note-set'
@@ -132,16 +143,35 @@ export default function QuestionCard({ question, mode, prefs, onPrefs, onAnswer,
   const [picks, setPicks] = useState<Pick[]>([])
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<Grade | null>(null)
+  const [hinted, setHinted] = useState(hintUsed)
+  const sensei = useSenseiEnabled()
 
   const done = result !== null
   const count = input.kind === 'note' ? 1 : input.kind === 'note-set' ? input.count : undefined
   const ordered = input.kind === 'note-set' ? input.ordered : true
   const showResult = done && mode === 'practice'
 
-  function submit(response: Response) {
+  // Spec 05: an answer given after a hint is recorded as hinted (half XP in a test).
+  function submit(answer: Response) {
+    const response: Response = hinted ? { ...answer, hinted: true } : answer
     const g = grade(question, response)
     setResult(g)
     onAnswer(response, g)
+  }
+
+  // What the learner has so far, so the hint can react to it. Never graded.
+  function draft(): Response | null {
+    if (input.kind === 'choice' || input.kind === 'rhythm') {
+      return choice === null ? null : { kind: 'choice', index: choice }
+    }
+    if (input.kind === 'text' || via === 'text') {
+      return text.trim() === ''
+        ? null
+        : input.kind === 'text'
+          ? { kind: 'text', value: text }
+          : { kind: 'notes', notes: text.split(/[\s,]+/).filter(Boolean) }
+    }
+    return picks.length === 0 ? null : { kind: 'notes', notes: picks.map((p) => p.name) }
   }
   const submitPicks = (list: Pick[]) => submit({ kind: 'notes', notes: list.map((p) => p.name) })
 
@@ -400,6 +430,28 @@ export default function QuestionCard({ question, mode, prefs, onPrefs, onAnswer,
           </button>
         )}
       </form>
+
+      {sensei && !done && (
+        <SenseiHint
+          disabled={mode === 'test' && hinted}
+          note={
+            mode === 'test'
+              ? 'En la prueba hay una pista por pregunta, y esa pregunta vale la mitad de XP.'
+              : undefined
+          }
+          onHint={() => setHinted(true)}
+          body={() => ({
+            context: 'question',
+            question: {
+              prompt: question.prompt,
+              input: question.input,
+              skill: question.skill,
+              answer: question.answer,
+            },
+            response: draft(),
+          })}
+        />
+      )}
 
       {done && mode === 'test' && (
         <p class="text-sm text-dojo-muted" role="status">
