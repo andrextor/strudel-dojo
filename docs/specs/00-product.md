@@ -46,7 +46,7 @@ Copy en español neutro latinoamericano con "tú", en oraciones simples, sin asu
 | Compartir patrones por URL que se ejecutan solos | Ejecutar código ajeno es un riesgo; si se añade, el código se muestra y solo corre al pulsar "Reproducir". |
 | Anti-trampa | Es autoaprendizaje; las claves pueden vivir en el cliente. |
 | Grabación/exportación de audio | Strudel ya permite grabar desde su REPL; no es parte de aprender. |
-| Modo claro | El editor y el live coding viven en oscuro; un solo tema evita duplicar el trabajo de contraste. |
+| ~~Modo claro~~ | **Revisado (P00):** se añadió selector de tema **oscuro / claro / automático**. El oscuro es la identidad del dojo y el valor por defecto; el claro usa versiones joya de los mismos tonos con contraste verificado en ambos temas (`scripts/contrast.mjs` revisa los dos). El editor Strudel y los visuales se afinan para claro en P05. |
 
 ## Métricas de éxito
 

@@ -10,7 +10,7 @@ Un dojo de noche con luces de neón: la sala de práctica donde se entrena músi
 
 1. **Mobile first** para teoría y oído (390 px); **laptop first** para editores Strudel (1280 px), que en móvil se apilan y siguen siendo usables. Comprobar en 390 px y 1440 px, sin scroll horizontal. Los touch targets miden ≥ 44 px, y los inputs ≥ 16 px con `type`, `inputmode` y `autocomplete="off"` en respuestas.
 2. **Solo tokens.** Colores, radios, sombras y fuentes vienen del bloque `@theme` de `src/styles/global.css` (utilidades `bg-dojo-*`, `text-dojo-*`, `rounded-control`, `rounded-card`, `font-display`, `font-mono`). No hay hex crudo fuera de ese bloque, salvo en SVG estáticos de `public/` y en el tema de CodeMirror, que lee las variables CSS.
-3. **Tema oscuro único.** `color-scheme: dark`. No hay modo claro (ver `docs/specs/00-product.md`).
+3. **Tres temas: oscuro (por defecto), claro y automático.** El oscuro es la identidad del dojo; el claro usa versiones joya de los mismos tonos. El selector (`components/ui/ThemeToggle.astro`) pone `data-theme="dark|light"` en `<html>` y lo guarda en `localStorage` (`dojo_theme`); en automático quita el atributo y manda `prefers-color-scheme`. Un script inline en el `<head>` aplica el tema antes de pintar para que no haya parpadeo. Toda regla de color sale de tokens, así una sola clase sirve en ambos temas.
 4. **Teclado y foco**: todo control es alcanzable por teclado y muestra el anillo global `:focus-visible` (cian neón). Las regiones con scroll llevan `tabIndex={0}`.
 5. **El movimiento respeta `prefers-reduced-motion`**: la regla global detiene las animaciones CSS, la ceremonia de cinturón muestra solo el estado final y los visuales Strudel siguen (son contenido) pero sin glow animado. Solo se animan `transform` y `opacity`.
 6. **Íconos** de `lucide-preact`; los decorativos llevan `aria-hidden`. El SVG hecho a mano es solo para ilustración (teclado, diapasón, cinturones, ondas), nunca para íconos.
@@ -20,7 +20,9 @@ Un dojo de noche con luces de neón: la sala de práctica donde se entrena músi
 
 ## Color
 
-Contraste calculado con la fórmula WCAG 2.x (script en `docs/plans/P00-scaffold.md`).
+Contraste calculado con la fórmula WCAG 2.x (`scripts/contrast.mjs`, que revisa **los dos temas**). Los valores de contraste de la tabla son los del **tema oscuro**.
+
+### Tema oscuro (por defecto)
 
 | Token | Valor | Uso · contraste |
 |-------|-------|-----------------|
@@ -39,11 +41,36 @@ Contraste calculado con la fórmula WCAG 2.x (script en `docs/plans/P00-scaffold
 | `dojo-border` | `#6a6f93` | Contornos de controles · 3.9 ink / 3.2 raised (≥ 3 para UI) |
 | `dojo-hairline` | `rgb(236 234 246 / 0.08)` | Separadores decorativos |
 
-Los fondos de estado se derivan del color al 12 % sobre surface (`color-mix(in oklab, var(--color-dojo-success) 12%, var(--color-dojo-surface))`), definidos como tokens `dojo-success-bg`, `dojo-warning-bg` y `dojo-danger-bg`.
+Los fondos de estado se derivan del color al 12 % sobre surface (`color-mix(in oklab, var(--color-dojo-success) 12%, var(--color-dojo-surface))`), definidos como tokens `dojo-success-bg`, `dojo-warning-bg` y `dojo-danger-bg`. La sustitución perezosa de `var()` hace que se recalculen solos en cada tema.
+
+### Tema claro
+
+Mismos nombres de token, versiones joya para que los acentos se lean sobre fondo pálido. Verificados en `scripts/contrast.mjs`.
+
+| Token | Valor claro |
+|-------|-------------|
+| `dojo-ink` | `#f5f4fb` |
+| `dojo-surface` | `#ffffff` |
+| `dojo-raised` | `#e9e7f4` |
+| `dojo-text` | `#1b1c2b` |
+| `dojo-muted` | `#53566e` |
+| `dojo-torii` / `-hover` | `#c2410c` / `#9a3412` |
+| `dojo-neon` | `#0c7a6c` |
+| `dojo-violet` | `#6d28d9` |
+| `dojo-gold` | `#86640a` |
+| `dojo-success` | `#15733a` |
+| `dojo-warning` | `#875200` |
+| `dojo-danger` | `#be123c` |
+| `dojo-border` | `#787da0` |
+| `dojo-hairline` | `rgb(27 28 43 / 0.1)` |
+
+### Cinturones (independientes del tema)
+
+Los cinturones son colores literales de karate: **no cambian** entre temas. El texto sobre los cinturones de color es el token fijo `belt-on` (`#0d0e17`); el cinturón negro lleva texto `belt-white`.
 
 ### Cinturones
 
-Relleno del cinturón; el texto sobre ellos es `dojo-ink`, salvo en negro.
+Relleno del cinturón; el texto sobre ellos es `belt-on` (fijo, en ambos temas), salvo en negro.
 
 | Token | Valor | Texto ink |
 |-------|-------|-----------|

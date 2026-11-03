@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+/* Single source of the design tokens; see DESIGN.md for contrast notes.
+   @theme holds the DARK theme (the dojo's default identity). Light values are
+   redefined below under the light selectors, and every utility reads the var,
+   so the same class works in both themes. */
+@theme {
+  --color-dojo-ink: #0d0e17;
+  --color-dojo-surface: #161827;
+  --color-dojo-raised: #20233a;
+  --color-dojo-text: #eceaf6;
+  --color-dojo-muted: #a3a6c2;
+  --color-dojo-torii: #ff6b3d;
+  --color-dojo-torii-hover: #ff8a63;
+  --color-dojo-neon: #3ee6d0;
+  --color-dojo-violet: #a78bfa;
+  --color-dojo-gold: #f5c84c;
+  --color-dojo-success: #4ade80;
+  --color-dojo-warning: #fbbf24;
+  --color-dojo-danger: #ff5c7a;
+  --color-dojo-border: #6a6f93;
+  --color-dojo-hairline: rgb(236 234 246 / 0.08);
+
+  /* State fills: the state color at 12% over the surface (lazy var substitution
+     makes these adapt to whichever theme is in scope). */
+  --color-dojo-success-bg: color-mix(
+    in oklab,
+    var(--color-dojo-success) 12%,
+    var(--color-dojo-surface)
+  );
+  --color-dojo-warning-bg: color-mix(
+    in oklab,
+    var(--color-dojo-warning) 12%,
+    var(--color-dojo-surface)
+  );
+  --color-dojo-danger-bg: color-mix(
+    in oklab,
+    var(--color-dojo-danger) 12%,
+    var(--color-dojo-surface)
+  );
+
+  /* Belt colors are literal karate-belt hues: identical in both themes.
+     belt-on is the fixed dark text that rides on the light-colored belts. */
+  --color-belt-on: #0d0e17;
+  --color-belt-white: #f1f0f7;
+  --color-belt-yellow: #facc15;
+  --color-belt-orange: #fb923c;
+  --color-belt-green: #34d399;
+  --color-belt-blue: #60a5fa;
+  --color-belt-purple: #c084fc;
+  --color-belt-brown: #c08552;
+  --color-belt-red: #f87171;
+  --color-belt-black: #2a2c3d;
+  --color-belt-dan: #f5c84c;
+
+  --radius-control: 0.75rem;
+  --radius-card: 1.25rem;
+
+  --shadow-glow-neon: 0 0 24px rgb(62 230 208 / 0.35);
+  --shadow-glow-torii: 0 0 24px rgb(255 107 61 / 0.35);
+
+  --font-display: "Unbounded Variable", system-ui, sans-serif;
+  --font-sans: "Lexend Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+}
+
+/* Light theme: jewel-tone versions of the same hues so the accents stay legible
+   on a pale page. Applied when the OS is light and the user hasn't forced dark,
+   or when the user explicitly picks light. The two selectors carry the same
+   block; keep them in sync. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --color-dojo-ink: #f5f4fb;
+    --color-dojo-surface: #ffffff;
+    --color-dojo-raised: #e9e7f4;
+    --color-dojo-text: #1b1c2b;
+    --color-dojo-muted: #53566e;
+    --color-dojo-torii: #c2410c;
+    --color-dojo-torii-hover: #9a3412;
+    --color-dojo-neon: #0c7a6c;
+    --color-dojo-violet: #6d28d9;
+    --color-dojo-gold: #86640a;
+    --color-dojo-success: #15733a;
+    --color-dojo-warning: #875200;
+    --color-dojo-danger: #be123c;
+    --color-dojo-border: #787da0;
+    --color-dojo-hairline: rgb(27 28 43 / 0.1);
+    color-scheme: light;
+  }
+}
+
+:root[data-theme="light"] {
+  --color-dojo-ink: #f5f4fb;
+  --color-dojo-surface: #ffffff;
+  --color-dojo-raised: #e9e7f4;
+  --color-dojo-text: #1b1c2b;
+  --color-dojo-muted: #53566e;
+  --color-dojo-torii: #c2410c;
+  --color-dojo-torii-hover: #9a3412;
+  --color-dojo-neon: #0c7a6c;
+  --color-dojo-violet: #6d28d9;
+  --color-dojo-gold: #86640a;
+  --color-dojo-success: #15733a;
+  --color-dojo-warning: #875200;
+  --color-dojo-danger: #be123c;
+  --color-dojo-border: #787da0;
+  --color-dojo-hairline: rgb(27 28 43 / 0.1);
+  color-scheme: light;
+}
+
+/* Explicit dark wins over a light OS preference. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--color-dojo-ink);
+    /* Soft, static glows: violet up top, a warm torii one low-right. No grid. */
+    background-image:
+      radial-gradient(
+        70% 50% at 50% -15%,
+        color-mix(in oklab, var(--color-dojo-violet) 18%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        45% 45% at 100% 100%,
+        color-mix(in oklab, var(--color-dojo-torii) 10%, transparent),
+        transparent 70%
+      );
+    background-attachment: fixed;
+    color: var(--color-dojo-text);
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-dojo-neon);
+    outline-offset: 3px;
+  }
+
+  /* !important is deliberate: reduced motion must win over every component animation. */
+  @media (prefers-reduced-motion: reduce) {
+    @view-transition {
+      navigation: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+    }
+  }
+}
+
+@keyframes rise-in {
+  from {
+    translate: 0 1rem;
+    opacity: 0;
+  }
+}
+
+@utility enter {
+  animation: rise-in 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}

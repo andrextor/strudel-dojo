@@ -1,0 +1,80 @@
+---
+import { buttonClass } from '../components/ui/button.ts'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const belts: { name: string; token: string; dark?: boolean }[] = [
+  { name: 'Blanco', token: 'bg-belt-white' },
+  { name: 'Amarillo', token: 'bg-belt-yellow' },
+  { name: 'Naranja', token: 'bg-belt-orange' },
+  { name: 'Verde', token: 'bg-belt-green' },
+  { name: 'Azul', token: 'bg-belt-blue' },
+  { name: 'Morado', token: 'bg-belt-purple' },
+  { name: 'Marrón', token: 'bg-belt-brown' },
+  { name: 'Rojo', token: 'bg-belt-red' },
+  { name: 'Negro', token: 'bg-belt-black', dark: true },
+  { name: 'Dan', token: 'bg-belt-dan' },
+]
+
+const states: { label: string; bg: string; text: string }[] = [
+  { label: 'Aprobado', bg: 'bg-dojo-success-bg', text: 'text-dojo-success' },
+  { label: 'Repasar', bg: 'bg-dojo-warning-bg', text: 'text-dojo-warning' },
+  { label: 'Incorrecto', bg: 'bg-dojo-danger-bg', text: 'text-dojo-danger' },
+]
+---
+
+<BaseLayout title="Inicio">
+  <section class="enter space-y-3">
+    <h1 class="font-display text-4xl font-extrabold md:text-5xl">Strudel Dojo</h1>
+    <p class="max-w-2xl text-dojo-muted">
+      Teoría musical de verdad y live coding con Strudel, cinturón por cinturón. Esta es una página
+      de muestra del sistema de diseño; la app llega en fases.
+    </p>
+  </section>
+
+  <section class="enter mt-10 space-y-4" style="--i: 1">
+    <h2 class="font-display text-2xl font-bold">Tipografía</h2>
+    <div class="space-y-2 rounded-card bg-dojo-surface p-5 md:p-6">
+      <p class="font-display text-3xl font-bold">Unbounded · títulos y cinturones</p>
+      <p class="font-sans text-lg">Lexend · cuerpo de texto, cómodo para leer teoría.</p>
+      <p class="font-mono text-dojo-violet">note("c3 e3 g3").s("piano") // JetBrains Mono</p>
+    </div>
+  </section>
+
+  <section class="enter mt-10 space-y-4" style="--i: 2">
+    <h2 class="font-display text-2xl font-bold">Botones</h2>
+    <div class="flex flex-wrap items-center gap-3">
+      <button type="button" class={buttonClass('primary')}>Entregar prueba</button>
+      <button type="button" class={buttonClass('secondary')}>Probar el código</button>
+      <button type="button" class={buttonClass('ghost')}>Pedir pista</button>
+      <button type="button" class={buttonClass('play')} aria-label="Reproducir">▶</button>
+    </div>
+  </section>
+
+  <section class="enter mt-10 space-y-4" style="--i: 3">
+    <h2 class="font-display text-2xl font-bold">Cinturones</h2>
+    <ul class="flex flex-wrap gap-2">
+      {
+        belts.map((belt) => (
+          <li
+            class={`${belt.token} ${belt.dark ? 'border-2 border-dojo-border text-belt-white' : 'text-belt-on'} rounded-full px-4 py-1.5 text-sm font-semibold`}
+          >
+            {belt.name}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="enter mt-10 space-y-4" style="--i: 4">
+    <h2 class="font-display text-2xl font-bold">Estados</h2>
+    <div class="flex flex-wrap gap-3">
+      {
+        states.map((state) => (
+          <span class={`${state.bg} ${state.text} rounded-control px-4 py-2 text-sm font-semibold`}>
+            {state.label}
+          </span>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
