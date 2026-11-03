@@ -1,4 +1,4 @@
-import { Trash2, UserPlus } from 'lucide-preact'
+import { Download, Trash2, UserPlus } from 'lucide-preact'
 import { useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import ProgressBar from '../../components/ui/ProgressBar.tsx'
@@ -12,10 +12,11 @@ import { PROFILE_DOT } from '../profiles/ProfilePicker.tsx'
 import { removeProfile, setActive } from '../profiles/profiles.ts'
 import { totalXp } from '../progress/points.ts'
 import { percentOf } from '../progress/rules.ts'
+import { loadProgress } from '../progress/store.ts'
 import { streak } from '../progress/streak.ts'
 import type { Prefs } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
-import BackupPanel from './BackupPanel.tsx'
+import BackupPanel, { downloadBackup } from './BackupPanel.tsx'
 
 function Choice<T extends string>(props: {
   legend: string
@@ -241,10 +242,17 @@ export default function ProgressView({ curriculum }: { curriculum: Module[] }) {
               {deleting === p.id && (
                 <div class="space-y-3 rounded-card bg-dojo-danger-bg p-4" role="alert">
                   <p>
-                    Esto borra el progreso de <strong>{p.name}</strong> en este navegador.
-                    {p.id === active.id &&
-                      ' Antes, descarga su respaldo arriba si lo quieres conservar.'}
+                    Esto borra el progreso de <strong>{p.name}</strong> en este navegador. Antes,
+                    descarga su respaldo si lo quieres conservar.
                   </p>
+                  <button
+                    type="button"
+                    class={buttonClass('secondary')}
+                    onClick={() => downloadBackup(p, loadProgress(p.id))}
+                  >
+                    <Download size={18} aria-hidden="true" />
+                    Descargar respaldo de {p.name}
+                  </button>
                   <label class="block space-y-1">
                     <span class="text-sm">Escribe «{p.name}» para confirmar</span>
                     <input

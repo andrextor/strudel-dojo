@@ -75,6 +75,7 @@ export default function StrudelEditor({
   const mirror = useRef<StrudelMirror | null>(null)
   const [visual, setVisual] = useState<Visual>(initialVisual)
   const visualRef = useRef(visual)
+  const replaying = useRef(false)
   const callbacks = useRef({ onCodeChange, onEvaluate, onTrigger })
   callbacks.current = { onCodeChange, onEvaluate, onTrigger }
   const [loading, setLoading] = useState(true)
@@ -133,11 +134,19 @@ export default function StrudelEditor({
         },
         afterEval: ({ pattern }: { pattern: unknown }) => {
           setError(null)
+          if (replaying.current) {
+            replaying.current = false
+            return
+          }
           if (isPattern(pattern)) callbacks.current.onEvaluate?.({ ok: true, pattern })
         },
         onEvalError: async (err: unknown) => {
           const dojoError = toDojoError(err, lastCode, await knownNames())
           setError(dojoError)
+          if (replaying.current) {
+            replaying.current = false
+            return
+          }
           callbacks.current.onEvaluate?.({ ok: false, error: dojoError })
         },
       })
@@ -214,7 +223,11 @@ export default function StrudelEditor({
   function chooseVisual(next: Visual) {
     setVisual(next)
     visualRef.current = next
-    if (playing) void play()
+    // A visual switch re-plays the same code: it is not a new attempt.
+    if (playing) {
+      replaying.current = true
+      void play()
+    }
   }
 
   return (

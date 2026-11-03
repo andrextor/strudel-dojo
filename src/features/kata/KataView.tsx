@@ -16,6 +16,7 @@ import {
 import { useProgress } from '../progress/use-progress.ts'
 import { useSenseiEnabled } from '../sensei/client.ts'
 import SenseiHint from '../sensei/SenseiHint.tsx'
+import { runKata } from '../strudel/assertions.ts'
 import StrudelEditor, { type EditorApi } from '../strudel/StrudelEditor.tsx'
 import { AssertionList, useAssertions } from './challenge.tsx'
 
@@ -55,7 +56,8 @@ export default function KataView({ kata, topicId, module, curriculum }: Props) {
   const allHints = kata.hints ?? []
 
   async function evaluate() {
-    const code = lastCode.current
+    const code = editor.current?.getCode() || lastCode.current
+    if (code.trim() === '') return
     const result = await test(code)
     const ok = result.state === 'done' && result.passed
     updateProgress((p) => recordKata(p, kata.id, code, ok, new Date()))
@@ -118,11 +120,14 @@ export default function KataView({ kata, topicId, module, curriculum }: Props) {
 
           {sensei && !passed && (
             <SenseiHint
-              body={() => ({
-                context: 'kata',
-                kataId: kata.id,
-                code: editor.current?.getCode() || lastCode.current || kata.starter,
-              })}
+              body={async () => {
+                const code = editor.current?.getCode() || lastCode.current || kata.starter
+                const r = await runKata(code, kata.assertions, kata.cycles)
+                const failing = r.ok
+                  ? r.results.filter((x) => !x.pass).map((x) => x.message)
+                  : [`The code does not run: ${r.error.message}`]
+                return { context: 'kata', kataId: kata.id, code, failing }
+              }}
             />
           )}
 

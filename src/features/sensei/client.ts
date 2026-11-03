@@ -1,7 +1,7 @@
 // Browser side of the Sensei: is it on, and typed calls whose responses are checked before use.
 import { useEffect, useState } from 'preact/hooks'
 import type { AssertionResult } from '../strudel/types.ts'
-import type { ExplainResult } from './contracts.ts'
+import type { CheckResult, ExplainResult } from './contracts.ts'
 import type { SenseiReview } from './types.ts'
 
 let status: Promise<boolean> | null = null
@@ -93,5 +93,5 @@ const isReview = (v: unknown): v is ReviewResponse => {
 
 export const askHint = (body: unknown) => post('/api/sensei/hint', body, isHint)
 export const askExplain = (code: string) => post('/api/sensei/explain', { code }, isExplain)
-export const askReview = (bossId: string, code: string) =>
-  post('/api/sensei/review', { bossId, code }, isReview)
+export const askReview = (bossId: string, code: string, checks: CheckResult[], summary: string) =>
+  post('/api/sensei/review', { bossId, code, checks, summary }, isReview)

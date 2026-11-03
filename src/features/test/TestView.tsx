@@ -56,14 +56,17 @@ export default function TestView(props: Props) {
     if (progress === null || started.current || !allowed(progress)) return
     started.current = true
     if (attempt !== null) return
-    updateProgress((p) =>
-      openAttempt(p, kind, scopeId)
-        ? p
-        : saveAttempt(
-            p,
-            startTest({ kind, scopeId }, graded.mix, graded.questions, new Date(), freshRng()),
-          ),
-    )
+    // A rare seed can exhaust a small mix; another seed always works.
+    const fresh = () => {
+      for (let t = 0; ; t++) {
+        try {
+          return startTest({ kind, scopeId }, graded.mix, graded.questions, new Date(), freshRng())
+        } catch (e) {
+          if (t >= 4) throw e
+        }
+      }
+    }
+    updateProgress((p) => (openAttempt(p, kind, scopeId) ? p : saveAttempt(p, fresh())))
   }, [progress === null, attempt === null])
 
   if (active === null || progress === null) return <NeedProfile />

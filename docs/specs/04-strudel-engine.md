@@ -106,7 +106,7 @@ Cada una devuelve `{ pass: boolean; message: string }` en español, y el mensaje
 | `sectionsDistinct` | `min` | Al menos `min` ciclos distintos (qué suena y cuándo): hay secciones que contrastan. (M10) |
 | `layerCount` | `min` | Al menos `min` fuentes de sonido distintas (`s`: bd, hh, piano, sawtooth…). (M10) |
 
-Si la evaluación falla (error de sintaxis o de runtime), la kata muestra el error y no corre ninguna aserción. Para evitar bucles infinitos y patrones gigantes, `query.ts` corta en 5 000 eventos y, de pasar ese tope, devuelve un error claro.
+Si la evaluación falla (error de sintaxis o de runtime), la kata muestra el error y no corre ninguna aserción. Para evitar patrones gigantes, `query.ts` consulta en fracciones de 1/64 de ciclo y corta en 5 000 eventos con un error claro. Un bucle infinito en JS (`while(true){}`) todavía cuelga la pestaña: eso requiere evaluar en un worker. `$:` se apila también fuera del editor, para que las aserciones oigan todas las líneas.
 
 ### Resumen para el Sensei
 

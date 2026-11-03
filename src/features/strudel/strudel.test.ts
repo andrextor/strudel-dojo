@@ -68,6 +68,21 @@ test('queryEvents stops at the event cap with a clear error', async () => {
   if (!q.ok) assert.match(q.error.message, new RegExp(`más de ${MAX_EVENTS}`))
 })
 
+test('a giant single cycle stops at the cap quickly', async () => {
+  const r = await evaluatePattern('s("hh*9999999")')
+  assert.ok(r.ok)
+  const start = Date.now()
+  assert.equal(queryEvents(r.pattern, 1).ok, false)
+  assert.ok(Date.now() - start < 3000)
+})
+
+test('every `$:` line is heard; `_$:` stays muted', async () => {
+  const sounds = new Set(
+    (await events('$: s("bd sd")\n$: s("hh*4")\n_$: s("cp")', 1)).map((e) => e.sound),
+  )
+  assert.deepEqual([...sounds].sort(), ['bd', 'hh', 'sd'])
+})
+
 test('summarize reports key, range, chords and sounds', async () => {
   const s = summarize(await events('note("<[c3,e3,g3] [a2,c3,e3]>").s("piano")', 2), 2)
   assert.equal(s.key, 'C major')

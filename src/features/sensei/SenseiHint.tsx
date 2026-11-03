@@ -5,7 +5,7 @@ import Callout from '../../components/ui/Callout.tsx'
 import { askHint } from './client.ts'
 
 interface Props {
-  body: () => unknown // the request, built when the button is pressed (current code or answer)
+  body: () => unknown | Promise<unknown> // the request, built when the button is pressed (current code or answer)
   disabled?: boolean
   note?: string | undefined // shown under the button before the first hint
   onHint?: () => void
@@ -18,7 +18,7 @@ export default function SenseiHint({ body, disabled = false, note, onHint }: Pro
 
   async function ask() {
     setState('loading')
-    const r = await askHint(body())
+    const r = await askHint(await body())
     if (!r.ok) return setState({ error: r.error })
     setHints((h) => [...h, r.data.hint])
     setState('idle')

@@ -31,9 +31,14 @@ export default function ProfilePicker() {
 
   function create(e: Event) {
     e.preventDefault()
-    const result = createProfile(profiles, name, color, new Date(), freshRng())
-    if (!result.ok) return setError(result.error)
-    updateProfiles(() => result.state)
+    let failed: string | null = null
+    updateProfiles((current) => {
+      const result = createProfile(current, name, color, new Date(), freshRng())
+      if (result.ok) return result.state
+      failed = result.error
+      return current
+    })
+    if (failed !== null) setError(failed)
   }
 
   return (

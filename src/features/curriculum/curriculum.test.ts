@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readdirSync, readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
-import { validateEntry } from '../exercises/registry.ts'
+import { buildSet, validateEntry } from '../exercises/registry.ts'
 import { runKata, stripCode } from '../strudel/assertions.ts'
 import { evaluatePattern } from '../strudel/evaluate.ts'
 import { bossSolution as m04 } from './boss-solutions/m04.ts'
@@ -109,6 +109,21 @@ test('each generator in a mix exists in the registry and its params validate', (
     for (const mix of mixes) {
       for (const entry of mix) {
         assert.ok(validateEntry(entry), `${m.id}: invalid mix entry ${JSON.stringify(entry)}`)
+      }
+    }
+  }
+})
+
+test('every test and placement builds a full set for 30 seeds', () => {
+  for (const m of modules) {
+    if (m.status !== 'ready') continue
+    const sets = [
+      ...(m.placement ? [{ id: `${m.id} placement`, ...m.placement }] : []),
+      ...m.topics.map((t) => ({ id: t.id, ...t.test })),
+    ]
+    for (const set of sets) {
+      for (let i = 0; i < 30; i++) {
+        assert.doesNotThrow(() => buildSet(set.mix, set.questions, `seed:${i}`), set.id)
       }
     }
   }

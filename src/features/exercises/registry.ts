@@ -91,10 +91,19 @@ export function pickQuestion(
   i: number,
   used: Set<string>,
 ): Question {
-  const entry = createRng(`${seedPrefix}:pick:${i}`).weighted(
-    mix.map((e) => ({ value: e, weight: e.weight })),
-  )
-  return generateQuestion(entry, `${seedPrefix}:${i}`, used)
+  // An entry with few distinct questions can run out inside one set: draw another entry then.
+  let error: unknown = null
+  for (let t = 0; t < 10; t++) {
+    const entry = createRng(`${seedPrefix}:pick:${i}${t === 0 ? '' : `:${t}`}`).weighted(
+      mix.map((e) => ({ value: e, weight: e.weight })),
+    )
+    try {
+      return generateQuestion(entry, `${seedPrefix}:${i}`, used)
+    } catch (e) {
+      error = e
+    }
+  }
+  throw error
 }
 
 export function buildSet(mix: MixEntry[], count: number, seedPrefix: string): Question[] {

@@ -20,14 +20,16 @@ Los modelos se declaran como constantes en `src/lib/claude.ts`, con un comentari
 // hint
 request:  { context: 'question'; question: Pick<Question,'prompt'|'input'|'skill'|'answer'>; response?: Response }
           // `answer` solo lo usa el guard del servidor; nunca entra al prompt del modelo
-        | { context: 'kata'; kataId: string; code: string }
-          // el servidor busca la kata y corre sus aserciones: el navegador no manda brief ni fallos
+        | { context: 'kata'; kataId: string; code: string; failing: string[] }
+          // el servidor busca el brief; los fallos los calcula el navegador. El servidor NUNCA
+          // ejecuta código del usuario (sería ejecución remota de código y expondría la API key)
 response: { hint: string }              // 1–2 frases
 
 // review
-request:  { bossId: string; code: string }
-          // el servidor busca el combate (brief, rúbrica, passScore, módulo y skills), corre las
-          // aserciones y arma el resumen del patrón: nada de eso se confía al navegador
+request:  { bossId: string; code: string; checks: AssertionResult[]; summary: string }
+          // el servidor busca el combate (brief, rúbrica, passScore, módulo y skills) y calcula el
+          // puntaje de la rúbrica; las aserciones y el resumen vienen del navegador (el progreso
+          // es local, así que falsearlos solo engaña al propio perfil)
 response: { review: SenseiReview; assertions: AssertionResult[]; passed: boolean }
 
 interface SenseiReview {

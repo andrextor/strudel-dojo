@@ -38,7 +38,8 @@ export function parseProfiles(raw: unknown): ProfilesState {
   return { profiles, activeProfileId }
 }
 
-const sameName = (a: string, b: string) => a.localeCompare(b, 'es', { sensitivity: 'accent' }) === 0
+export const sameName = (a: string, b: string) =>
+  a.localeCompare(b, 'es', { sensitivity: 'accent' }) === 0
 
 export function createProfile(
   state: ProfilesState,

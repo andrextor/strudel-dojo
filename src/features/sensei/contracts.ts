@@ -1,6 +1,6 @@
 // Request parsers for /api/sensei/* (docs/specs/06). Type guards only, no `any`; sizes are
-// checked before anything is parsed. Kata and boss requests carry just ids and code: the server
-// looks the content up and runs the assertions itself, so nothing the browser sends is trusted.
+// checked before anything is parsed. User code is never run on the server: the browser runs the
+// assertions and sends their results, which only feed the prompt (spec 06).
 import type { Response as Answer, Question } from '../exercises/types.ts'
 import { readAnswer, readInput, readResponse } from '../progress/persist.ts'
 
@@ -13,7 +13,20 @@ export type HintRequest =
       question: Pick<Question, 'prompt' | 'input' | 'skill' | 'answer'>
       response: Answer | null
     }
-  | { context: 'kata'; kataId: string; code: string }
+  | { context: 'kata'; kataId: string; code: string; failing: string[] }
+
+export interface CheckResult {
+  type: string
+  pass: boolean
+  message: string
+}
+
+export interface ReviewRequest {
+  bossId: string
+  code: string
+  checks: CheckResult[]
+  summary: string // JSON of what the code plays, from the browser
+}
 
 export type ParseResult<T> =
   | { ok: true; value: T }
@@ -55,15 +68,36 @@ function readCode(v: unknown): ParseResult<string> {
   return v.length > MAX_CODE ? TOO_BIG_CODE : { ok: true, value: v }
 }
 
+const isText = (v: unknown, max: number): v is string => typeof v === 'string' && v.length <= max
+
+function readFailing(v: unknown): string[] | null {
+  return Array.isArray(v) && v.length <= 20 && v.every((m) => isText(m, 400)) ? v : null
+}
+
+function readChecks(v: unknown): CheckResult[] | null {
+  if (!Array.isArray(v) || v.length > 20) return null
+  const out: CheckResult[] = []
+  for (const c of v) {
+    if (!isObject(c) || !isText(c.type, 40) || typeof c.pass !== 'boolean') return null
+    if (!isText(c.message, 400)) return null
+    out.push({ type: c.type, pass: c.pass, message: c.message })
+  }
+  return out
+}
+
 const ID = /^M\d{2}-(T\d{2}-K\d|BOSS)$/
 
 export function parseHint(body: Record<string, unknown>): ParseResult<HintRequest> {
   if (body.context === 'kata') {
     if (typeof body.kataId !== 'string' || !ID.test(body.kataId)) return BAD
     const code = readCode(body.code)
-    return code.ok
-      ? { ok: true, value: { context: 'kata', kataId: body.kataId, code: code.value } }
-      : code
+    const failing = readFailing(body.failing)
+    if (!code.ok) return code
+    if (failing === null) return BAD
+    return {
+      ok: true,
+      value: { context: 'kata', kataId: body.kataId, code: code.value, failing },
+    }
   }
   if (body.context !== 'question' || !isObject(body.question)) return BAD
   const q = body.question
@@ -82,12 +116,16 @@ export function parseHint(body: Record<string, unknown>): ParseResult<HintReques
   }
 }
 
-export function parseReview(
-  body: Record<string, unknown>,
-): ParseResult<{ bossId: string; code: string }> {
+export function parseReview(body: Record<string, unknown>): ParseResult<ReviewRequest> {
   if (typeof body.bossId !== 'string' || !/^M\d{2}-BOSS$/.test(body.bossId)) return BAD
   const code = readCode(body.code)
-  return code.ok ? { ok: true, value: { bossId: body.bossId, code: code.value } } : code
+  if (!code.ok) return code
+  const checks = readChecks(body.checks)
+  if (checks === null || !isText(body.summary, 4000)) return BAD
+  return {
+    ok: true,
+    value: { bossId: body.bossId, code: code.value, checks, summary: body.summary },
+  }
 }
 
 export function parseExplain(body: Record<string, unknown>): ParseResult<{ code: string }> {

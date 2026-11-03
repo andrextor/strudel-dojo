@@ -45,7 +45,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
     const response = await client.beta.messages.parse({
       model: EXPLAIN_MODEL,
-      max_tokens: 16000,
+      max_tokens: 4096,
       system: EXPLAIN_SYSTEM,
       output_config: { effort: 'low', format: betaJSONSchemaOutputFormat(SCHEMA) },
       messages: [{ role: 'user', content: `<code>\n${numbered(code)}\n</code>` }],

@@ -68,7 +68,8 @@ function pickVerdict(answer: PitchAnswer, picks: Pick[], ordered: boolean): KeyS
   )
 }
 
-// Where a pitch sits on the fretboard: the lowest fret that plays exactly that note.
+// Where a pitch sits on the fretboard: the lowest fret that plays exactly that note. Above fret
+// 15 of the high string (G5) it shows an octave lower: the questions only ask for the name.
 function fretOf(name: string): string | null {
   const midi = Note.midi(name)
   let best: [number, number] | null = null
@@ -77,6 +78,9 @@ function fretOf(name: string): string | null {
       const n = fretToNote(s, f)
       if (n !== null && Note.midi(n) === midi && (best === null || f < best[1])) best = [s, f]
     }
+  }
+  if (best === null && (midi ?? 0) > 79) {
+    return fretOf(Note.transpose(name, '-8P'))
   }
   return best && `${best[0]}:${best[1]}`
 }

@@ -71,11 +71,15 @@ function order(events: NoteEvent[]): NoteEvent[] {
 
 export type QueryResult = { ok: true; events: NoteEvent[] } | { ok: false; error: DojoError }
 
-// Queries cycle by cycle so a runaway pattern stops at the cap instead of filling memory.
+// Queries in 1/64-cycle slices so a runaway pattern (`s("hh*9999999")`) stops at the cap
+// instead of freezing the tab on one giant cycle. Only onsets count, so slicing never duplicates.
+// ponytail: an infinite loop in plain JS (`while(true){}`) still hangs; that needs a worker.
+const SLICES = 64
+
 export function queryEvents(pattern: PatternLike, cycles: number): QueryResult {
   const events: NoteEvent[] = []
-  for (let c = 0; c < cycles; c++) {
-    for (const hap of pattern.queryArc(c, c + 1)) {
+  for (let k = 0; k < cycles * SLICES; k++) {
+    for (const hap of pattern.queryArc(k / SLICES, (k + 1) / SLICES)) {
       const e = toEvent(hap)
       if (e !== null) events.push(e)
     }

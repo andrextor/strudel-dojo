@@ -3,7 +3,7 @@ import { useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import Callout from '../../components/ui/Callout.tsx'
 import { freshRng } from '../../lib/random.ts'
-import { createProfile } from '../profiles/profiles.ts'
+import { createProfile, NAME_MAX, type Profile, sameName } from '../profiles/profiles.ts'
 import {
   BACKUP_INVALID,
   BACKUP_REMIND_DAYS,
@@ -15,13 +15,26 @@ import {
   needsBackupReminder,
   readBackupFile,
 } from '../progress/persist.ts'
+import type { ProgressState } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
 
 type Notice = { ok: boolean; text: string } | null
 
+// Saves a profile's backup as a .json file; also offered before deleting any profile.
+export function downloadBackup(profile: Profile, progress: ProgressState): void {
+  const b = createBackup(profile, progress, new Date())
+  const url = URL.createObjectURL(
+    new Blob([JSON.stringify(b, null, 2)], { type: 'application/json' }),
+  )
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `strudel-dojo-${profile.name.toLowerCase().replace(/\s+/g, '-')}-${b.exportedAt.slice(0, 10)}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 export default function BackupPanel() {
-  const { active, progress, profiles, updateProgress, updateProfiles, writeProgress } =
-    useProgress()
+  const { active, progress, updateProgress, updateProfiles, writeProgress } = useProgress()
   const [notice, setNotice] = useState<Notice>(null)
   const [pasted, setPasted] = useState('')
   const [pending, setPending] = useState<Backup | null>(null)
@@ -30,16 +43,8 @@ export default function BackupPanel() {
   const markBackedUp = () => updateProgress((p) => ({ ...p, backedUpAt: new Date().toISOString() }))
 
   function download() {
-    const b = backup()
-    if (b === null || active === null) return
-    const url = URL.createObjectURL(
-      new Blob([JSON.stringify(b, null, 2)], { type: 'application/json' }),
-    )
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `strudel-dojo-${active.name.toLowerCase().replace(/\s+/g, '-')}-${b.exportedAt.slice(0, 10)}.json`
-    a.click()
-    URL.revokeObjectURL(url)
+    if (active === null || progress === null) return
+    downloadBackup(active, progress)
     markBackedUp()
     setNotice({ ok: true, text: 'Respaldo descargado.' })
   }
@@ -74,7 +79,11 @@ export default function BackupPanel() {
     if (progress === null) return
     const merged = mergeBackup(progress, b)
     if (!merged.ok) return setNotice({ ok: false, text: merged.error })
-    updateProgress(() => merged.progress)
+    // Merged again over what is stored now, not over this screen's copy.
+    updateProgress((current) => {
+      const fresh = mergeBackup(current, b)
+      return fresh.ok ? fresh.progress : current
+    })
     setPending(null)
     setNotice({
       ok: true,
@@ -84,17 +93,22 @@ export default function BackupPanel() {
 
   function restoreAsNew(b: Backup) {
     let name = b.profile.name
-    for (
-      let n = 2;
-      profiles.profiles.some((p) => p.name.toLowerCase() === name.toLowerCase());
-      n++
-    ) {
-      name = `${b.profile.name} ${n}`
-    }
-    const created = createProfile(profiles, name, b.profile.color, new Date(), freshRng())
-    if (!created.ok) return setNotice({ ok: false, text: created.error })
-    writeProgress(created.profile.id, b.progress)
-    updateProfiles(() => created.state)
+    let error: string | null = null
+    // Built from the stored list, so a profile made in another tab is never dropped.
+    updateProfiles((current) => {
+      for (let n = 2; current.profiles.some((p) => sameName(p.name, name)); n++) {
+        const suffix = ` ${n}`
+        name = `${b.profile.name.slice(0, NAME_MAX - suffix.length).trimEnd()}${suffix}`
+      }
+      const created = createProfile(current, name, b.profile.color, new Date(), freshRng())
+      if (!created.ok) {
+        error = created.error
+        return current
+      }
+      writeProgress(created.profile.id, b.progress)
+      return created.state
+    })
+    if (error !== null) return setNotice({ ok: false, text: error })
     setPending(null)
     setNotice({ ok: true, text: `Perfil «${name}» restaurado. Ya es el perfil activo.` })
   }

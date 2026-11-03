@@ -6,8 +6,6 @@ import { rubricScore } from '../../../features/progress/rules.ts'
 import { parseReview, readRequest } from '../../../features/sensei/contracts.ts'
 import { numbered, REVIEW_SYSTEM } from '../../../features/sensei/prompts.ts'
 import type { SenseiReview } from '../../../features/sensei/types.ts'
-import { runKata } from '../../../features/strudel/assertions.ts'
-import { summarize } from '../../../features/strudel/query.ts'
 import {
   claudeClient,
   claudeError,
@@ -70,17 +68,16 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!parsed.ok) return json({ error: parsed.error }, parsed.status)
   const client = claudeClient()
   if (!client) return NO_KEY()
-  const { bossId, code } = parsed.value
+  const { bossId, code, checks, summary } = parsed.value
 
   const module = (await getCurriculum()).find((m) => m.status === 'ready' && m.boss.id === bossId)
   if (module === undefined || module.status !== 'ready') {
     return json({ error: 'Ese combate no existe.' }, 404)
   }
   const { boss } = module
-  // The server runs the checks itself: what the browser says about them is never trusted.
-  const checks = await runKata(code, boss.assertions, boss.cycles)
-  if (!checks.ok) return json({ error: `Tu código no corre: ${checks.error.message}` }, 422)
-  const summary = summarize(checks.events, boss.cycles)
+  // ponytail: the checks come from the browser (running user code on the server is remote code
+  // execution). Progress is local anyway, so a forged pass only fools its own profile.
+  if (checks.length !== boss.assertions.length) return json({ error: RETRY }, 400)
   const skills = [...new Set(module.topics.flatMap((t) => t.skills))].map(
     (s) => SKILL_NAME_ES[s] ?? s,
   )
@@ -89,8 +86,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const content = `<brief>Belt: ${module.title}. Skills: ${skills.join(', ')}.
 Boss: ${boss.title}. ${boss.brief}
 Rubric (id: criterion, weight): ${boss.rubric.map((c) => `${c.id}: ${c.label} (${c.weight})`).join('; ')}
-Automatic checks: ${checks.results.map((r) => `${r.pass ? 'PASS' : 'FAIL'} ${r.message}`).join(' | ')}
-What it plays over ${boss.cycles} cycles: ${JSON.stringify(summary)}</brief>
+Automatic checks: ${checks.map((r) => `${r.pass ? 'PASS' : 'FAIL'} ${r.message}`).join(' | ')}
+What it plays over ${boss.cycles} cycles: ${summary}</brief>
 <code>
 ${numbered(code)}
 </code>`
@@ -98,7 +95,7 @@ ${numbered(code)}
   try {
     const response = await client.beta.messages.parse({
       model: REVIEW_MODEL,
-      max_tokens: 16000,
+      max_tokens: 4096,
       ...fallbackParams(),
       system: REVIEW_SYSTEM,
       output_config: { effort: 'medium', format: betaJSONSchemaOutputFormat(schema(ids)) },
@@ -132,8 +129,8 @@ ${numbered(code)}
     }
     return json({
       review,
-      assertions: checks.results,
-      passed: checks.passed && rubricPassed,
+      assertions: checks,
+      passed: checks.every((c) => c.pass) && rubricPassed,
     })
   } catch (error) {
     return claudeError(error)

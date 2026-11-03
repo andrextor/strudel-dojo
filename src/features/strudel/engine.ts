@@ -43,17 +43,23 @@ export function unlockAudio(): void {
 
 // Subset of strudel.cc's prebake: synths, Salamander piano, GM soundfonts, default drums
 // (bd/sd/hh without bank) and the tidal drum machines with their bank aliases.
+// Each source loads on its own: a blocked CDN loses those sounds, never evaluation (a rejected
+// prebake would make StrudelMirror fail every play, so katas could not be checked offline).
 async function prebake({ webaudio }: Modules): Promise<void> {
-  await Promise.all([
+  const results = await Promise.allSettled([
     webaudio.registerSynthSounds(),
     import('@strudel/soundfonts').then((m) => m.registerSoundfonts()),
     webaudio.samples(`${CDN}/piano.json`, `${CDN}/piano/`, { prebake: true }),
     webaudio.samples(`${CDN}/uzu-drumkit.json`, `${CDN}/uzu-drumkit/`, { prebake: true }),
-    webaudio.samples(`${CDN}/tidal-drum-machines.json`, `${CDN}/tidal-drum-machines/machines/`, {
-      prebake: true,
-    }),
+    webaudio
+      .samples(`${CDN}/tidal-drum-machines.json`, `${CDN}/tidal-drum-machines/machines/`, {
+        prebake: true,
+      })
+      .then(() => webaudio.aliasBank(`${CDN}/tidal-drum-machines-alias.json`)),
   ])
-  await webaudio.aliasBank(`${CDN}/tidal-drum-machines-alias.json`)
+  for (const r of results) {
+    if (r.status === 'rejected') console.warn('[strudel] sounds not loaded', r.reason)
+  }
 }
 
 export interface Engine {

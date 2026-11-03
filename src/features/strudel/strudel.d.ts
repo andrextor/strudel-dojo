@@ -6,6 +6,9 @@ declare module '@strudel/core' {
     code: string,
     transpiler: unknown,
   ): Promise<{ pattern: unknown; mode?: string; meta?: unknown }>
+  export const Pattern: { prototype: { p?: (this: unknown, id: unknown) => unknown } }
+  export const silence: unknown
+  export function stack(...patterns: unknown[]): unknown
   export function repl(options: Record<string, unknown>): {
     evaluate(code: string, autostart?: boolean): Promise<unknown>
     stop(): void

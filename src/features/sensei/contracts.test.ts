@@ -31,12 +31,23 @@ test('parseHint accepts a question snapshot or a kata id with code', () => {
     },
   })
   assert.ok(q.ok && q.value.context === 'question')
-  assert.ok(parseHint({ context: 'kata', kataId: 'M01-T03-K1', code: 'note("c")' }).ok)
-  assert.equal(parseHint({ context: 'kata', kataId: '../etc', code: 'x' }).ok, false)
+  const kata = { context: 'kata', kataId: 'M01-T03-K1', code: 'note("c")', failing: ['Falta `e`'] }
+  assert.ok(parseHint(kata).ok)
+  assert.equal(parseHint({ ...kata, failing: undefined }).ok, false)
+  assert.equal(parseHint({ ...kata, failing: [42] }).ok, false)
+  assert.equal(parseHint({ ...kata, kataId: '../etc' }).ok, false)
   assert.equal(parseHint({ context: 'question', question: { prompt: 'x' } }).ok, false)
 })
 
-test('parseReview needs a boss id and code', () => {
-  assert.ok(parseReview({ bossId: 'M01-BOSS', code: 's("bd")' }).ok)
-  assert.equal(parseReview({ bossId: 'M01-T01-K1', code: 's("bd")' }).ok, false)
+test('parseReview needs a boss id, code, the browser checks and a summary', () => {
+  const ok = {
+    bossId: 'M01-BOSS',
+    code: 's("bd")',
+    checks: [{ type: 'usesSound', pass: true, message: 'Suena `bd`' }],
+    summary: '{}',
+  }
+  assert.ok(parseReview(ok).ok)
+  assert.equal(parseReview({ ...ok, bossId: 'M01-T01-K1' }).ok, false)
+  assert.equal(parseReview({ ...ok, checks: [{ pass: 'yes' }] }).ok, false)
+  assert.equal(parseReview({ ...ok, summary: 'x'.repeat(5000) }).ok, false)
 })

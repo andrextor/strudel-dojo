@@ -10,6 +10,8 @@ import NeedProfile from '../profiles/NeedProfile.tsx'
 import { bossUnlocked, recordBoss, rubricScore } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
 import { askReview, useSenseiEnabled } from '../sensei/client.ts'
+import { runKata } from '../strudel/assertions.ts'
+import { summarize } from '../strudel/query.ts'
 import StrudelEditor, { type EditorApi } from '../strudel/StrudelEditor.tsx'
 import BeltCeremony from './BeltCeremony.tsx'
 import ReviewCard from './ReviewCard.tsx'
@@ -95,12 +97,18 @@ export default function BossView({
     )
   }
 
-  // The server runs the checks and computes the score from the rubric weights (spec 06).
+  // The checks run here; the server computes the score from the rubric weights (spec 06).
   async function review() {
     const code = editor.current?.getCode() ?? lastCode.current
     setReviewing(true)
     setReviewError(null)
-    const r = await askReview(boss.id, code)
+    const checks = await runKata(code, boss.assertions, boss.cycles)
+    if (!checks.ok) {
+      setReviewing(false)
+      return setReviewError(`Tu código no corre: ${checks.error.message}`)
+    }
+    const summary = JSON.stringify(summarize(checks.events, boss.cycles))
+    const r = await askReview(boss.id, code, checks.results, summary)
     setReviewing(false)
     if (!r.ok) return setReviewError(r.error)
     const { review: rv, assertions, passed } = r.data

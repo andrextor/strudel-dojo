@@ -18,7 +18,25 @@ export function loadScope(): Promise<Evaluate> {
       import('@strudel/transpiler'),
     ])
     await core.evalScope(core, mini, tonal)
-    return (code: string) => core.evaluate(code, transpiler)
+    const proto = core.Pattern.prototype
+    // `$: x` transpiles to `x.p('$')`, which only a running repl collects; outside one, collect
+    // them here and stack them, so the checks hear every `$:` line (`_$:` stays muted).
+    return async (code: string) => {
+      const collected: unknown[] = []
+      const previous = proto.p
+      proto.p = function (id: unknown) {
+        const muted = typeof id === 'string' && (id.startsWith('_') || id.endsWith('_'))
+        if (!muted) collected.push(this)
+        return muted ? core.silence : this
+      }
+      try {
+        const result = await core.evaluate(code, transpiler)
+        return collected.length > 0 ? { pattern: core.stack(...collected) } : result
+      } finally {
+        if (previous) proto.p = previous
+        else delete proto.p
+      }
+    }
   })()
   return ready
 }

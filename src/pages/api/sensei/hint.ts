@@ -5,7 +5,6 @@ import { formatResponse } from '../../../features/exercises/format.ts'
 import { type HintRequest, parseHint, readRequest } from '../../../features/sensei/contracts.ts'
 import { revealsAnswer } from '../../../features/sensei/hint-guard.ts'
 import { HINT_SYSTEM, numbered } from '../../../features/sensei/prompts.ts'
-import { runKata } from '../../../features/strudel/assertions.ts'
 import { claudeClient, claudeError, HINT_MODEL, json, NO_KEY } from '../../../lib/claude.ts'
 import { allow } from '../../../lib/rate-limit.ts'
 
@@ -47,10 +46,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (req.context === 'kata') {
     const kata = await findKata(req.kataId)
     if (kata === null) return json({ error: 'Esa kata no existe.' }, 404)
-    const result = await runKata(req.code, kata.assertions, kata.cycles)
-    const failing = result.ok
-      ? result.results.filter((r) => !r.pass).map((r) => r.message)
-      : [`The code does not run: ${result.error.message}`]
+    const { failing } = req
     if (failing.length === 0) return json({ hint: 'Tu código ya cumple todo. ¡Pruébalo y sigue!' })
     content = `<brief>${kata.brief}</brief>\n<failing>\n${failing.join('\n')}\n</failing>\n<code>\n${numbered(req.code)}\n</code>`
   } else {
@@ -60,7 +56,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
     const response = await client.beta.messages.parse({
       model: HINT_MODEL,
-      max_tokens: 16000,
+      max_tokens: 1024,
       system: HINT_SYSTEM,
       output_config: { effort: 'medium', format: betaJSONSchemaOutputFormat(SCHEMA) },
       messages: [{ role: 'user', content }],
