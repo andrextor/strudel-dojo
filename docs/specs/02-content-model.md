@@ -10,7 +10,7 @@ src/content/
   lessons/m01-t01.mdx …           # una lección por tema, con componentes interactivos
 ```
 
-Un módulo sin `lessons` completas puede existir con `status: "draft"`: se muestra como "Próximamente" y no bloquea a nadie, porque el que le sigue tampoco existe todavía.
+Un módulo sin `lessons` completas puede existir con `status: "draft"`: se muestra como "Próximamente" y no bloquea a nadie, porque el que le sigue tampoco existe todavía. El esquema es una unión discriminada por `status`: en `draft`, cada tema solo exige `id`, `title`, `goal` y `skills`; `lesson`, `practice`, `test`, `katas`, `placement` y `boss` son opcionales, y la validación extra no los revisa. En `ready` todo es obligatorio.
 
 ## Módulo (`modules/mNN.json`)
 
@@ -125,5 +125,5 @@ Reglas para escribir lecciones:
 - ids únicos y con el prefijo correcto en todo el currículo;
 - que cada `generator` exista en el registro y que sus `params` pasen el validador de ese generador;
 - que cada `lesson` exista;
-- que cada `solution` de kata y combate pase sus aserciones (este test corre en Node con `@strudel/core` + `mini` + `tonal`, sin audio);
+- que cada `solution` de kata y combate pase sus aserciones (este test corre en Node con `@strudel/core` + `mini` + `tonal` + `transpiler`, sin audio);
 - que la cadena de `prerequisite` siga el orden `order`.

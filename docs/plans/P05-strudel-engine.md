@@ -1,6 +1,6 @@
 # P05 · Motor Strudel
 
-**Rama:** `feat/p05-strudel-engine` · **Leer antes:** `docs/specs/04-strudel-engine.md` completo, `DESIGN.md` (editor y visuales), el ejemplo oficial `packages/core/examples/vite-vanilla-repl-cm6` del repo de Strudel (Codeberg `uzu/strudel`; espejo GitHub `tidalcycles/strudel`), los READMEs de `@strudel/core`, `@strudel/transpiler`, `@strudel/codemirror`, `@strudel/draw`, `@strudel/webaudio`, `@strudel/soundfonts`, `@strudel/midi` y `@strudel/reference`.
+**Rama:** `feat/p05-strudel-engine` · **Leer antes:** `docs/specs/04-strudel-engine.md` completo, `DESIGN.md` (editor y visuales), los ejemplos oficiales `examples/codemirror-repl` y `examples/headless-repl` y `website/src/repl/prebake.mjs` del repo de Strudel (Codeberg `uzu/strudel`), los READMEs de `@strudel/core`, `@strudel/transpiler`, `@strudel/codemirror`, `@strudel/draw`, `@strudel/webaudio`, `@strudel/soundfonts`, `@strudel/midi` y `@strudel/reference`.
 
 ## Objetivo
 
@@ -9,9 +9,10 @@ Un motor propio de Strudel: evaluar código, reproducir, visualizar, editar con 
 ## Tareas
 
 ### 1. Spike (antes de todo)
-- [ ] Instala los paquetes `@strudel/*` del spec en versión exacta (la misma minor para todos si es posible).
-- [ ] Página temporal `src/pages/_spike.astro` con una isla que reproduzca el ejemplo `vite-vanilla-repl-cm6`: editor, play/stop, highlight y pianoroll.
-- [ ] Script `node --test` mínimo que, en Node, evalúe `note("c3 [e3,g3]").s("piano")` con `@strudel/core` + `mini` + `tonal` + `transpiler` (sin webaudio) y haga `queryArc(0, 1)`. Si Node no puede importar algún paquete (por dependencias del navegador), identifica cuáles y evalúa en Node solo con core + mini + tonal + transpiler, registrando stubs vacíos para las funciones de salida (`s`, `gain`… son controles de core, deberían funcionar).
+- [ ] Instala los paquetes `@strudel/*` en las versiones exactas del spec 04. No fuerces una sola minor: cada paquete fija sus hermanos con versión exacta.
+- [ ] `pnpm patch @kabelsalat/web@0.4.1` con el campo `exports` del spec 04 (sin él, Node no puede importar `@strudel/core`).
+- [ ] Página temporal `src/pages/_spike.astro` con una isla que reproduzca `examples/codemirror-repl`: editor, play/stop, highlight y pianoroll, con los sonidos del spec 04 (incluido `piano`).
+- [ ] Test `node --test` mínimo que evalúe `note("c3 [e3,g3]").s("piano")` con `core` + `mini` + `tonal` + `transpiler` y haga `queryArc(0, 1)`. Ya está verificado que funciona con el parche (spec 04, "Hechos verificados"); este test lo deja fijado en CI.
 - [ ] Anota en Desviaciones las APIs reales encontradas (nombres de exports, orden de init, cómo se registran samples y soundfonts) y **corrige el spec 04** donde difiera. Borra `_spike.astro` al terminar la fase.
 
 ### 2. Núcleo puro
@@ -24,6 +25,7 @@ Un motor propio de Strudel: evaluar código, reproducir, visualizar, editar con 
 
 ### 3. Navegador
 - [ ] `engine.ts`: singleton perezoso `getEngine()` que importa dinámicamente los paquetes, hace `evalScope`, registra samples y soundfonts una sola vez, y expone `play(code, { onTrigger })`, `stop()`, `hushAll()` y `isAudioReady()`. Reproducir en un editor detiene el anterior.
+- [ ] Línea de créditos de sonidos en el pie (piano Salamander, CC-BY 3.0, Alexander Holm).
 - [ ] Desbloqueo de audio: la primera interacción ejecuta `initAudioOnFirstClick` (o equivalente); hasta entonces la UI muestra "Activar sonido".
 - [ ] `StrudelEditor.tsx`: CodeMirror 6 con las extensiones de `@strudel/codemirror`, un tema propio a partir de las variables CSS (sin hex), atajos `Mod-Enter`/`Mod-.`, highlight de eventos, selector de visual (pianoroll/punchcard/scope) con `@strudel/draw` y panel de error. Props: `initialCode`, `onCodeChange`, `onEvaluate(result)`, `visual`, `compact`.
 - [ ] `Listen.tsx` y `Example.tsx` para las lecciones (spec 02).

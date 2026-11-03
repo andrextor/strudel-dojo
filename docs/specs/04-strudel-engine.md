@@ -20,11 +20,19 @@ No se embebe `<strudel-repl>` ni `<strudel-editor>`. Se arma un motor propio con
 | `@strudel/draw` | `pianoroll`, `punchcard`, `scope`, `spiral` sobre canvas. |
 | `@strudel/midi` | Entrada Web MIDI (y salida opcional). |
 | `@strudel/hydra` | Visuales generativos. **Lazy**: solo se carga en el Dojo libre y en M10. |
-| `@strudel/reference` | Metadatos de todas las funciones documentadas: fichas `<StrudelRef>`, autocompletado y panel de ayuda. |
+| `@strudel/reference` | Metadatos de todas las funciones documentadas: fichas `<StrudelRef>`, autocompletado y panel de ayuda. Exporta `reference.docs[]` (JSDoc: `name`, `description` en **HTML y en inglés**, `examples`). La ficha muestra un resumen en español escrito por nosotros (opcional, en `features/strudel/ref-es.ts`) y debajo la descripción original. Es HTML del paquete, no del usuario, pero igual se renderiza en build, no en la isla. |
 
-Todos se fijan a una versión exacta. Antes de escribir el motor, la fase P05 hace un **spike** reproduciendo el ejemplo oficial `packages/core/examples/vite-vanilla-repl-cm6` del repo de Strudel (Codeberg `uzu/strudel`, espejo `tidalcycles/strudel`) dentro de una isla Astro. Si alguna API de este documento no coincide con la del paquete, gana el paquete y se actualiza este documento en el mismo PR.
+Todos se fijan a una versión exacta. Las versiones publicadas **no comparten minor**: se instala el conjunto que se referencia entre sí con versión exacta (a noviembre de 2026: `core`, `mini`, `tonal`, `transpiler`, `draw` y `hydra` en `1.2.6`; `webaudio`, `soundfonts`, `codemirror` y `midi` en `1.3.0`, que dependen de `core@1.2.6`; `reference` en `1.2.2`). Antes de escribir el motor, la fase P05 hace un **spike** reproduciendo el ejemplo oficial `examples/codemirror-repl` del repo de Strudel (Codeberg `uzu/strudel`; el de GitHub `tidalcycles/strudel` ya no es la fuente principal) dentro de una isla Astro. Para Node, la referencia es `examples/headless-repl`. Si alguna API de este documento no coincide con la del paquete, gana el paquete y se actualiza este documento en el mismo PR.
 
-Licencia: todos son **AGPL-3.0**, y este repo también lo es (`LICENSE`). El pie de página enlaza al código fuente, como pide la AGPL para una publicación web.
+Hechos verificados en Node 23 con `core`/`mini`/`tonal`/`transpiler` (antes de P05):
+- `@strudel/core` importa `@kabelsalat/web@0.4.1`, que no declara `exports` y cuyo `main` es CJS, así que Node falla con `does not provide an export named 'SalatRepl'` (Vite no falla porque lee `module`). Se arregla con `pnpm patch @kabelsalat/web@0.4.1`, agregando `"exports": { ".": { "import": "./dist/index.mjs", "require": "./dist/index.js" } }`. El parche queda en `patches/` con un comentario `ponytail:` que diga que se quita cuando el upstream publique `exports`.
+- Con eso, `await evalScope(core, mini, tonal)` + `await evaluate(code, transpiler)` devuelve `{ pattern }`, y `pattern.queryArc(0, 1).filter((h) => h.hasOnset())` da los haps. Al cargar imprime `cannot use window: not in browser?`, y es inofensivo.
+- Los valores no vienen normalizados: `note("c3")` da `"c3"` (string en minúsculas), `n("0").scale("D:dorian")` da `"D3"` (octava 3 por defecto) y `chord("C").voicing()` da varias notas en el mismo onset.
+- Los errores llegan como excepciones: mini-notation o JS mal cerrado → `Unexpected token (1:13)`; función inexistente → `ReferenceError: scael is not defined`.
+- `@strudel/soundfonts` **no se puede importar en el servidor** (`window is not defined`, por `soundfont2`): solo con import dinámico dentro del motor del navegador.
+- `@strudel/tonal` y `@strudel/codemirror` traen su propio `@tonaljs/tonal@^4`, mientras la app usa `tonal@6`. La teoría de la app y el análisis de eventos usan siempre `tonal@6`; Strudel solo produce los eventos. Si un nombre de escala de Strudel no existe en `tonal@6`, el test de katas lo detecta.
+
+Licencia: todos son **AGPL-3.0-or-later**, y este repo es AGPL-3.0 (`LICENSE`). El pie de página enlaza al código fuente, como pide la AGPL para una publicación web. El piano por defecto (Salamander Grand Piano, de Alexander Holm) es **CC-BY 3.0** y exige atribución: va en el pie o en `/progreso`, en una línea de créditos.
 
 ## Estructura (`src/features/strudel/`)
 
@@ -44,7 +52,7 @@ Listen.tsx, Example.tsx, StrudelRef.tsx
 
 - Perezosa: nada de Strudel se carga hasta que una isla lo necesita (import dinámico). La página de inicio no descarga Strudel.
 - El `AudioContext` solo arranca tras un gesto del usuario; el primer "Reproducir" lo desbloquea. Hasta entonces el botón dice "Activar sonido".
-- `evalScope(core, mini, tonal, webaudio, draw, ...)` una sola vez. Samples por defecto (`github:tidalcycles/dirt-samples` o el prebake oficial) y soundfonts se registran al iniciar; se cachean por el navegador.
+- `evalScope(core, mini, tonal, webaudio, draw, ...)` una sola vez. Los sonidos se registran al iniciar copiando el subconjunto necesario de `website/src/repl/prebake.mjs` de Strudel: `registerSynthSounds()`, `piano` (`samples('https://strudel.b-cdn.net/piano.json', 'https://strudel.b-cdn.net/piano/')`), la batería por defecto (`uzu-drumkit` y `Dirt-Samples`, con lo que `bd`, `sd` y `hh` funcionan sin `bank`), `tidal-drum-machines` con su `aliasBank` (para `bank("RolandTR909")`) y `registerSoundfonts()` (guitarra: `gm_acoustic_guitar_nylon`). Todo `audio` y todo ejemplo del contenido usa solo esos sonidos. El navegador los cachea.
 - Un solo scheduler global: reproducir en un editor detiene los demás. `Esc` o el botón "Parar todo" del header llama `hush()`.
 
 ### Editor (`StrudelEditor`)
@@ -64,7 +72,7 @@ interface NoteEvent {
   begin: number; end: number            // en ciclos (fracciones → number)
   cycle: number                         // Math.floor(begin)
   midi: number | null                   // de note/n+scale/freq; null para samples sin altura
-  pitchClass: string | null             // deletreo tal como lo produce el patrón
+  pitchClass: string | null             // deletreo del patrón, normalizado con tonal ("c3" → "C", "f#" → "F#")
   sound: string | null                  // s / bank resueltos
   voice?: number                        // índice dentro de un acorde (por orden de altura)
 }
