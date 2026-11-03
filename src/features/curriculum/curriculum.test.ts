@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { readdirSync, readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
+import { validateEntry } from '../exercises/registry.ts'
 import { type Module, moduleSchema } from './schema.ts'
 
 const modulesDir = fileURLToPath(new URL('../../content/modules', import.meta.url))
@@ -87,7 +88,21 @@ test('ready modules M01 and M02, rest draft', () => {
   }
 })
 
+test('each generator in a mix exists in the registry and its params validate', () => {
+  for (const m of modules) {
+    if (m.status !== 'ready') continue
+    const mixes = [
+      ...(m.placement ? [m.placement.mix] : []),
+      ...m.topics.flatMap((t) => [t.practice.mix, t.test.mix]),
+    ]
+    for (const mix of mixes) {
+      for (const entry of mix) {
+        assert.ok(validateEntry(entry), `${m.id}: invalid mix entry ${JSON.stringify(entry)}`)
+      }
+    }
+  }
+})
+
 // Completed in later phases:
-test.todo('each generator in a mix exists in the registry and its params validate (P03)')
 test.todo('each kata and boss solution passes its assertions (P05)')
 test.todo('each lesson Listen/Example code evaluates without error (P05/P08)')
