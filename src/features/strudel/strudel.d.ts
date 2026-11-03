@@ -33,6 +33,11 @@ declare module '@strudel/webaudio' {
     options?: Record<string, unknown>,
   ): Promise<void>
   export function aliasBank(url: string): Promise<void>
+  export function superdough(
+    value: Record<string, unknown>,
+    time: number,
+    duration: number,
+  ): Promise<void>
   export function getAnalyserById(id: number): AnalyserNode | undefined
   export function drawTimeScope(
     analyser: AnalyserNode | undefined,

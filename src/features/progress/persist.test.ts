@@ -45,6 +45,8 @@ test('parseProgress survives garbage and keeps the valid parts', () => {
   assert.deepEqual(parsed.practiceDays, p.practiceDays)
   assert.equal(parsed.prefs.notation, 'american')
   assert.equal(parsed.prefs.instrument, 'keyboard')
+  assert.equal(parsed.prefs.lefty, false)
+  assert.equal(parsed.prefs.via, null)
   assert.deepEqual(parseProgress(JSON.parse(JSON.stringify(p))), p)
 })
 

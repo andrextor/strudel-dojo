@@ -1,7 +1,8 @@
 // Browser-only Strudel engine: lazy init, one shared AudioContext, sounds registered once, a
 // single "who is playing" rule (starting anything stops the rest), and global hush.
 import { toDojoError } from './errors.ts'
-import { knownNames, loadScope } from './evaluate.ts'
+import { evaluatePattern, knownNames, loadScope } from './evaluate.ts'
+import { firstCycle } from './query.ts'
 import type { DojoError } from './types.ts'
 
 const CDN = 'https://strudel.b-cdn.net'
@@ -170,4 +171,38 @@ export function getEngine(): Promise<Engine> {
 // "Parar todo" / Esc: stops every editor and the headless player.
 export function hushAll(): void {
   document.dispatchEvent(new CustomEvent(STOP_EVENT))
+}
+
+const CYCLE_SECONDS = 2 // Strudel's default 0.5 cycles per second
+const LEAD = 0.05 // scheduling slack so the first note is never in the past
+
+export interface OnceOptions {
+  slow?: number
+  firstOnly?: boolean
+}
+
+// Plays one cycle of `code` and stops by itself: ear questions ("Repetir", "Más lento",
+// "Solo la primera nota") and instrument taps. Call it from the click/key handler.
+export async function playOnce(code: string, { slow = 1, firstOnly = false }: OnceOptions = {}) {
+  unlockAudio()
+  hushAll()
+  const [engine, result] = await Promise.all([getEngine(), evaluatePattern(code)])
+  if (!result.ok) return result.error
+  await engine.sounds
+  const cycle = CYCLE_SECONDS * slow
+  const start = engine.getTime() + LEAD
+  for (const hap of firstCycle(result.pattern, firstOnly)) {
+    const offset = firstOnly ? 0 : hap.begin * cycle
+    void engine.modules.webaudio.superdough(
+      hap.value,
+      start + offset,
+      (hap.end - hap.begin) * cycle,
+    )
+  }
+  return null
+}
+
+export function playMidiNotes(midis: readonly number[]) {
+  if (midis.length === 0) return Promise.resolve(null)
+  return playOnce(`note("[${midis.join(',')}]").s("piano")`)
 }

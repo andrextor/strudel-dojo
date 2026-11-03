@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { formatNote, parseNoteInput, parseNoteList, sameSound, sameSpelling } from './notes.ts'
+import {
+  formatNote,
+  parseNoteInput,
+  parseNoteList,
+  sameSound,
+  sameSpelling,
+  spokenNote,
+} from './notes.ts'
 
 // [input, expectedPitchClass | null, expectedOctave]
 const CASES: [string, string | null, number | null][] = [
@@ -112,4 +119,11 @@ test('parseNoteList splits on spaces, commas and dashes', () => {
   )
   assert.equal(parseNoteList('C E H'), null)
   assert.equal(parseNoteList('   '), null)
+})
+
+test('spokenNote reads accidentals as words', () => {
+  assert.equal(spokenNote('C#4', 'latin'), 'Do sostenido 4')
+  assert.equal(spokenNote('Bb', 'american'), 'B bemol')
+  assert.equal(spokenNote('F##3', 'latin'), 'Fa doble sostenido 3')
+  assert.equal(spokenNote('G', 'latin'), 'Sol')
 })

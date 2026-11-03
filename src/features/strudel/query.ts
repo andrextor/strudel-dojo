@@ -158,3 +158,25 @@ export function summarize(events: NoteEvent[], cycles: number): PatternSummary {
   const sounds = [...new Set(events.flatMap((e) => (e.sound ? [e.sound] : [])))]
   return { key: estimateKey(pitched), range, eventsPerCycle, chordsPerCycle, sounds }
 }
+
+export interface OneShotHap {
+  value: Fields
+  begin: number
+  end: number
+}
+
+// The haps of the first cycle, ready to hand to superdough once (ear questions, key taps).
+// `firstOnly` keeps just the first onset, so a chord still sounds whole.
+export function firstCycle(pattern: PatternLike, firstOnly = false): OneShotHap[] {
+  const haps: OneShotHap[] = []
+  for (const hap of pattern.queryArc(0, 1)) {
+    if (!isObject(hap) || typeof hap.hasOnset !== 'function' || !hap.hasOnset()) continue
+    if (!isObject(hap.whole) || !isObject(hap.value)) continue
+    const begin = num(hap.whole.begin)
+    const end = num(hap.whole.end)
+    if (begin !== null && end !== null) haps.push({ value: { ...hap.value }, begin, end })
+  }
+  haps.sort((a, b) => a.begin - b.begin)
+  const first = haps[0]?.begin
+  return firstOnly ? haps.filter((h) => h.begin === first) : haps
+}

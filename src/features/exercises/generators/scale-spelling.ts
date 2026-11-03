@@ -1,4 +1,5 @@
 import { SCALE_TYPE_ES } from '../../theory/es.ts'
+import { needsRareSpelling } from '../../theory/instruments.ts'
 import { formatNote } from '../../theory/notes.ts'
 import { spellScale } from '../../theory/scales.ts'
 import type { Generator } from '../types.ts'
@@ -39,13 +40,24 @@ export const scaleSpelling: Generator<Params> = {
     const tonic = rng.pick([...tonicsFor(type, params.tonics)])
     const notes = spellScale(tonic, type) ?? [tonic]
     const typeEs = SCALE_TYPE_ES[type] ?? type
+    const spellAll = needsRareSpelling(
+      params.scales.flatMap((s) =>
+        tonicsFor(s, params.tonics).flatMap((t) => spellScale(t, s) ?? []),
+      ),
+    )
     return {
       id: '',
       key: `scale-spelling:${tonic}:${type}`,
       generator: 'scale-spelling',
       skill: 'major-scale-spelling',
       prompt: `Escribe la escala de ${formatNote(tonic, 'latin')} ${typeEs}.`,
-      input: { kind: 'note-set', via: ['text', 'keyboard'], ordered: true, count: notes.length },
+      input: {
+        kind: 'note-set',
+        via: ['text', 'keyboard'],
+        ordered: true,
+        count: notes.length,
+        spellAll,
+      },
       answer: { kind: 'pitch-classes', notes, spelling: 'strict' },
       explanation: `${formatNote(tonic, 'latin')} ${typeEs}: ${notes.map((n) => formatNote(n, 'american')).join(' ')}.`,
     }

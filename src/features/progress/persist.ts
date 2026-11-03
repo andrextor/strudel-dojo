@@ -40,6 +40,8 @@ export const DEFAULT_PREFS: Prefs = {
   notation: 'latin',
   midi: false,
   sound: true,
+  lefty: false,
+  via: null,
 }
 
 export const emptyProgress = (): ProgressState => ({
@@ -69,13 +71,15 @@ function readInput(v: unknown): InputSpec | null {
     case 'note-set': {
       if (!isStrings(v.via)) return null
       const via = v.via.filter(isVia)
-      if (v.kind === 'note') return { kind: 'note', via }
+      const spellAll = v.spellAll === true ? { spellAll: true } : {}
+      if (v.kind === 'note') return { kind: 'note', via, ...spellAll }
       if (!isBool(v.ordered)) return null
       return {
         kind: 'note-set',
         via,
         ordered: v.ordered,
         ...(isInt(v.count) ? { count: v.count } : {}),
+        ...spellAll,
       }
     }
     default:
@@ -96,7 +100,7 @@ function readAnswer(v: unknown): Answer | null {
 
 function readQuestion(v: unknown): Question | null {
   if (!isObject(v)) return null
-  const { id, key, generator, skill, prompt, explanation, audio, staff } = v
+  const { id, key, generator, skill, prompt, explanation, audio, staff, marked } = v
   if (!isString(id) || !isString(key) || !isString(generator) || !isString(skill)) return null
   if (!isString(prompt) || !isString(explanation)) return null
   const input = readInput(v.input)
@@ -113,6 +117,7 @@ function readQuestion(v: unknown): Question | null {
     explanation,
     ...(isString(audio) ? { audio } : {}),
     ...(isString(staff) ? { staff } : {}),
+    ...(isStrings(marked) ? { marked } : {}),
   }
 }
 
@@ -224,6 +229,8 @@ function readPrefs(v: unknown): Prefs {
     notation: v.notation === 'american' ? 'american' : 'latin',
     midi: v.midi === true,
     sound: v.sound !== false,
+    lefty: v.lefty === true,
+    via: isString(v.via) && isVia(v.via) ? v.via : null,
   }
 }
 

@@ -3,7 +3,7 @@ import { test } from 'node:test'
 import { Note } from 'tonal'
 import { createRng } from '../../lib/random.ts'
 import { grade } from './grade.ts'
-import { registry } from './registry.ts'
+import { generateQuestion, registry } from './registry.ts'
 import type { Question, Response } from './types.ts'
 
 // Representative params drawn from M01–M02 content, one case per generator.
@@ -95,3 +95,21 @@ for (const { id, params, strict } of CASES) {
     }
   })
 }
+
+test('spellAll depends on the exercise params, never on the single question', () => {
+  const flags = (params: Record<string, unknown>) =>
+    new Set(
+      Array.from({ length: 60 }, (_, i) => {
+        const q = generateQuestion(
+          { generator: 'scale-spelling', params, weight: 1 },
+          `s:${i}`,
+          new Set(),
+        )
+        return q.input.kind === 'note-set' ? q.input.spellAll : undefined
+      }),
+    )
+  // D major alone never needs E♯ or C♭: black keys ask, white keys do not.
+  assert.deepEqual(flags({ scales: ['major'], tonics: ['D'] }), new Set([false]))
+  // The full tonic pool includes F♯ and G♭ major, so even C major asks on every key.
+  assert.deepEqual(flags({ scales: ['major'] }), new Set([true]))
+})

@@ -120,7 +120,11 @@ Editor a pantalla completa, panel de referencia (`@strudel/reference`, búsqueda
 
 ## MIDI
 
-`@strudel/midi` + Web MIDI API, en las preferencias del perfil. Cuando hay un dispositivo:
+Web MIDI API directa (`features/midi/midi.ts`): para leer note-on/off no hace falta `@strudel/midi`, que queda para la salida MIDI de patrones en el Dojo libre. Cuando hay un dispositivo:
 - En ejercicios con `via` que incluye `midi`, tocar notas responde (acordes = notas simultáneas dentro de 80 ms).
 - En `ear-melody`, se toca la melodía directamente.
 - Si el navegador no tiene Web MIDI (Safari iOS), la opción no aparece y se explica por qué en las preferencias.
+
+## Sonido de una vez
+
+Las preguntas de oído y las teclas del instrumento no usan el scheduler en bucle: `playOnce(code, { slow, firstOnly })` evalúa el código, toma el primer ciclo (`firstCycle` en `query.ts`) y entrega cada hap a `superdough` con su tiempo absoluto (ciclo de 2 s, el `cps` 0.5 por defecto). Suena una vez y termina solo; antes llama a `hushAll()` para respetar la regla de "uno suena a la vez".

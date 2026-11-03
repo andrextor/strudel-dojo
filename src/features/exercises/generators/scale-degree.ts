@@ -1,4 +1,5 @@
 import { DEGREE_NAME_ES, SCALE_TYPE_ES } from '../../theory/es.ts'
+import { needsRareSpelling } from '../../theory/instruments.ts'
 import { formatNote } from '../../theory/notes.ts'
 import { spellScale } from '../../theory/scales.ts'
 import { normalizeText } from '../grade.ts'
@@ -8,6 +9,8 @@ import { MAJOR_TONICS, MINOR_TONICS } from './_shared.ts'
 interface Params {
   scales: string[]
 }
+
+const tonicsOf = (type: string) => (type.includes('minor') ? MINOR_TONICS : MAJOR_TONICS)
 
 export const scaleDegree: Generator<Params> = {
   id: 'scale-degree',
@@ -26,7 +29,7 @@ export const scaleDegree: Generator<Params> = {
   },
   generate(params, rng) {
     const type = rng.pick(params.scales)
-    const tonic = rng.pick([...(type.includes('minor') ? MINOR_TONICS : MAJOR_TONICS)])
+    const tonic = rng.pick([...tonicsOf(type)])
     const notes = spellScale(tonic, type) ?? [tonic]
     const degree = rng.int(1, Math.min(7, notes.length))
     const note = notes[degree - 1] ?? tonic
@@ -53,7 +56,13 @@ export const scaleDegree: Generator<Params> = {
       generator: 'scale-degree',
       skill: 'scale-degrees',
       prompt: `¿Qué nota es el grado ${degree} de ${formatNote(tonic, 'latin')} ${typeEs}?`,
-      input: { kind: 'note', via: ['text', 'keyboard'] },
+      input: {
+        kind: 'note',
+        via: ['text', 'keyboard'],
+        spellAll: needsRareSpelling(
+          params.scales.flatMap((s) => tonicsOf(s).flatMap((t) => spellScale(t, s) ?? [])),
+        ),
+      },
       answer: { kind: 'pitch-classes', notes: [note], spelling: 'strict' },
       explanation: `El grado ${degree} de ${formatNote(tonic, 'latin')} ${typeEs} es ${formatNote(note, 'american')}.`,
     }

@@ -1,4 +1,5 @@
 import { Interval } from 'tonal'
+import { needsRareSpelling } from '../../theory/instruments.ts'
 import { formatInterval, transposeNote } from '../../theory/intervals.ts'
 import { formatNote } from '../../theory/notes.ts'
 import type { Generator } from '../types.ts'
@@ -30,8 +31,9 @@ export const intervalBuild: Generator<Params> = {
       if (semis < 1 || semis > maxSemis) return false
       return params.qualities === null || params.qualities.includes(Interval.get(name).q)
     })
+    const roots = notePool('all')
     const interval = rng.pick(pool)
-    const root = rng.pick(notePool('all'))
+    const root = rng.pick(roots)
     const result = transposeNote(root, interval) ?? root
     const resultPc = result.replace(/-?\d+$/, '')
     return {
@@ -40,7 +42,13 @@ export const intervalBuild: Generator<Params> = {
       generator: 'interval-build',
       skill: 'interval-quality',
       prompt: `¿Qué nota está una ${formatInterval(interval, 'long')} por encima de ${formatNote(root, 'american')}?`,
-      input: { kind: 'note', via: ['text', 'keyboard', 'fretboard'] },
+      input: {
+        kind: 'note',
+        via: ['text', 'keyboard', 'fretboard'],
+        spellAll: needsRareSpelling(
+          pool.flatMap((i) => roots.map((r) => transposeNote(r, i) ?? r)),
+        ),
+      },
       answer: { kind: 'pitch-classes', notes: [resultPc], spelling: 'strict' },
       explanation: `Una ${formatInterval(interval, 'long')} sobre ${formatNote(root, 'american')} es ${formatNote(resultPc, 'american')}.`,
     }

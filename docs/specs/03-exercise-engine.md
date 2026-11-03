@@ -18,14 +18,18 @@ interface Question {
   input: InputSpec                      // cómo se responde
   audio?: string                        // código Strudel a reproducir (ejercicios de oído)
   staff?: string                        // ABC a dibujar
+  marked?: string[]                     // notas con octava que se resaltan en el instrumento ("nombra la nota marcada")
   answer: Answer                        // respuesta canónica
   explanation: string                   // se muestra tras responder (práctica) o al entregar (prueba)
 }
 
 type InputSpec =
   | { kind: 'choice'; options: string[] }
-  | { kind: 'note'; via: InputVia[] }                       // una nota
-  | { kind: 'note-set'; via: InputVia[]; ordered: boolean; count?: number }
+  | { kind: 'note'; via: InputVia[]; spellAll?: boolean }   // una nota
+  | { kind: 'note-set'; via: InputVia[]; ordered: boolean; count?: number; spellAll?: boolean }
+  // spellAll: el ejercicio (no la pregunta) puede pedir E♯, C♭ o dobles; en el teclado y el
+  // diapasón todas las teclas preguntan cómo se escribe. Se calcula de los params del generador
+  // para que el instrumento se comporte igual en todas sus preguntas y no delate ninguna.
   | { kind: 'text'; placeholder: string }                   // cifrados, romanos, nombres de intervalo
   | { kind: 'rhythm'; options: string[] }                   // mini-notation candidatas
 
@@ -56,7 +60,7 @@ type Grade = { correct: boolean; feedback?: string }        // feedback: p. ej. 
 ## Reglas de calificación
 
 - **Deletreo estricto por defecto** en escalas, acordes y armaduras: en Sol mayor el 7.º grado es F♯, nunca G♭. Si la respuesta suena bien pero está mal deletreada, cuenta como **incorrecta**, con `feedback` que lo explica. Solo con `spelling: 'enharmonic'` (ejercicios de teclado de M01-T01 y de oído) se acepta cualquier enarmónico.
-- El teclado y el MIDI no deletrean, solo dan alturas. Cuando la respuesta es estricta y se responde desde el teclado, la UI pide elegir el nombre (p. ej. F♯/G♭) en las teclas negras, o el ejercicio limita `via` a `text` y `fretboard`+nombre. El generador declara qué `via` admite.
+- El teclado y el MIDI no deletrean, solo dan alturas. Cuando la respuesta es estricta y se responde desde el teclado, la UI pide elegir el nombre (p. ej. F♯/G♭) en las teclas negras, y en todas si el ejercicio declara `spellAll`; o el ejercicio limita `via` a `text` y `fretboard`+nombre. El generador declara qué `via` admite.
 - La entrada de texto acepta americano (`C#`, `Bb`), latino (`Do#`, `Sib`, `sol`), símbolos unicode (`♯`, `♭`, `𝄪`, `𝄫`) y mayúsculas/minúsculas mezcladas. `parseNoteInput` en `features/theory/` es el único parser.
 - Intervalos: se aceptan `5J`, `5P`, `quinta justa`, `P5`; tercera mayor como `3M`, `M3`, `tercera mayor`.
 - Calificación de la prueba: aritmética entera, sin redondeo: `correct * 100 >= passPercent * total`. 8/10 aprueba con 80 %, 7/10 no.
@@ -69,7 +73,7 @@ type Grade = { correct: boolean; feedback?: string }        // feedback: p. ej. 
 
 | id | Skill | Qué pregunta | Params |
 |----|-------|--------------|--------|
-| `note-name` | note-naming | Nombra la nota marcada (teclado/diapasón/pentagrama) o márcala. | `range`, `accidentals: none|sharps|flats|all`, `via` |
+| `note-name` | note-naming | Nombra la nota marcada (teclado/diapasón/pentagrama) o márcala. Hoy solo "nómbrala": la nota va en `marked` y se responde por texto (tocar la tecla resaltada la delataría). | `range`, `accidentals: none|sharps|flats|all`, `via` |
 | `enharmonic` | note-naming | Enarmónico de X. | `allowDouble` |
 | `semitone-count` | semitones | Semitonos entre dos notas. | `maxSemitones` |
 | `interval-name` | interval-quality | Nombra el intervalo entre dos notas. | `maxInterval`, `qualities`, `direction` |

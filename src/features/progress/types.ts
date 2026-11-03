@@ -1,4 +1,4 @@
-import type { Question, Response } from '../exercises/types.ts'
+import type { InputVia, Question, Response } from '../exercises/types.ts'
 import type { SenseiReview } from '../sensei/types.ts'
 
 export type LocalDate = string // 'YYYY-MM-DD' in the viewer's time zone
@@ -61,6 +61,8 @@ export interface Prefs {
   notation: 'latin' | 'american'
   midi: boolean
   sound: boolean
+  lefty: boolean // mirrors the fretboard
+  via: InputVia | null // last answer input chosen in a question card
 }
 
 export interface ProgressState {

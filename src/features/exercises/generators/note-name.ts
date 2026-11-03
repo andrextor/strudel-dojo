@@ -7,7 +7,9 @@ interface Params {
   via: InputVia[]
 }
 
-const VIA: InputVia[] = ['text', 'keyboard', 'fretboard']
+// The note is shown on the instrument, so the answer is its name: tapping the lit key would
+// give it away.
+const VIA: InputVia[] = ['text']
 
 export const noteName: Generator<Params> = {
   id: 'note-name',
@@ -26,8 +28,9 @@ export const noteName: Generator<Params> = {
       key: `note-name:${pitch}`,
       generator: 'note-name',
       skill: 'note-naming',
-      prompt: 'Nombra la nota marcada en el teclado.',
+      prompt: 'Nombra la nota marcada.',
       input: { kind: 'note', via: params.via },
+      marked: [pitch],
       answer: { kind: 'pitch-classes', notes: [pc], spelling: 'enharmonic' },
       explanation: `La nota marcada es ${formatNote(pc, 'latin')} (${formatNote(pc, 'american')}).`,
     }

@@ -53,6 +53,10 @@
   --color-belt-black: #2a2c3d;
   --color-belt-dan: #f5c84c;
 
+  /* Piano keys look like a real piano in both themes. */
+  --color-key-white: #f1f0f7;
+  --color-key-black: #20233a;
+
   --radius-control: 0.75rem;
   --radius-card: 1.25rem;
 

@@ -34,7 +34,7 @@ interface ProgressState {
   skillStats: Record<Skill, SkillStat>  // repaso espaciado
   practiceDays: Record<LocalDate, { answered: number; correct: number }>  // LocalDate = 'YYYY-MM-DD' local; base del XP de práctica y la racha
   scrolls: Scroll[]                     // pergaminos del Dojo libre (máx. 20)
-  prefs: Prefs                          // instrumento preferido, notación (latina/americana), MIDI, sonido
+  prefs: Prefs                          // instrumento preferido, notación (latina/americana), MIDI, sonido, zurdo (`lefty`) y la última entrada elegida en una pregunta (`via`)
   backedUpAt: string | null             // última descarga de respaldo (recordatorio de 14 días)
 }
 

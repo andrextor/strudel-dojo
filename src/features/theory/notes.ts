@@ -106,3 +106,20 @@ export function parseNoteList(input: unknown): ParsedNote[] | null {
   }
   return result
 }
+
+const ACCIDENTAL_WORDS: Record<string, string> = {
+  '##': ' doble sostenido',
+  bb: ' doble bemol',
+  '#': ' sostenido',
+  b: ' bemol',
+  '': '',
+}
+
+// What a screen reader should say: "Do sostenido 4" / "C sostenido 4".
+export function spokenNote(name: string, notation: Notation): string {
+  const note = Note.get(name)
+  if (note.empty) return name
+  const base = notation === 'latin' ? (LETTER_TO_LATIN[note.letter] ?? note.letter) : note.letter
+  const octave = note.oct === undefined ? '' : ` ${note.oct}`
+  return `${base}${ACCIDENTAL_WORDS[note.acc] ?? ''}${octave}`
+}

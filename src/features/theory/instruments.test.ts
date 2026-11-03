@@ -1,7 +1,15 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { Note } from 'tonal'
-import { fretToNote, keyboardRange, noteToFrets, STANDARD_TUNING } from './instruments.ts'
+import {
+  degreeLabel,
+  fretToNote,
+  keyboardRange,
+  needsRareSpelling,
+  noteToFrets,
+  STANDARD_TUNING,
+  spellingsFor,
+} from './instruments.ts'
 
 test('fretToNote on standard tuning', () => {
   assert.equal(Note.chroma(fretToNote(0, 0) as string), Note.chroma('E')) // low E open
@@ -34,4 +42,24 @@ test('keyboardRange', () => {
   assert.equal(octave[1]?.isBlack, true) // C#/Db
   assert.equal(octave.filter((k) => k.isBlack).length, 5)
   assert.deepEqual(keyboardRange(72, 60), [])
+})
+
+test('spellingsFor: black keys get both names, white keys one unless rare', () => {
+  assert.deepEqual(spellingsFor(61), ['C#', 'Db'])
+  assert.deepEqual(spellingsFor(60), ['C'])
+  assert.deepEqual(spellingsFor(65, true), ['F', 'E#', 'Gbb'])
+  assert.deepEqual(spellingsFor(67, true), ['G', 'F##', 'Abb'])
+})
+
+test('degreeLabel is chromatic from the tonic', () => {
+  assert.equal(degreeLabel(62, 'D'), '1')
+  assert.equal(degreeLabel(66, 'D'), '3')
+  assert.equal(degreeLabel(60, 'D'), '♭7')
+})
+
+test('needsRareSpelling spots E♯, C♭ and doubles', () => {
+  assert.equal(needsRareSpelling(['D', 'E', 'F#', 'G', 'A', 'B', 'C#']), false)
+  assert.equal(needsRareSpelling(['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#']), true)
+  assert.equal(needsRareSpelling(['Cb']), true)
+  assert.equal(needsRareSpelling(['F##']), true)
 })

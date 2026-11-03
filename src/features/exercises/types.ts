@@ -6,8 +6,10 @@ export type InputVia = 'keyboard' | 'fretboard' | 'text' | 'midi'
 
 export type InputSpec =
   | { kind: 'choice'; options: string[] }
-  | { kind: 'note'; via: InputVia[] }
-  | { kind: 'note-set'; via: InputVia[]; ordered: boolean; count?: number }
+  // spellAll: a strict exercise that can ask for E♯, C♭ or doubles; every key then asks how
+  // it is spelled. Set from the generator's params, so it never hints at one question.
+  | { kind: 'note'; via: InputVia[]; spellAll?: boolean }
+  | { kind: 'note-set'; via: InputVia[]; ordered: boolean; count?: number; spellAll?: boolean }
   | { kind: 'text'; placeholder: string }
   | { kind: 'rhythm'; options: string[] }
 
@@ -32,6 +34,7 @@ export interface Question {
   input: InputSpec
   audio?: string // Strudel code for ear exercises
   staff?: string // ABC to draw
+  marked?: string[] // notes with octave lit on the instrument (e.g. "nombra la nota marcada")
   answer: Answer
   explanation: string
 }

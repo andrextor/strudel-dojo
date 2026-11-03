@@ -4,7 +4,7 @@ import type { Assertion } from '../curriculum/schema.ts'
 import { checkAssertion, runKata, stripCode } from './assertions.ts'
 import { levenshtein, suggest } from './errors.ts'
 import { evaluatePattern } from './evaluate.ts'
-import { MAX_EVENTS, queryEvents, summarize } from './query.ts'
+import { firstCycle, MAX_EVENTS, queryEvents, summarize } from './query.ts'
 import type { NoteEvent } from './types.ts'
 
 async function events(code: string, cycles = 1): Promise<NoteEvent[]> {
@@ -234,4 +234,24 @@ test('runKata reports evaluation errors without running assertions', async () =>
   assert.equal(r.ok, false)
   const ok = await runKata('note("c3")', [{ type: 'usesFunction', names: ['note'] }], 1)
   assert.ok(ok.ok && ok.passed && ok.results.length === 1)
+})
+
+test('firstCycle gives one cycle of haps, or just the first onset', async () => {
+  const melody = await evaluatePattern('note("c3 e3 g3").s("piano")')
+  const chord = await evaluatePattern('note("[c3,e3] g3")')
+  assert.ok(melody.ok && chord.ok)
+  const all = firstCycle(melody.pattern)
+  assert.deepEqual(
+    all.map((h) => [h.value.note, h.begin]),
+    [
+      ['c3', 0],
+      ['e3', 1 / 3],
+      ['g3', 2 / 3],
+    ],
+  )
+  assert.equal(all[0]?.value.s, 'piano')
+  assert.deepEqual(
+    firstCycle(chord.pattern, true).map((h) => h.value.note),
+    ['c3', 'e3'],
+  )
 })
