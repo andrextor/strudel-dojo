@@ -1,0 +1,35 @@
+{
+  "id": "M09",
+  "order": 9,
+  "belt": "black",
+  "title": "Escalas avanzadas",
+  "summary": "Menor armónica y melódica, pentatónicas, simétricas y escala-acorde.",
+  "status": "draft",
+  "prerequisite": "M08",
+  "topics": [
+    {
+      "id": "M09-T01",
+      "title": "Menor armónica y melódica",
+      "goal": "Construir las menores y sus modos clave.",
+      "skills": ["minor-variants"]
+    },
+    {
+      "id": "M09-T02",
+      "title": "Pentatónicas y blues",
+      "goal": "Tocar las pentatónicas y la escala de blues.",
+      "skills": ["pentatonic-blues"]
+    },
+    {
+      "id": "M09-T03",
+      "title": "Simétricas",
+      "goal": "Reconocer tonos enteros y disminuida.",
+      "skills": ["symmetric-scales"]
+    },
+    {
+      "id": "M09-T04",
+      "title": "Escala-acorde",
+      "goal": "Elegir la escala para cada tipo de acorde.",
+      "skills": ["chord-scale"]
+    }
+  ]
+}

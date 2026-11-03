@@ -1,0 +1,35 @@
+{
+  "id": "M06",
+  "order": 6,
+  "belt": "purple",
+  "title": "Modos griegos",
+  "summary": "Los siete modos, su nota característica y sus progresiones.",
+  "status": "draft",
+  "prerequisite": "M05",
+  "topics": [
+    {
+      "id": "M06-T01",
+      "title": "Modos como rotaciones",
+      "goal": "Deletrear los modos como rotaciones de la escala mayor.",
+      "skills": ["mode-spelling"]
+    },
+    {
+      "id": "M06-T02",
+      "title": "Nota característica",
+      "goal": "Identificar la nota que define cada modo.",
+      "skills": ["characteristic-note"]
+    },
+    {
+      "id": "M06-T03",
+      "title": "Modos paralelos",
+      "goal": "Ordenar los modos de más brillante a más oscuro.",
+      "skills": ["parallel-modes"]
+    },
+    {
+      "id": "M06-T04",
+      "title": "Progresiones modales",
+      "goal": "Tocar progresiones y drones modales.",
+      "skills": ["modal-progressions"]
+    }
+  ]
+}

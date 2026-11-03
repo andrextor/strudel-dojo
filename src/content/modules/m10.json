@@ -1,0 +1,35 @@
+{
+  "id": "M10",
+  "order": 10,
+  "belt": "dan",
+  "title": "Composición y live coding",
+  "summary": "Forma, arreglo por capas, diseño de sonido y performance.",
+  "status": "draft",
+  "prerequisite": "M09",
+  "topics": [
+    {
+      "id": "M10-T01",
+      "title": "Forma y motivo",
+      "goal": "Desarrollar un motivo en frases y secciones.",
+      "skills": ["form"]
+    },
+    {
+      "id": "M10-T02",
+      "title": "Arreglo en capas",
+      "goal": "Equilibrar registro, densidad y contrapunto.",
+      "skills": ["arrangement"]
+    },
+    {
+      "id": "M10-T03",
+      "title": "Diseño de sonido",
+      "goal": "Usar envolventes, filtros y efectos.",
+      "skills": ["sound-design"]
+    },
+    {
+      "id": "M10-T04",
+      "title": "Performance",
+      "goal": "Construir un set en vivo con tensión y liberación.",
+      "skills": ["performance"]
+    }
+  ]
+}

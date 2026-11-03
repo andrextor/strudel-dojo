@@ -1,0 +1,35 @@
+{
+  "id": "M04",
+  "order": 4,
+  "belt": "green",
+  "title": "Función armónica y progresiones",
+  "summary": "Tónica, subdominante y dominante, cadencias y progresiones clásicas.",
+  "status": "draft",
+  "prerequisite": "M03",
+  "topics": [
+    {
+      "id": "M04-T01",
+      "title": "Tónica, subdominante, dominante",
+      "goal": "Agrupar los acordes por su función de tensión y reposo.",
+      "skills": ["harmonic-function"]
+    },
+    {
+      "id": "M04-T02",
+      "title": "Cadencias",
+      "goal": "Reconocer cadencias auténtica, plagal, rota y semicadencia.",
+      "skills": ["cadences"]
+    },
+    {
+      "id": "M04-T03",
+      "title": "Progresiones clásicas",
+      "goal": "Tocar progresiones comunes y el blues de 12 compases.",
+      "skills": ["common-progressions"]
+    },
+    {
+      "id": "M04-T04",
+      "title": "Armonizar una melodía",
+      "goal": "Elegir acordes para una melodía según sus notas.",
+      "skills": ["harmonization"]
+    }
+  ]
+}

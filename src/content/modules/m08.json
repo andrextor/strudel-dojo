@@ -1,0 +1,35 @@
+{
+  "id": "M08",
+  "order": 8,
+  "belt": "red",
+  "title": "Armonía avanzada",
+  "summary": "Dominantes secundarias, préstamos y sustitución tritonal.",
+  "status": "draft",
+  "prerequisite": "M07",
+  "topics": [
+    {
+      "id": "M08-T01",
+      "title": "Dominantes secundarias",
+      "goal": "Insertar V/x y resolverlas.",
+      "skills": ["secondary-dominants"]
+    },
+    {
+      "id": "M08-T02",
+      "title": "Intercambio modal",
+      "goal": "Tomar acordes prestados de la menor paralela.",
+      "skills": ["modal-interchange"]
+    },
+    {
+      "id": "M08-T03",
+      "title": "Sustitución tritonal",
+      "goal": "Sustituir un V7 por su tritonal.",
+      "skills": ["tritone-sub"]
+    },
+    {
+      "id": "M08-T04",
+      "title": "Disminuidos de paso y cromatismo",
+      "goal": "Usar disminuidos de paso y bajo cromático.",
+      "skills": ["passing-chords"]
+    }
+  ]
+}

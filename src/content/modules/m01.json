@@ -1,0 +1,177 @@
+{
+  "id": "M01",
+  "order": 1,
+  "belt": "white",
+  "title": "Reactivar fundamentos",
+  "summary": "Notas, intervalos y ritmo, más tus primeros sonidos en Strudel.",
+  "status": "ready",
+  "prerequisite": null,
+  "placement": {
+    "questions": 20,
+    "passPercent": 90,
+    "mix": [
+      { "generator": "note-name", "weight": 1 },
+      { "generator": "interval-name", "weight": 2 },
+      { "generator": "rhythm-match", "weight": 1 }
+    ]
+  },
+  "topics": [
+    {
+      "id": "M01-T01",
+      "title": "Notas y alteraciones",
+      "goal": "Nombrar y ubicar cualquier nota con sostenidos y bemoles en teclado y diapasón.",
+      "lesson": "m01-t01",
+      "skills": ["note-naming"],
+      "practice": {
+        "mix": [
+          { "generator": "note-name", "params": { "accidentals": "all" }, "weight": 3 },
+          { "generator": "enharmonic", "weight": 1 }
+        ]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [
+          { "generator": "note-name", "params": { "accidentals": "all" }, "weight": 3 },
+          { "generator": "enharmonic", "weight": 2 }
+        ]
+      },
+      "katas": [
+        {
+          "id": "M01-T01-K1",
+          "title": "Primeros sonidos",
+          "brief": "Toca un patrón de batería de un compás con bombo, caja y hi-hat.",
+          "starter": "s(\"bd hh sd hh\")",
+          "solution": "s(\"bd hh sd hh\")",
+          "cycles": 1,
+          "assertions": [{ "type": "soundsInclude", "names": ["bd", "sd", "hh"] }],
+          "hints": ["Separa los sonidos con espacios dentro de las comillas."]
+        }
+      ]
+    },
+    {
+      "id": "M01-T02",
+      "title": "Tonos, semitonos y escala cromática",
+      "goal": "Contar tonos y semitonos y recorrer la escala cromática en los dos sentidos.",
+      "lesson": "m01-t02",
+      "skills": ["semitones"],
+      "practice": {
+        "mix": [{ "generator": "semitone-count", "weight": 1 }]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [{ "generator": "semitone-count", "weight": 1 }]
+      },
+      "katas": [
+        {
+          "id": "M01-T02-K1",
+          "title": "Cuatro notas",
+          "brief": "Toca las notas C D E F con el sonido de piano.",
+          "starter": "note(\"c d e f\").s(\"piano\")",
+          "solution": "note(\"c d e f\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            { "type": "usesFunction", "names": ["note"] },
+            { "type": "noteSequence", "pitchClasses": ["C", "D", "E", "F"], "voice": "all" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M01-T03",
+      "title": "Intervalos",
+      "goal": "Nombrar cualquier intervalo hasta la octava por número y calidad, en papel, teclado, diapasón y de oído.",
+      "lesson": "m01-t03",
+      "skills": ["interval-quality", "interval-ear"],
+      "practice": {
+        "mix": [
+          {
+            "generator": "interval-name",
+            "params": { "maxInterval": "8P", "qualities": ["m", "M", "P"] },
+            "weight": 3
+          },
+          {
+            "generator": "ear-interval",
+            "params": { "set": ["2M", "3M", "4P", "5P", "8P"], "direction": "up" },
+            "weight": 2
+          }
+        ]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [
+          { "generator": "interval-name", "params": { "maxInterval": "8P" }, "weight": 3 },
+          {
+            "generator": "ear-interval",
+            "params": { "set": ["2M", "3M", "4P", "5P"], "direction": "up" },
+            "weight": 1
+          }
+        ]
+      },
+      "katas": [
+        {
+          "id": "M01-T03-K1",
+          "title": "Quintas en paralelo",
+          "brief": "Toca la melodía C D E F G y súmale una quinta justa arriba a cada nota.",
+          "starter": "note(\"c3 d3 e3 f3 g3\").s(\"piano\")",
+          "solution": "note(\"[c3,g3] [d3,a3] [e3,b3] [f3,c4] [g3,d4]\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            { "type": "usesFunction", "names": ["note"] },
+            { "type": "harmonicIntervals", "interval": "5P", "minRatio": 1 }
+          ],
+          "hints": ["La coma dentro de [ ] hace que dos notas suenen juntas."]
+        }
+      ]
+    },
+    {
+      "id": "M01-T04",
+      "title": "Ritmo y métrica",
+      "goal": "Leer figuras y silencios y reconocer su equivalente en mini-notation.",
+      "lesson": "m01-t04",
+      "skills": ["rhythm-reading"],
+      "practice": {
+        "mix": [{ "generator": "rhythm-match", "weight": 1 }]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [{ "generator": "rhythm-match", "weight": 1 }]
+      },
+      "katas": [
+        {
+          "id": "M01-T04-K1",
+          "title": "Tresillo euclidiano",
+          "brief": "Toca un bombo con el ritmo euclidiano (3,8).",
+          "starter": "s(\"bd(3,8)\")",
+          "solution": "s(\"bd(3,8)\")",
+          "cycles": 1,
+          "assertions": [
+            { "type": "soundsInclude", "names": ["bd"] },
+            { "type": "eventsPerCycle", "min": 3, "max": 3 }
+          ]
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "id": "M01-BOSS",
+    "title": "Primer beat",
+    "brief": "4 compases: bombo, caja, hi-hat y una línea de 8 notas con al menos 3 intervalos distintos.",
+    "starter": "stack(\n  s(\"bd ~ sd ~\"),\n  note(\"c3 e3 g3 c4\").s(\"piano\")\n)",
+    "cycles": 4,
+    "assertions": [
+      { "type": "soundsInclude", "names": ["bd", "sd", "hh"] },
+      { "type": "distinctMelodicIntervals", "min": 3 }
+    ],
+    "rubric": [
+      { "id": "rhythm", "label": "El ritmo es coherente y tiene variación", "weight": 3 },
+      { "id": "theory", "label": "Usa los intervalos del módulo con intención", "weight": 3 },
+      { "id": "code", "label": "Código claro, mini-notation variada", "weight": 2 },
+      { "id": "music", "label": "Suena musical, tiene inicio y cierre", "weight": 2 }
+    ],
+    "passScore": 7
+  }
+}

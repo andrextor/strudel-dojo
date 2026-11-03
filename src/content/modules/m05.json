@@ -1,0 +1,35 @@
+{
+  "id": "M05",
+  "order": 5,
+  "belt": "blue",
+  "title": "Transporte y círculo aplicado",
+  "summary": "Transportar por intervalo y tonalidad, modulación y círculo de quintas.",
+  "status": "draft",
+  "prerequisite": "M04",
+  "topics": [
+    {
+      "id": "M05-T01",
+      "title": "Transportar por intervalo",
+      "goal": "Mover melodías y acordes conservando el deletreo.",
+      "skills": ["transpose-interval"]
+    },
+    {
+      "id": "M05-T02",
+      "title": "Transportar entre tonalidades",
+      "goal": "Transportar por grados y con capo.",
+      "skills": ["transpose-key"]
+    },
+    {
+      "id": "M05-T03",
+      "title": "Modulación básica",
+      "goal": "Modular con acorde pivote a una tonalidad vecina.",
+      "skills": ["modulation"]
+    },
+    {
+      "id": "M05-T04",
+      "title": "El círculo como mapa",
+      "goal": "Encadenar ii–V por el círculo de quintas.",
+      "skills": ["circle-of-fifths"]
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "id": "M02",
+  "order": 2,
+  "belt": "yellow",
+  "title": "Escala mayor y tonalidades",
+  "summary": "Construye la escala mayor, lee armaduras y encuentra la relativa menor.",
+  "status": "ready",
+  "prerequisite": "M01",
+  "placement": {
+    "questions": 20,
+    "passPercent": 90,
+    "mix": [
+      { "generator": "scale-spelling", "weight": 2 },
+      { "generator": "key-signature", "weight": 2 },
+      { "generator": "scale-degree", "weight": 1 }
+    ]
+  },
+  "topics": [
+    {
+      "id": "M02-T01",
+      "title": "Construir la escala mayor",
+      "goal": "Deletrear la escala mayor en cualquier tonalidad con una letra por grado.",
+      "lesson": "m02-t01",
+      "skills": ["major-scale-spelling"],
+      "practice": {
+        "mix": [{ "generator": "scale-spelling", "params": { "scales": ["major"] }, "weight": 1 }]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [{ "generator": "scale-spelling", "params": { "scales": ["major"] }, "weight": 1 }]
+      },
+      "katas": [
+        {
+          "id": "M02-T01-K1",
+          "title": "Escala de Do mayor",
+          "brief": "Toca la escala de Do mayor con n y scale.",
+          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"C:major\").s(\"piano\")",
+          "solution": "n(\"0 1 2 3 4 5 6 7\").scale(\"C:major\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            { "type": "usesFunction", "names": ["n", "scale"] },
+            { "type": "notesWithinScale", "scale": "C major", "minRatio": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M02-T02",
+      "title": "Armaduras y círculo de quintas",
+      "goal": "Leer armaduras y relacionar tonalidades por el círculo de quintas.",
+      "lesson": "m02-t02",
+      "skills": ["key-signatures"],
+      "practice": {
+        "mix": [{ "generator": "key-signature", "params": { "maxAccidentals": 4 }, "weight": 1 }]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [{ "generator": "key-signature", "params": { "maxAccidentals": 7 }, "weight": 1 }]
+      },
+      "katas": [
+        {
+          "id": "M02-T02-K1",
+          "title": "Sol mayor suena",
+          "brief": "Toca la escala de Sol mayor; el F debe sonar como F#.",
+          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"G:major\").s(\"piano\")",
+          "solution": "n(\"0 1 2 3 4 5 6 7\").scale(\"G:major\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            { "type": "usesFunction", "names": ["scale"] },
+            { "type": "notesWithinScale", "scale": "G major", "minRatio": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M02-T03",
+      "title": "Grados y funciones",
+      "goal": "Nombrar los grados de la escala por número y por su nombre funcional.",
+      "lesson": "m02-t03",
+      "skills": ["scale-degrees"],
+      "practice": {
+        "mix": [{ "generator": "scale-degree", "params": { "scales": ["major"] }, "weight": 1 }]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [{ "generator": "scale-degree", "params": { "scales": ["major"] }, "weight": 1 }]
+      },
+      "katas": [
+        {
+          "id": "M02-T03-K1",
+          "title": "Arpegio de grados",
+          "brief": "Toca los grados 0 2 4 0 de Do mayor.",
+          "starter": "n(\"0 2 4 0\").scale(\"C:major\").s(\"piano\")",
+          "solution": "n(\"0 2 4 0\").scale(\"C:major\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            { "type": "usesFunction", "names": ["n", "scale"] },
+            { "type": "notesWithinScale", "scale": "C major", "minRatio": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M02-T04",
+      "title": "Relativa menor y menor natural",
+      "goal": "Encontrar la relativa menor y deletrear la escala menor natural.",
+      "lesson": "m02-t04",
+      "skills": ["relative-minor"],
+      "practice": {
+        "mix": [{ "generator": "relative-key", "weight": 1 }]
+      },
+      "test": {
+        "questions": 10,
+        "passPercent": 80,
+        "mix": [{ "generator": "relative-key", "weight": 1 }]
+      },
+      "katas": [
+        {
+          "id": "M02-T04-K1",
+          "title": "La menor natural",
+          "brief": "Toca la escala de La menor natural con n y scale.",
+          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"A:minor\").s(\"piano\")",
+          "solution": "n(\"0 1 2 3 4 5 6 7\").scale(\"A:minor\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            { "type": "usesFunction", "names": ["scale"] },
+            { "type": "notesWithinScale", "scale": "A minor", "minRatio": 1 }
+          ]
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "id": "M02-BOSS",
+    "title": "Mayor y su relativa",
+    "brief": "Melodía de 8 compases en una tonalidad mayor y luego en su relativa menor; cambia en el compás 5.",
+    "starter": "note(\"c4 d4 e4 f4 g4 a4 b4 c5\").s(\"piano\")",
+    "cycles": 8,
+    "assertions": [
+      { "type": "usesFunction", "names": ["note"] },
+      { "type": "distinctMelodicIntervals", "min": 2 }
+    ],
+    "rubric": [
+      { "id": "scale", "label": "Todas las notas caen en la escala de cada sección", "weight": 3 },
+      { "id": "change", "label": "El cambio a la relativa se oye en el compás 5", "weight": 3 },
+      { "id": "code", "label": "Código claro y legible", "weight": 2 },
+      { "id": "music", "label": "La melodía tiene forma y cierre", "weight": 2 }
+    ],
+    "passScore": 7
+  }
+}

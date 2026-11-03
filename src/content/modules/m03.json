@@ -1,0 +1,35 @@
+{
+  "id": "M03",
+  "order": 3,
+  "belt": "orange",
+  "title": "Acordes y campo armónico",
+  "summary": "Tríadas, inversiones y el campo armónico mayor y menor.",
+  "status": "draft",
+  "prerequisite": "M02",
+  "topics": [
+    {
+      "id": "M03-T01",
+      "title": "Tríadas",
+      "goal": "Construir tríadas mayores, menores, disminuidas y aumentadas.",
+      "skills": ["triad-quality"]
+    },
+    {
+      "id": "M03-T02",
+      "title": "Inversiones y voicings",
+      "goal": "Reconocer inversiones y voicings cerrados y abiertos.",
+      "skills": ["inversions"]
+    },
+    {
+      "id": "M03-T03",
+      "title": "Campo armónico mayor",
+      "goal": "Nombrar los acordes diatónicos de una tonalidad mayor.",
+      "skills": ["diatonic-chords-major"]
+    },
+    {
+      "id": "M03-T04",
+      "title": "Campo armónico menor",
+      "goal": "Nombrar los acordes diatónicos de una tonalidad menor.",
+      "skills": ["diatonic-chords-minor"]
+    }
+  ]
+}

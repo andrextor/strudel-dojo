@@ -1,0 +1,35 @@
+{
+  "id": "M07",
+  "order": 7,
+  "belt": "brown",
+  "title": "Séptimas, extensiones y conducción de voces",
+  "summary": "Acordes de séptima, tensiones y conducción de voces.",
+  "status": "draft",
+  "prerequisite": "M06",
+  "topics": [
+    {
+      "id": "M07-T01",
+      "title": "Acordes de séptima",
+      "goal": "Construir maj7, 7, m7, m7b5, dim7 y mMaj7.",
+      "skills": ["seventh-chords"]
+    },
+    {
+      "id": "M07-T02",
+      "title": "Campo armónico con séptimas",
+      "goal": "Nombrar los acordes de séptima diatónicos.",
+      "skills": ["diatonic-sevenths"]
+    },
+    {
+      "id": "M07-T03",
+      "title": "Tensiones",
+      "goal": "Reconocer 9, 11 y 13 disponibles por tipo de acorde.",
+      "skills": ["tensions"]
+    },
+    {
+      "id": "M07-T04",
+      "title": "Conducción de voces",
+      "goal": "Mover las voces lo mínimo con notas guía.",
+      "skills": ["voice-leading"]
+    }
+  ]
+}
