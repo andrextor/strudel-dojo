@@ -11,6 +11,7 @@ type Seed = string                      // reproducible: `${topicId}:${attemptId
 
 interface Question {
   id: string                            // = seed
+  key: string                           // contenido canónico (p. ej. "interval-name:C4>E4"); dos preguntas con la misma key son la misma pregunta
   generator: string                     // id del generador
   skill: string
   prompt: string                        // español, puede incluir notación
@@ -42,6 +43,11 @@ interface Generator<P> {
   generate(params: P, rng: Rng): Question
 }
 
+type Response =
+  | { kind: 'choice'; index: number; hinted?: boolean }
+  | { kind: 'notes'; notes: string[]; hinted?: boolean }    // nombres ya deletreados (o alturas con nombre elegido)
+  | { kind: 'text'; value: string; hinted?: boolean }
+
 type Grade = { correct: boolean; feedback?: string }        // feedback: p. ej. "Sonido correcto, deletreo incorrecto: en Re mayor es F♯, no G♭."
 ```
 
@@ -57,7 +63,7 @@ type Grade = { correct: boolean; feedback?: string }        // feedback: p. ej. 
 
 ## RNG con semilla
 
-`src/lib/random.ts`: un PRNG pequeño (mulberry32 o sfc32) con semilla string hasheada. Sirve para reproducir una pregunta guardada, escribir tests deterministas y evitar repetir preguntas idénticas dentro de un mismo intento (el generador recibe los `id` ya usados y reintenta hasta N veces).
+`src/lib/random.ts`: un PRNG pequeño (mulberry32 o sfc32) con semilla string hasheada. Sirve para reproducir una pregunta guardada, escribir tests deterministas y evitar repetir preguntas idénticas dentro de un mismo intento (el registro compara `key`, no `id`, porque cada `id` es una semilla distinta y nunca se repite; si la `key` ya salió, reintenta con la semilla `${seed}:r${n}` hasta 20 veces). Un `mix` cuyo espacio de preguntas sea menor que `questions` es un error de contenido: el test de currículo lo detecta.
 
 ## Catálogo inicial de generadores
 
@@ -71,6 +77,7 @@ type Grade = { correct: boolean; feedback?: string }        // feedback: p. ej. 
 | `interval-invert` | interval-quality | Inversión de un intervalo. | — |
 | `scale-spelling` | *-scale-spelling | Escribe la escala X. | `scales[]`, `tonics[]` |
 | `key-signature` | key-signatures | Armadura ↔ tonalidad (mayor o relativa menor). | `maxAccidentals`, `minor` |
+| `relative-key` | relative-minor | Relativa menor/mayor de X. | `maxAccidentals` |
 | `scale-degree` | scale-degrees | ¿Cuál es el grado N / el nombre funcional en X? | `scales[]` |
 | `chord-spelling` | triad-quality / seventh-chords | Deletrea el acorde X. | `types[]`, `tonics[]` |
 | `chord-name` | idem | Nombra el acorde de estas notas (incluye inversiones). | `types[]`, `inversions` |

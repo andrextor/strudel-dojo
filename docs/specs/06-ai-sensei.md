@@ -18,7 +18,8 @@ Los modelos se declaran como constantes en `src/lib/claude.ts`, con un comentari
 
 ```ts
 // hint
-request:  { context: 'question'; question: Pick<Question,'prompt'|'input'|'skill'>; response?: unknown }
+request:  { context: 'question'; question: Pick<Question,'prompt'|'input'|'skill'|'answer'>; response?: Response }
+          // `answer` solo lo usa el guard del servidor; nunca entra al prompt del modelo
         | { context: 'kata'; kata: Pick<Kata,'brief'|'assertions'>; code: string; failing: string[] }
 response: { hint: string }              // 1–2 frases
 

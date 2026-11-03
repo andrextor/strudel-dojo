@@ -15,7 +15,7 @@ Toda la lógica de avance, perfiles y almacenamiento, pura y probada, más el ho
 - [ ] `features/profiles/profiles.ts`: `parseProfiles`, `createProfile(name, color, now, rng)` (nombre de 1 a 24 caracteres, sin duplicados ignorando mayúsculas), `removeProfile`, `setActive`.
 - [ ] `store.ts`: lectura/escritura en `localStorage` con las claves del spec, más un aviso único si el almacenamiento falla.
 - [ ] `use-progress.ts`: hook Preact que expone el perfil activo, el progreso y acciones; sincroniza entre islas y pestañas (`BroadcastChannel('dojo')` + evento `storage`).
-- [ ] Tests: las 9 reglas del spec 05, una por una; ubicación aprobada vs reprobada; 8/10 aprueba y 7/10 no con 80 %; un tema no queda aprobado con la prueba aprobada y una kata pendiente; el combate solo se desbloquea con todos los temas; merge de respaldo idempotente (aplicarlo dos veces no cambia nada); un respaldo corrupto se rechaza con un mensaje en español; racha a través de medianoche y de un día sin actividad.
+- [ ] Tests: las 10 reglas del spec 05, una por una; repetir una prueba aprobada no suma XP si no mejora el mejor intento; ubicación aprobada vs reprobada; 8/10 aprueba y 7/10 no con 80 %; un tema no queda aprobado con la prueba aprobada y una kata pendiente; el combate solo se desbloquea con todos los temas; merge de respaldo idempotente (aplicarlo dos veces no cambia nada); un respaldo corrupto se rechaza con un mensaje en español; racha a través de medianoche y de un día sin actividad.
 
 ## Aceptación
 

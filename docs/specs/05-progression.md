@@ -9,10 +9,11 @@ Todas las reglas viven en `src/features/progress/rules.ts` como funciones puras 
 3. Dentro de un módulo desbloqueado, los temas se pueden hacer en cualquier orden. El currículo sugiere un orden y la UI marca el "siguiente recomendado".
 4. **Módulo aprobado** = todos sus temas aprobados **y** el combate aprobado (aserciones + rúbrica `>= passScore`).
 5. El combate se desbloquea cuando todos los temas del módulo están aprobados.
-6. **Prueba de ubicación**: disponible para cualquier módulo cuyo prerequisito esté aprobado o sea el siguiente al último aprobado. Si se aprueba (`passPercent`, por defecto 90), los temas quedan `passedByPlacement`: el módulo cuenta como aprobado sin combate, y el combate sigue disponible como desafío opcional. Si no se aprueba, el resultado indica qué temas conviene hacer según los errores por `skill`.
+6. **Prueba de ubicación**: disponible en cada módulo desbloqueado y todavía no aprobado (para saltar M01 y M02 se aprueba la ubicación de M01 y luego la de M02). Si se aprueba (`passPercent`, por defecto 90), los temas quedan `passedByPlacement`: el módulo cuenta como aprobado sin combate, y el combate sigue disponible como desafío opcional. Si no se aprueba, el resultado indica qué temas conviene hacer según los errores por `skill`.
 7. Los intentos de prueba son ilimitados (las preguntas se generan). Tras reprobar, la pantalla de resultado propone repasar la lección y practicar las habilidades falladas antes del siguiente intento, sin bloquear.
 8. Las respuestas y explicaciones de una **prueba** solo se muestran al entregarla. En **práctica** se muestran al responder cada pregunta.
 9. Una prueba abierta se guarda pregunta por pregunta: si se cierra la pestaña, se retoma.
+10. **Kata con ayuda**: "Ver solución" se habilita tras 3 intentos fallidos. Ver la solución no aprueba nada: la kata se aprueba igual que siempre, al pasar las aserciones con tu código, pero queda `helped: true` y no da XP de kata. Cuenta como aprobada para el tema.
 
 ## Estados
 
@@ -28,10 +29,10 @@ type KataStatus = 'not_started' | 'attempted' | 'passed'
 interface ProgressState {
   version: 1
   attempts: TestAttempt[]               // pruebas y ubicaciones
-  katas: Record<KataId, KataRecord>     // último código, aprobada, fecha
+  katas: Record<KataId, KataRecord>     // { code, attempts, passedAt: string | null, helped, solutionSeen }
   bosses: Record<BossId, BossRecord[]>  // historial de envíos con revisión
   skillStats: Record<Skill, SkillStat>  // repaso espaciado
-  practiceCount: Record<TopicId, number>
+  practiceDays: Record<LocalDate, { answered: number; correct: number }>  // LocalDate = 'YYYY-MM-DD' local; base del XP de práctica y la racha
   scrolls: Scroll[]                     // pergaminos del Dojo libre (máx. 20)
   prefs: Prefs                          // instrumento preferido, notación (latina/americana), MIDI, sonido
 }
@@ -57,8 +58,8 @@ interface BossRecord {
 ```
 
 Los puntos (XP) y la racha **se derivan** de lo guardado y nunca se almacenan, así no pueden desincronizarse:
-- XP: 10 por pregunta correcta en prueba, 2 en práctica (con tope diario de 100 de práctica), 30 por kata, 100 por tema, 300 por combate.
-- Racha: días consecutivos con al menos una actividad calificada (`submittedAt`, kata aprobada o 10 preguntas de práctica).
+- XP: 10 por pregunta correcta en prueba (5 si se pidió pista), contando solo el **mejor intento entregado** de cada prueba, para que repetirla no infle el XP; 2 por correcta en práctica, con tope de 100 por día de `practiceDays`; 30 por kata aprobada sin ayuda; 100 por tema; 300 por combate.
+- Racha: días consecutivos con al menos una actividad calificada (`submittedAt`, `passedAt` de kata, o un día de `practiceDays` con `answered >= 10`).
 - El rango visible es el cinturón del último módulo aprobado. Las "rayas" (stripes, 0–4) del cinturón siguiente cuentan los temas aprobados de ese módulo.
 
 ## Perfiles
@@ -81,5 +82,5 @@ interface Profile { id: string; name: string; color: BeltColor; createdAt: strin
 ## Respaldo
 
 - "Descargar respaldo" exporta `{ kind: 'strudel-dojo-backup', version: 1, exportedAt, profile, progress }`.
-- "Restaurar respaldo" **fusiona** sin borrar: intentos y registros por id, un intento entregado gana sobre su copia abierta, y los pergaminos se unen por id. Se puede restaurar como perfil nuevo o sobre el actual.
+- "Restaurar respaldo" **fusiona** sin borrar: intentos y registros por id, un intento entregado gana sobre su copia abierta, y los pergaminos se unen por id. En `katas` gana el registro aprobado (y, entre dos aprobados, el más antiguo); en `skillStats`, el de `lastSeen` más reciente; en `practiceDays`, el máximo por día; en `bosses`, la unión por `submittedAt`. Si la unión deja más de 20 pergaminos se conservan todos, y no se pueden guardar nuevos hasta bajar de 20. Se puede restaurar como perfil nuevo o sobre el actual.
 - Recordatorio suave en `/progreso` si pasaron más de 14 días sin descargar respaldo.

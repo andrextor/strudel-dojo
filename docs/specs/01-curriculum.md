@@ -6,6 +6,8 @@ Leyenda de tipos de ejercicio (definidos en `03-exercise-engine.md`): `choice`, 
 
 Cada tema define: objetivos medibles, generadores de práctica/prueba, 1–3 katas, y la habilidad (`skill`) que alimenta el repaso espaciado.
 
+Las listas de "Habilidades" de cada módulo son las de teoría. Los generadores de oído alimentan sus propias habilidades transversales: `interval-ear`, `chord-ear`, `mode-ear` y `melodic-dictation` (ver catálogo en `03-exercise-engine.md`). Un tema que tenga práctica de oído las agrega a su `skills`.
+
 ---
 
 ## M01 · Cinturón blanco · Reactivar fundamentos
