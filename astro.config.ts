@@ -15,5 +15,18 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // ponytail: @strudel/codemirror (~960 kB) and @strudel/reference (~550 kB) ship as one
+      // prebuilt dist file each, so they cannot be split; both load lazily, never on `/`.
+      // Lower this back if a non-Strudel chunk ever gets near it.
+      chunkSizeWarningLimit: 1000,
+      rolldownOptions: {
+        onLog(level, log, handler) {
+          // @strudel/soundfonts parses its preset files with a direct eval; upstream code.
+          if (log.code === 'EVAL' && log.id?.includes('@strudel/soundfonts')) return
+          handler(level, log)
+        },
+      },
+    },
   },
 })

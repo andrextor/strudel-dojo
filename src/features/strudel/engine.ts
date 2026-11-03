@@ -10,8 +10,8 @@ const STOP_EVENT = 'repl-stop' // every StrudelMirror stops on it
 
 type Modules = Awaited<ReturnType<typeof importModules>>
 
-function importModules() {
-  return Promise.all([
+async function importModules() {
+  const [core, mini, tonal, transpiler, webaudio, draw, codemirror] = await Promise.all([
     import('@strudel/core'),
     import('@strudel/mini'),
     import('@strudel/tonal'),
@@ -19,15 +19,8 @@ function importModules() {
     import('@strudel/webaudio'),
     import('@strudel/draw'),
     import('@strudel/codemirror'),
-  ]).then(([core, mini, tonal, transpiler, webaudio, draw, codemirror]) => ({
-    core,
-    mini,
-    tonal,
-    transpiler: transpiler.transpiler,
-    webaudio,
-    draw,
-    codemirror,
-  }))
+  ])
+  return { core, mini, tonal, transpiler: transpiler.transpiler, webaudio, draw, codemirror }
 }
 
 let context: AudioContext | null = null
