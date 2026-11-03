@@ -1,0 +1,64 @@
+---
+import '@fontsource-variable/unbounded'
+import '@fontsource-variable/lexend'
+import '@fontsource-variable/jetbrains-mono'
+import '../styles/global.css'
+import ThemeToggle from '../components/ui/ThemeToggle.astro'
+
+interface Props {
+  title: string
+  description?: string
+}
+
+const {
+  title,
+  description = 'Aprende teoría musical y live coding con Strudel, cinturón por cinturón.',
+} = Astro.props
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0d0e17" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f4fb" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} · Strudel Dojo</title>
+    {/* Set the saved theme before paint to avoid a flash of the wrong one. */}
+    <script is:inline>
+      try {
+        const t = localStorage.getItem('dojo_theme')
+        if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t
+      } catch {}
+    </script>
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <header class="border-b border-dojo-hairline">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 md:px-8">
+        <a href="/" class="font-display text-xl font-bold text-dojo-text">
+          Strudel <span class="text-dojo-torii">Dojo</span>
+        </a>
+        <ThemeToggle />
+      </div>
+    </header>
+    <main class="mx-auto w-full max-w-6xl flex-1 px-4 pt-6 pb-16 md:px-8 md:pt-10">
+      <slot />
+    </main>
+    <footer
+      class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-4 pb-12 text-sm text-dojo-muted md:px-8"
+    >
+      <p>
+        Hecho con <a
+          class="text-dojo-neon underline-offset-4 hover:underline"
+          href="https://strudel.cc">Strudel</a
+        > (AGPL-3.0) ·
+        <a
+          class="text-dojo-neon underline-offset-4 hover:underline"
+          href="https://github.com/andrextor/strudel-dojo">Código fuente</a
+        >
+      </p>
+    </footer>
+  </body>
+</html>
