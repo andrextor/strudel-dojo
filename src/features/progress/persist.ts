@@ -3,6 +3,8 @@ import type { Answer, InputSpec, InputVia, Question, Response } from '../exercis
 import { type Profile, parseProfile } from '../profiles/profiles.ts'
 import type {
   BossRecord,
+  GuitarBest,
+  GuitarState,
   KataRecord,
   Prefs,
   ProgressState,
@@ -236,6 +238,27 @@ function readPrefs(v: unknown): Prefs {
 
 const LOCAL_DATE = /^\d{4}-\d{2}-\d{2}$/
 
+export const DEFAULT_GUITAR: GuitarState = { latencyMs: 0, minRms: 0.01, deviceId: null, best: {} }
+
+const inRange = (v: unknown, lo: number, hi: number): v is number =>
+  typeof v === 'number' && Number.isFinite(v) && v >= lo && v <= hi
+
+function readGuitarBest(v: unknown): GuitarBest | null {
+  if (!isObject(v) || !inRange(v.bpm, 1, 400) || !isString(v.at)) return null
+  return { bpm: v.bpm, at: v.at, helped: v.helped === true }
+}
+
+// A corrupt guitar block falls back to defaults field by field; the rest of the progress stays.
+function readGuitar(v: unknown): GuitarState {
+  if (!isObject(v)) return { ...DEFAULT_GUITAR, best: {} }
+  return {
+    latencyMs: inRange(v.latencyMs, 0, 500) ? v.latencyMs : DEFAULT_GUITAR.latencyMs,
+    minRms: inRange(v.minRms, 0.0005, 0.5) ? v.minRms : DEFAULT_GUITAR.minRms,
+    deviceId: isString(v.deviceId) ? v.deviceId : null,
+    best: record(v.best, readGuitarBest),
+  }
+}
+
 export function parseProgress(raw: unknown): ProgressState {
   if (!isObject(raw) || raw.version !== 1) return emptyProgress()
   const days = record(raw.practiceDays, readDay)
@@ -250,6 +273,7 @@ export function parseProgress(raw: unknown): ProgressState {
     scrolls: list(raw.scrolls, readScroll),
     prefs: readPrefs(raw.prefs),
     backedUpAt: isString(raw.backedUpAt) ? raw.backedUpAt : null,
+    ...(raw.guitar === undefined ? {} : { guitar: readGuitar(raw.guitar) }),
   }
 }
 
@@ -377,7 +401,16 @@ export function mergeProgress(current: ProgressState, incoming: ProgressState): 
       correct: Math.max(a.correct, b.correct),
     })),
     scrolls: [...scrolls.values()],
+    ...mergeGuitar(current.guitar, incoming.guitar),
   }
+}
+
+// Settings stay with this device; the best BPM per drill is kept from either side.
+function mergeGuitar(a: GuitarState | undefined, b: GuitarState | undefined) {
+  if (!a && !b) return {}
+  const base = a ?? { ...DEFAULT_GUITAR, best: {} }
+  const best = mergeBy<GuitarBest>(base.best, b?.best ?? {}, (x, y) => (y.bpm > x.bpm ? y : x))
+  return { guitar: { ...base, best } }
 }
 
 export function mergeBackup(

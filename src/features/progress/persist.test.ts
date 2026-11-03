@@ -4,6 +4,7 @@ import type { Profile } from '../profiles/profiles.ts'
 import {
   BACKUP_INVALID,
   createBackup,
+  DEFAULT_GUITAR,
   decodeBackup,
   emptyProgress,
   encodeBackup,
@@ -157,4 +158,35 @@ test('the backup reminder waits for progress and then for 14 days', () => {
   assert.equal(needsBackupReminder(busyOne, now), true)
   assert.equal(needsBackupReminder({ ...busyOne, backedUpAt: '2026-03-10T12:00:00Z' }, now), false)
   assert.equal(needsBackupReminder({ ...busyOne, backedUpAt: '2026-03-01T12:00:00Z' }, now), true)
+})
+
+test('guitar progress: optional, validated field by field, merged by best BPM', () => {
+  const base = emptyProgress()
+  assert.equal(parseProgress(JSON.parse(JSON.stringify(base))).guitar, undefined)
+  const raw = {
+    ...base,
+    guitar: {
+      latencyMs: 'mucho',
+      minRms: 0.02,
+      deviceId: 7,
+      best: { 'notes:5-1:0-12:all': { bpm: 72, at: 'x' }, bad: { bpm: -1 } },
+    },
+  }
+  const parsed = parseProgress(JSON.parse(JSON.stringify(raw)))
+  assert.deepEqual(parsed.guitar, {
+    latencyMs: 0,
+    minRms: 0.02,
+    deviceId: null,
+    best: { 'notes:5-1:0-12:all': { bpm: 72, at: 'x', helped: false } },
+  })
+  assert.deepEqual(parsed.attempts, base.attempts)
+  const other = {
+    ...parsed,
+    guitar: {
+      ...DEFAULT_GUITAR,
+      best: { 'notes:5-1:0-12:all': { bpm: 80, at: 'y', helped: true } },
+    },
+  }
+  assert.equal(mergeProgress(parsed, other).guitar?.best['notes:5-1:0-12:all']?.bpm, 80)
+  assert.equal(mergeProgress(parsed, other).guitar?.minRms, 0.02)
 })

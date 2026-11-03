@@ -2,6 +2,7 @@ import {
   ArrowRight,
   Download,
   Ear,
+  Guitar,
   Lock,
   Repeat,
   Swords,
@@ -31,6 +32,7 @@ const MODULE_STATUS: Record<ModuleStatus, { status: Status; label: string }> = {
 const SHORTCUTS = [
   { href: '/repaso', label: 'Repaso', Icon: Repeat },
   { href: '/oido', label: 'Oído', Icon: Ear },
+  { href: '/diapason', label: 'Diapasón', Icon: Guitar },
   { href: '/dojo', label: 'Dojo libre', Icon: Terminal },
   { href: '/progreso', label: 'Progreso', Icon: TrendingUp },
 ]
@@ -165,7 +167,7 @@ export default function Home({ curriculum }: { curriculum: Module[] }) {
         </ol>
       </section>
 
-      <section class="enter grid grid-cols-2 gap-3 md:grid-cols-4" style="--i: 4">
+      <section class="enter grid grid-cols-2 gap-3 md:grid-cols-5" style="--i: 4">
         {SHORTCUTS.map(({ href, label, Icon }) => (
           <a
             key={href}

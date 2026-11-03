@@ -1,0 +1,10 @@
+---
+import GuitarGym from '../features/guitar/GuitarGym.tsx'
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout title="Diapasón" description="Aprende el diapasón tocando tu guitarra con metrónomo.">
+  <GuitarGym client:only="preact">
+    <div slot="fallback" class="min-h-96"></div>
+  </GuitarGym>
+</BaseLayout>

@@ -16,6 +16,7 @@ Fases en orden. Cada fase es autocontenida: dice qué leer, qué construir, cóm
 | P09 | [Sensei](P09-sensei.md) | `/api/sensei/{hint,review,explain}` y la UI. |
 | P10 | [Repaso, oído, ubicación y pulido](P10-review-polish.md) | Repaso espaciado, gimnasio de oído, prueba de ubicación, ceremonia de cinturón, rendimiento y a11y. |
 | P11 | [Receta de contenido M03–M10](P11-content-recipe.md) | Procedimiento repetible para cada cinturón restante (una rama/PR por módulo). |
+| P12 | [Gimnasio de diapasón](P12-guitar-gym.md) | `/diapason`: la guitarra real entra por la interfaz de audio; notas en todas las cuerdas, escala mayor por posiciones, intervalos, arpegios y "Encuentra la nota". |
 
 P05 y P06 pueden ir en paralelo tras P04. P08 necesita P07. P09 puede ir antes que P08 si se prefiere.
 

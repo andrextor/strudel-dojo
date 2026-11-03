@@ -65,6 +65,19 @@ export interface Prefs {
   via: InputVia | null // last answer input chosen in a question card
 }
 
+export interface GuitarBest {
+  bpm: number
+  at: string
+  helped: boolean // the positions were shown on the fretboard
+}
+
+export interface GuitarState {
+  latencyMs: number
+  minRms: number
+  deviceId: string | null
+  best: Record<string, GuitarBest> // by drill key, e.g. "notes:5-1:0-12:all"
+}
+
 export interface ProgressState {
   version: 1
   attempts: TestAttempt[]
@@ -75,4 +88,5 @@ export interface ProgressState {
   scrolls: Scroll[]
   prefs: Prefs
   backedUpAt: string | null // last backup download, for the 14-day reminder
+  guitar?: GuitarState // fretboard gym (spec 08); absent until first used
 }

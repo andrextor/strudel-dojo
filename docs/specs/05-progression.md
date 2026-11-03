@@ -36,6 +36,7 @@ interface ProgressState {
   scrolls: Scroll[]                     // pergaminos del Dojo libre (máx. 20)
   prefs: Prefs                          // instrumento preferido, notación (latina/americana), MIDI, sonido, zurdo (`lefty`) y la última entrada elegida en una pregunta (`via`)
   backedUpAt: string | null             // última descarga de respaldo (recordatorio de 14 días)
+  guitar?: GuitarState                  // gimnasio de diapasón (spec 08): latencia, umbral, entrada y mejor BPM por ejercicio; un dato corrupto vuelve a los valores por defecto sin tocar el resto, y al fusionar respaldos gana el mejor BPM
 }
 
 interface TestAttempt {

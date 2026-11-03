@@ -66,6 +66,14 @@ Aprender la escala mayor en distintas zonas del mástil, subiendo y bajando.
 - **Progresión sugerida** dentro de la pantalla: posición con diagrama visible → misma posición sin diagrama → siguiente posición → unir dos posiciones (subir en una, bajar en la otra) → otra tonalidad.
 - **Tonalidad:** cualquier tónica; la tónica se marca distinto en el diagrama.
 
+## Ejercicios extra
+
+Usan la misma pantalla con metrónomo (o, el último, ninguna):
+
+- **Intervalos:** una nota de partida fija (cuerda 6–4 y traste en la zona elegida) y un intervalo; se tocan las dos, al pulso. La segunda vale en cualquier cuerda, a la altura exacta.
+- **Arpegios:** fundamental, tercera, quinta y octava de una tríada (mayor/menor o las cuatro calidades), en cualquier cuerda y octava, siempre subiendo.
+- **Encuentra la nota:** sin metrónomo; una cuerda y una nota al azar (trastes 0–12), 10 por ronda; mide el tiempo medio. Un error muestra en rojo dónde estaba y sigue.
+
 ## Persistencia
 
 Se añade a `ProgressState` (spec 05) un campo opcional, validado en `persist.ts` como el resto:
