@@ -68,3 +68,9 @@ export function createRng(seed: string): Rng {
     },
   }
 }
+
+// 64 random bits as hex: plenty to keep local ids unique.
+export function randomId(rng: Rng): string {
+  const part = () => rng.int(0, 0xffffffff).toString(16).padStart(8, '0')
+  return part() + part()
+}

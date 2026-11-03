@@ -2,19 +2,9 @@
 // content.config.ts (build-time validation) and the Node tests can import them
 // without touching astro:* virtual modules.
 import { z } from 'astro/zod'
+import { BELTS } from './belts.ts'
 
-export const BELTS = [
-  'white',
-  'yellow',
-  'orange',
-  'green',
-  'blue',
-  'purple',
-  'brown',
-  'red',
-  'black',
-  'dan',
-] as const
+export { BELTS }
 
 const moduleId = z.string().regex(/^M\d{2}$/)
 const topicId = z.string().regex(/^M\d{2}-T\d{2}$/)

@@ -7,10 +7,20 @@ export function readItem(key: string): string | null {
   }
 }
 
-export function writeItem(key: string, value: string): void {
+// Returns false when the write failed, so the caller can warn that progress is not saved.
+export function writeItem(key: string, value: string): boolean {
   try {
     localStorage.setItem(key, value)
+    return true
   } catch {
-    // Progress is a convenience, losing it is acceptable.
+    return false
+  }
+}
+
+export function removeItem(key: string): void {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    // Nothing to clean up if storage is unavailable.
   }
 }

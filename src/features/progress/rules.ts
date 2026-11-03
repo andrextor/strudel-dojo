@@ -1,0 +1,291 @@
+// Every pass/lock decision lives here (docs/specs/05). Pure: time and randomness are injected.
+import { type Rng, randomId } from '../../lib/random.ts'
+import type { MixEntry, Module } from '../curriculum/schema.ts'
+import { grade } from '../exercises/grade.ts'
+import { buildSet } from '../exercises/registry.ts'
+import type { Response } from '../exercises/types.ts'
+import type {
+  BossRecord,
+  KataRecord,
+  KataStatus,
+  LocalDate,
+  ModuleStatus,
+  ProgressState,
+  TestAttempt,
+  TopicStatus,
+} from './types.ts'
+
+type Topic = Module['topics'][number]
+type ReadyModule = Extract<Module, { status: 'ready' }>
+type ReadyTopic = ReadyModule['topics'][number]
+
+export const SOLUTION_AFTER_FAILS = 3
+
+const isReadyTopic = (t: Topic): t is ReadyTopic => 'test' in t
+
+// Integer math, no rounding: 8/10 at 80 % passes, 7/10 does not.
+export const passes = (correct: number, total: number, passPercent: number): boolean =>
+  total > 0 && correct * 100 >= passPercent * total
+
+export const percentOf = (correct: number, total: number): number =>
+  total > 0 ? Math.floor((correct * 100) / total) : 0
+
+const submitted = (p: ProgressState, kind: TestAttempt['kind'], scopeId: string) =>
+  p.attempts.filter((a) => a.kind === kind && a.scopeId === scopeId && a.submittedAt !== null)
+
+export function openAttempt(
+  p: ProgressState,
+  kind: TestAttempt['kind'],
+  scopeId: string,
+): TestAttempt | null {
+  return (
+    p.attempts.find((a) => a.kind === kind && a.scopeId === scopeId && a.submittedAt === null) ??
+    null
+  )
+}
+
+const isTestPassed = (p: ProgressState, topicId: string) =>
+  submitted(p, 'test', topicId).some((a) => a.passed === true)
+
+const isPlacementPassed = (p: ProgressState, moduleId: string) =>
+  submitted(p, 'placement', moduleId).some((a) => a.passed === true)
+
+const isBossPassed = (p: ProgressState, bossId: string) =>
+  (p.bosses[bossId] ?? []).some((r) => r.passed)
+
+export function kataStatus(p: ProgressState, kataId: string): KataStatus {
+  const record = p.katas[kataId]
+  if (record === undefined || record.attempts === 0) return 'not_started'
+  return record.passedAt !== null ? 'passed' : 'attempted'
+}
+
+// Rule 2: test passed and every kata passed, in any order.
+const isTopicEarned = (p: ProgressState, topic: Topic) =>
+  isReadyTopic(topic) &&
+  isTestPassed(p, topic.id) &&
+  topic.katas.every((k) => kataStatus(p, k.id) === 'passed')
+
+export function isTopicPassed(p: ProgressState, module: Module, topic: Topic): boolean {
+  return isTopicEarned(p, topic) || (module.status === 'ready' && isPlacementPassed(p, module.id))
+}
+
+// Rule 4 (and 6: a passed placement counts as passing the module without the boss).
+export function isModulePassed(p: ProgressState, module: Module): boolean {
+  if (module.status !== 'ready') return false
+  if (isPlacementPassed(p, module.id)) return true
+  return module.topics.every((t) => isTopicEarned(p, t)) && isBossPassed(p, module.boss.id)
+}
+
+// Rule 1.
+export function isModuleUnlocked(p: ProgressState, curriculum: Module[], module: Module): boolean {
+  if (module.prerequisite === null) return true
+  const prerequisite = curriculum.find((m) => m.id === module.prerequisite)
+  return prerequisite !== undefined && isModulePassed(p, prerequisite)
+}
+
+export function topicStatus(
+  p: ProgressState,
+  curriculum: Module[],
+  module: Module,
+  topic: Topic,
+): TopicStatus {
+  if (module.status !== 'ready' || !isModuleUnlocked(p, curriculum, module)) return 'locked'
+  if (isTopicEarned(p, topic)) return 'passed'
+  if (isPlacementPassed(p, module.id)) return 'passed_by_placement'
+  const started =
+    p.attempts.some((a) => a.kind === 'test' && a.scopeId === topic.id) ||
+    (isReadyTopic(topic) && topic.katas.some((k) => kataStatus(p, k.id) !== 'not_started'))
+  return started ? 'in_progress' : 'not_started'
+}
+
+// Rule 5: the boss opens once every topic is passed (a placement pass leaves it as a bonus).
+export function bossUnlocked(p: ProgressState, curriculum: Module[], module: Module): boolean {
+  return (
+    module.status === 'ready' &&
+    isModuleUnlocked(p, curriculum, module) &&
+    module.topics.every((t) => isTopicPassed(p, module, t))
+  )
+}
+
+export function moduleStatus(p: ProgressState, curriculum: Module[], module: Module): ModuleStatus {
+  if (module.status === 'draft') return 'draft'
+  if (!isModuleUnlocked(p, curriculum, module)) return 'locked'
+  if (isModulePassed(p, module)) return 'passed'
+  return bossUnlocked(p, curriculum, module) ? 'boss_ready' : 'available'
+}
+
+// Rule 6: placement is offered on an unlocked module that is not passed yet.
+export function placementAvailable(
+  p: ProgressState,
+  curriculum: Module[],
+  module: Module,
+): boolean {
+  return (
+    module.status === 'ready' &&
+    module.placement !== undefined &&
+    isModuleUnlocked(p, curriculum, module) &&
+    !isModulePassed(p, module)
+  )
+}
+
+// After a failed placement: the topics whose skills had errors, in curriculum order.
+export function placementAdvice(attempt: TestAttempt, module: Module): string[] {
+  const failed = new Set<string>()
+  attempt.questions.forEach((q, i) => {
+    const r = attempt.responses[i]
+    if (r == null || !grade(q, r).correct) failed.add(q.skill)
+  })
+  return module.topics.filter((t) => t.skills.some((s) => failed.has(s))).map((t) => t.id)
+}
+
+export type NextStep =
+  | { kind: 'topic'; moduleId: string; topicId: string }
+  | { kind: 'boss'; moduleId: string }
+
+// Rule 3: the first unpassed topic in suggested order, or the boss once topics are done.
+export function recommendedNext(p: ProgressState, curriculum: Module[]): NextStep | null {
+  for (const module of curriculum) {
+    if (!isModuleUnlocked(p, curriculum, module) || module.status !== 'ready') continue
+    if (isModulePassed(p, module)) continue
+    const topic = module.topics.find((t) => !isTopicPassed(p, module, t))
+    if (topic !== undefined) return { kind: 'topic', moduleId: module.id, topicId: topic.id }
+    return { kind: 'boss', moduleId: module.id }
+  }
+  return null
+}
+
+// Rule 7: attempts are unlimited, each one a fresh seeded set.
+export function startTest(
+  scope: { kind: TestAttempt['kind']; scopeId: string },
+  mix: MixEntry[],
+  count: number,
+  now: Date,
+  rng: Rng,
+): TestAttempt {
+  const id = randomId(rng)
+  return {
+    id,
+    kind: scope.kind,
+    scopeId: scope.scopeId,
+    startedAt: now.toISOString(),
+    submittedAt: null,
+    questions: buildSet(mix, count, `${scope.scopeId}:${id}`),
+    responses: new Array(count).fill(null),
+    correct: null,
+    passed: null,
+  }
+}
+
+// Rule 8: answering a test question stores the response but grades nothing until submit.
+export function answerQuestion(
+  attempt: TestAttempt,
+  index: number,
+  response: Response,
+): TestAttempt {
+  if (attempt.submittedAt !== null || index < 0 || index >= attempt.questions.length) return attempt
+  const responses = [...attempt.responses]
+  responses[index] = response
+  return { ...attempt, responses }
+}
+
+export function submitTest(attempt: TestAttempt, passPercent: number, now: Date): TestAttempt {
+  if (attempt.submittedAt !== null) return attempt
+  const correct = attempt.questions.filter((q, i) => {
+    const r = attempt.responses[i]
+    return r != null && grade(q, r).correct
+  }).length
+  return {
+    ...attempt,
+    submittedAt: now.toISOString(),
+    correct,
+    passed: passes(correct, attempt.questions.length, passPercent),
+  }
+}
+
+// Rule 9: the open attempt is saved after every answer, so it can be resumed.
+export function saveAttempt(p: ProgressState, attempt: TestAttempt): ProgressState {
+  const others = p.attempts.filter((a) => a.id !== attempt.id)
+  return { ...p, attempts: [...others, attempt] }
+}
+
+const emptyKata = (): KataRecord => ({
+  code: '',
+  attempts: 0,
+  passedAt: null,
+  helped: false,
+  solutionSeen: false,
+})
+
+// Rule 10: a kata only passes on the user's own code; a seen solution marks it as helped.
+export function recordKata(
+  p: ProgressState,
+  kataId: string,
+  code: string,
+  passed: boolean,
+  now: Date,
+): ProgressState {
+  const prev = p.katas[kataId] ?? emptyKata()
+  const firstPass = passed && prev.passedAt === null
+  const record: KataRecord = {
+    ...prev,
+    code,
+    attempts: prev.attempts + 1,
+    passedAt: firstPass ? now.toISOString() : prev.passedAt,
+    helped: firstPass ? prev.solutionSeen : prev.helped,
+  }
+  return { ...p, katas: { ...p.katas, [kataId]: record } }
+}
+
+export function canSeeSolution(p: ProgressState, kataId: string): boolean {
+  const record = p.katas[kataId]
+  return record !== undefined && record.passedAt === null && record.attempts >= SOLUTION_AFTER_FAILS
+}
+
+export function markSolutionSeen(p: ProgressState, kataId: string): ProgressState {
+  const record = p.katas[kataId]
+  if (record === undefined || !canSeeSolution(p, kataId)) return p
+  return { ...p, katas: { ...p.katas, [kataId]: { ...record, solutionSeen: true } } }
+}
+
+export function recordBoss(p: ProgressState, bossId: string, record: BossRecord): ProgressState {
+  return { ...p, bosses: { ...p.bosses, [bossId]: [...(p.bosses[bossId] ?? []), record] } }
+}
+
+// Leitner: a right answer moves the skill up a box (max 5), a wrong one back to box 1.
+export function bumpSkill(
+  p: ProgressState,
+  skill: string,
+  correct: boolean,
+  now: Date,
+): ProgressState {
+  const prev = p.skillStats[skill] ?? { correct: 0, wrong: 0, lastSeen: '', box: 1 }
+  const stat = {
+    correct: prev.correct + (correct ? 1 : 0),
+    wrong: prev.wrong + (correct ? 0 : 1),
+    lastSeen: now.toISOString(),
+    box: correct ? Math.min(5, prev.box + 1) : 1,
+  }
+  return { ...p, skillStats: { ...p.skillStats, [skill]: stat } }
+}
+
+// Saves a submitted attempt and feeds every answer into the skill stats.
+export function recordSubmission(p: ProgressState, attempt: TestAttempt, now: Date): ProgressState {
+  let next = saveAttempt(p, attempt)
+  attempt.questions.forEach((q, i) => {
+    const r = attempt.responses[i]
+    next = bumpSkill(next, q.skill, r != null && grade(q, r).correct, now)
+  })
+  return next
+}
+
+export function recordPractice(
+  p: ProgressState,
+  day: LocalDate,
+  skill: string,
+  correct: boolean,
+  now: Date,
+): ProgressState {
+  const prev = p.practiceDays[day] ?? { answered: 0, correct: 0 }
+  const entry = { answered: prev.answered + 1, correct: prev.correct + (correct ? 1 : 0) }
+  return bumpSkill({ ...p, practiceDays: { ...p.practiceDays, [day]: entry } }, skill, correct, now)
+}

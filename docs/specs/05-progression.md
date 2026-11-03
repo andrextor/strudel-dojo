@@ -35,6 +35,7 @@ interface ProgressState {
   practiceDays: Record<LocalDate, { answered: number; correct: number }>  // LocalDate = 'YYYY-MM-DD' local; base del XP de práctica y la racha
   scrolls: Scroll[]                     // pergaminos del Dojo libre (máx. 20)
   prefs: Prefs                          // instrumento preferido, notación (latina/americana), MIDI, sonido
+  backedUpAt: string | null             // última descarga de respaldo (recordatorio de 14 días)
 }
 
 interface TestAttempt {
