@@ -18,7 +18,7 @@ Toda la app navegable de punta a punta con el contenido provisional de P02: crea
 - [ ] `/m/[module]/[topic]/kata/[kata]` (`KataView`): brief, editor con `starter` o el borrador guardado, botón "Probar el código" (evalúa, reproduce y corre aserciones), lista de aserciones con su estado y mensaje, pistas estáticas de la kata (una a la vez) y "Ver solución", que solo se habilita tras 3 intentos fallidos; desde ahí la kata, al aprobarse, queda `helped: true` (regla 10 del spec 05).
 - [ ] `/m/[module]/combate` (`BossView`): igual que kata, más la rúbrica. Sin Sensei: autoevaluación con un control 0–10 por criterio y una casilla de honestidad; con Sensei: queda preparado para P09 (botón deshabilitado con "El Sensei llega pronto").
 - [ ] `/m/[module]/ubicacion`: reutiliza `TestView` con `kind: 'placement'`.
-- [ ] `/progreso`: estadísticas por habilidad (barra + porcentaje + caja Leitner), historial de intentos, gestión de perfiles, preferencias (notación, instrumento, zurdo, MIDI, volumen) y respaldo (descargar/restaurar).
+- [ ] `/progreso`: estadísticas por habilidad (barra + porcentaje + caja Leitner), historial de intentos, gestión de perfiles, preferencias (notación, instrumento, zurdo, MIDI, volumen) y respaldo: descargar/restaurar archivo **y** "Copiar código" / "Pegar código" para pasar el progreso a otro dispositivo (celular) sin archivos, con aviso de éxito/error.
 - [ ] `/dojo`: editor a pantalla completa, visuales, panel de referencia con búsqueda, pergaminos (guardar/abrir/borrar, máx. 20) y exportar a strudel.cc.
 - [ ] `/repaso` y `/oido`: páginas con estado vacío ("Disponible pronto") que se llenan en P10.
 - [ ] 404 con el estilo del dojo.

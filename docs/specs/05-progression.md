@@ -81,6 +81,8 @@ interface Profile { id: string; name: string; color: BeltColor; createdAt: strin
 
 ## Respaldo
 
-- "Descargar respaldo" exporta `{ kind: 'strudel-dojo-backup', version: 1, exportedAt, profile, progress }`.
-- "Restaurar respaldo" **fusiona** sin borrar: intentos y registros por id, un intento entregado gana sobre su copia abierta, y los pergaminos se unen por id. En `katas` gana el registro aprobado (y, entre dos aprobados, el más antiguo); en `skillStats`, el de `lastSeen` más reciente; en `practiceDays`, el máximo por día; en `bosses`, la unión por `submittedAt`. Si la unión deja más de 20 pergaminos se conservan todos, y no se pueden guardar nuevos hasta bajar de 20. Se puede restaurar como perfil nuevo o sobre el actual.
+- El objeto de respaldo es `{ kind: 'strudel-dojo-backup', version: 1, exportedAt, profile, progress }`. Hay dos formas de sacarlo y meterlo, las dos sobre el **mismo** objeto y el **mismo** motor de fusión:
+  - **Archivo JSON**: "Descargar respaldo" baja el `.json`; "Restaurar desde archivo" lo lee.
+  - **Código**: "Copiar código" pone el respaldo como texto (JSON → base64 url-safe, con prefijo `sdojo1:`) en el portapapeles; "Pegar código" lo restaura. Es para pasar el progreso **entre dispositivos** (p. ej. laptop → celular) sin manejar archivos: se comparte el texto por el medio que sea. Si el texto no empieza por `sdojo1:` o no decodifica a un respaldo válido, se rechaza con un mensaje en español, igual que un archivo corrupto.
+- "Restaurar respaldo" (desde archivo o código) **fusiona** sin borrar: intentos y registros por id, un intento entregado gana sobre su copia abierta, y los pergaminos se unen por id. En `katas` gana el registro aprobado (y, entre dos aprobados, el más antiguo); en `skillStats`, el de `lastSeen` más reciente; en `practiceDays`, el máximo por día; en `bosses`, la unión por `submittedAt`. Si la unión deja más de 20 pergaminos se conservan todos, y no se pueden guardar nuevos hasta bajar de 20. Se puede restaurar como perfil nuevo o sobre el actual.
 - Recordatorio suave en `/progreso` si pasaron más de 14 días sin descargar respaldo.
