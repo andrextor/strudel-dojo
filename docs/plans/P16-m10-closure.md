@@ -44,3 +44,9 @@ Esta fase reescribe los dos temas de M10 que eran de Strudel, conecta la prácti
 
 - `timbre-concept` y `tension-device` comparten `conceptGenerator` en `generators/m10.ts`, con la misma estructura de dos direcciones que los catálogos de funciones.
 - La práctica de unidades se conectó en P14, junto con `UnitPanel`.
+
+## Pendientes tras la revisión de código
+
+- `sound-design` y `performance` siguen en las estadísticas, pero ya no entran a `/repaso`. Decidir si las unidades con práctica deben alimentar el repaso.
+- El enlace al siguiente paso de teoría está copiado en `Home`, `ResultView` y `TheoryGate`, y `StageView` repite `isBossPassed`: unificar con `nextStepHref` en `paths.ts` y exportar la regla.
+- Las islas reciben todas las etapas, con soluciones incluidas. Pasar solo lo que usan las reglas si el peso del HTML llega a importar (`/` pesa 313 KB, 43 KB con gzip).
