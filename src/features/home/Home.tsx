@@ -118,7 +118,11 @@ export default function Home({ curriculum, stages }: { curriculum: Module[]; sta
               </p>
               <a
                 href={
-                  strudel.kind === 'boss' ? bossHref(strudel.stageId) : unitHref(strudel.unitId)
+                  strudel.kind === 'boss'
+                    ? bossHref(strudel.stageId)
+                    : strudel.kind === 'theory'
+                      ? topicHref(strudel.topicIds[0] ?? '')
+                      : unitHref(strudel.unitId)
                 }
                 class={buttonClass(strudel.kind === 'theory' ? 'secondary' : 'primary', 'mt-4')}
               >
@@ -130,7 +134,7 @@ export default function Home({ curriculum, stages }: { curriculum: Module[]; sta
                 {strudel.kind === 'boss'
                   ? 'Ir al combate'
                   : strudel.kind === 'theory'
-                    ? 'Ver qué falta'
+                    ? 'Ir al tema que falta'
                     : 'Continuar'}
               </a>
             </>
