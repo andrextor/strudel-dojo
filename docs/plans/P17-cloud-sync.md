@@ -4,6 +4,16 @@
 
 Un commit por tarea. `pnpm test`, `pnpm lint` y `pnpm typecheck` mientras se trabaja. **No correr `pnpm ci:check`:** el dueño lo corre al final.
 
+## Regla de seguridad: `landak-apiario` está en producción
+
+La CLI tiene acceso a la organización donde vive `landak-apiario`, el proyecto de `../beekeeper`, que está en producción.
+
+- `../beekeeper` es solo de lectura: se copia desde ahí, nunca se ejecuta nada dentro.
+- Los comandos de Supabase se corren solo desde este repo.
+- Antes de `link`, `db push` o `config push`, comprobar que el ref sea el de `strudel-dojo` (`supabase/.temp/project-ref`), y pasarlo explícito cuando el comando lo admita. El ref de `landak-apiario` nunca se usa.
+- Ningún comando sobre proyectos existentes: ni `projects delete`, ni `secrets`, ni `db reset --linked`.
+- No usar `supabase stop --all` ni tocar los contenedores `supabase_*_beekeeper`.
+
 ## Antes de empezar: decisiones del dueño
 
 - [ ] Autoriza crear el proyecto en Supabase. Usa uno de los proyectos activos del plan gratis.
