@@ -1,29 +1,14 @@
-import {
-  ArrowRight,
-  CircleCheck,
-  CircleX,
-  Dumbbell,
-  Lightbulb,
-  RotateCcw,
-  Swords,
-  Target,
-} from 'lucide-preact'
+import { ArrowRight, CircleCheck, CircleX, Dumbbell, Lightbulb, RotateCcw } from 'lucide-preact'
 import type { ComponentChildren } from 'preact'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
-import { bossHref, moduleHref, placementHref, testHref, topicHref } from '../curriculum/paths.ts'
+import { examHref, moduleHref, testHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import { SKILL_NAME_ES } from '../curriculum/skills.ts'
 import { formatAnswer, formatResponse } from '../exercises/format.ts'
 import { grade } from '../exercises/grade.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
-import {
-  bossUnlocked,
-  isTopicPassed,
-  percentOf,
-  placementAdvice,
-  recommendedNext,
-} from '../progress/rules.ts'
+import { examAdvice, percentOf, recommendedNext } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
 
 const attemptId = () =>
@@ -77,7 +62,7 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
       }),
     ),
   ]
-  const review = placementAdvice(attempt, module)
+  const review = examAdvice(attempt, module)
     .map((tid) => module.topics.find((t) => t.id === tid))
     .filter((t) => t !== undefined)
 
@@ -87,7 +72,7 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
     ctas = passed ? (
       <Cta
         href={
-          next ? (next.kind === 'boss' ? bossHref(next.moduleId) : topicHref(next.topicId)) : '/'
+          next ? (next.kind === 'exam' ? examHref(next.moduleId) : topicHref(next.topicId)) : '/'
         }
         primary
       >
@@ -99,7 +84,7 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
         <Cta href={moduleHref(module.id)} primary>
           Ir al módulo
         </Cta>
-        <Cta href={placementHref(module.id)}>
+        <Cta href={examHref(module.id)}>
           <RotateCcw size={18} aria-hidden="true" />
           Intentar de nuevo
         </Cta>
@@ -121,22 +106,18 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
     )
   } else if (topic) {
     const next = recommendedNext(progress, curriculum)
-    ctas = !isTopicPassed(progress, module, topic) ? (
-      <Cta href={`${topicHref(topic.id)}#katas`} primary>
-        <Target size={18} aria-hidden="true" />
-        Ir a las katas del tema
-      </Cta>
-    ) : bossUnlocked(progress, curriculum, module) && next?.kind === 'boss' ? (
-      <Cta href={bossHref(module.id)} primary>
-        <Swords size={18} aria-hidden="true" />
-        Ir al combate
-      </Cta>
-    ) : (
-      <Cta href={next?.kind === 'topic' ? topicHref(next.topicId) : moduleHref(module.id)} primary>
-        Siguiente tema
-        <ArrowRight size={18} aria-hidden="true" />
-      </Cta>
-    )
+    ctas =
+      next?.kind === 'exam' ? (
+        <Cta href={examHref(next.moduleId)} primary>
+          Ir al examen de cinturón
+          <ArrowRight size={18} aria-hidden="true" />
+        </Cta>
+      ) : (
+        <Cta href={next ? topicHref(next.topicId) : moduleHref(module.id)} primary>
+          Siguiente tema
+          <ArrowRight size={18} aria-hidden="true" />
+        </Cta>
+      )
   }
 
   return (
@@ -144,7 +125,7 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
       <section class="space-y-3 rounded-card bg-dojo-surface p-5 md:p-6">
         <h1 class="text-sm text-dojo-muted">
           Resultado ·{' '}
-          {attempt.kind === 'placement' ? `Ubicación de ${module.title}` : (topic?.title ?? '')}
+          {attempt.kind === 'placement' ? `Examen de ${module.title}` : (topic?.title ?? '')}
         </h1>
         <p class="font-display text-5xl font-extrabold">
           {correct}/{total}
@@ -154,9 +135,7 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
           status={passed ? 'passed' : 'failed'}
           label={passed ? 'Aprobada' : 'No aprobada'}
         />
-        {attempt.kind === 'placement' && passed && (
-          <p>Aprobaste el módulo por ubicación. El combate queda como desafío opcional.</p>
-        )}
+        {attempt.kind === 'placement' && passed && <p>Ganaste el cinturón de {module.title}.</p>}
         <div class="flex flex-wrap gap-3 pt-2">{ctas}</div>
       </section>
 
@@ -166,7 +145,7 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
           <p class="text-dojo-muted">
             Fallaste en: {failedSkills.map((s) => SKILL_NAME_ES[s] ?? s).join(', ')}.{' '}
             {attempt.kind === 'placement'
-              ? 'Haz estos temas antes de intentar de nuevo la ubicación:'
+              ? 'Repasa estos temas antes de intentar de nuevo el examen:'
               : 'Practica estos temas:'}
           </p>
           <ul class="flex flex-wrap gap-2">

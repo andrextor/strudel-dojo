@@ -37,7 +37,7 @@ test('every graded mix builds a full set with no duplicates across 100 seeds', (
 test('every generator and params in every mix validate', () => {
   for (const m of ready) {
     const mixes = [
-      ...(m.status === 'ready' && m.placement ? [m.placement.mix] : []),
+      ...(m.status === 'ready' ? [m.exam.mix] : []),
       ...(m.status === 'ready' ? m.topics.flatMap((t) => [t.practice.mix, t.test.mix]) : []),
     ]
     for (const mix of mixes) {
@@ -55,12 +55,12 @@ test('unknown generator throws a clear error', () => {
   )
 })
 
-test('placement mixes build without duplicates', () => {
+test('exam mixes build without duplicates', () => {
   for (const m of ready) {
-    if (m.status !== 'ready' || !m.placement) continue
+    if (m.status !== 'ready') continue
     for (let s = 0; s < 30; s++) {
-      const set = buildSet(m.placement.mix, m.placement.questions, `${m.id}:placement:${s}`)
-      assert.equal(new Set(set.map((q) => q.key)).size, m.placement.questions, `${m.id} seed ${s}`)
+      const set = buildSet(m.exam.mix, m.exam.questions, `${m.id}:placement:${s}`)
+      assert.equal(new Set(set.map((q) => q.key)).size, m.exam.questions, `${m.id} seed ${s}`)
     }
   }
 })

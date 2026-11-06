@@ -47,7 +47,7 @@ export function openAttempt(
 const isTestPassed = (p: ProgressState, topicId: string) =>
   submitted(p, 'test', topicId).some((a) => a.passed === true)
 
-const isPlacementPassed = (p: ProgressState, moduleId: string) =>
+const isExamPassed = (p: ProgressState, moduleId: string) =>
   submitted(p, 'placement', moduleId).some((a) => a.passed === true)
 
 const isBossPassed = (p: ProgressState, bossId: string) =>
@@ -74,21 +74,35 @@ export function kataStatus(p: ProgressState, kataId: string): KataStatus {
   return record.passedAt !== null ? 'passed' : 'attempted'
 }
 
-// Rule 2: test passed and every kata passed, in any order.
+// Rule T1: the test alone passes the topic.
 const isTopicEarned = (p: ProgressState, topic: Topic) =>
-  isReadyTopic(topic) &&
-  isTestPassed(p, topic.id) &&
-  topic.katas.every((k) => kataStatus(p, k.id) === 'passed')
+  isReadyTopic(topic) && isTestPassed(p, topic.id)
 
 export function isTopicPassed(p: ProgressState, module: Module, topic: Topic): boolean {
-  return isTopicEarned(p, topic) || (module.status === 'ready' && isPlacementPassed(p, module.id))
+  return isTopicEarned(p, topic) || (module.status === 'ready' && isExamPassed(p, module.id))
 }
 
-// Rule 4 (and 6: a passed placement counts as passing the module without the boss).
+// Rule T3: the exam, or every topic plus the module's boss, which keeps belts already earned.
 export function isModulePassed(p: ProgressState, module: Module): boolean {
   if (module.status !== 'ready') return false
-  if (isPlacementPassed(p, module.id)) return true
-  return module.topics.every((t) => isTopicEarned(p, t)) && isBossPassed(p, module.boss.id)
+  if (isExamPassed(p, module.id)) return true
+  return module.topics.every((t) => isTopicEarned(p, t)) && isBossPassed(p, `${module.id}-BOSS`)
+}
+
+// Rule T2: decided at submit time, so topics finished mid-exam count.
+export function examPassPercent(p: ProgressState, module: ReadyModule): number {
+  return module.topics.every((t) => isTopicEarned(p, t))
+    ? module.exam.passPercent
+    : module.exam.skipPercent
+}
+
+// Rule T6: a belt can close on an exam, a boss or a last topic test, so states are compared.
+export function newlyPassedModule(
+  before: ProgressState,
+  after: ProgressState,
+  curriculum: Module[],
+): Module | null {
+  return curriculum.find((m) => !isModulePassed(before, m) && isModulePassed(after, m)) ?? null
 }
 
 // Rule 1.
@@ -106,7 +120,7 @@ export function topicStatus(
 ): TopicStatus {
   if (module.status !== 'ready' || !isModuleUnlocked(p, curriculum, module)) return 'locked'
   if (isTopicEarned(p, topic)) return 'passed'
-  if (isPlacementPassed(p, module.id)) return 'passed_by_placement'
+  if (isExamPassed(p, module.id)) return 'passed_by_placement'
   const started =
     p.attempts.some((a) => a.kind === 'test' && a.scopeId === topic.id) ||
     (isReadyTopic(topic) && topic.katas.some((k) => kataStatus(p, k.id) !== 'not_started'))
@@ -126,25 +140,20 @@ export function moduleStatus(p: ProgressState, curriculum: Module[], module: Mod
   if (module.status === 'draft') return 'draft'
   if (!isModuleUnlocked(p, curriculum, module)) return 'locked'
   if (isModulePassed(p, module)) return 'passed'
-  return bossUnlocked(p, curriculum, module) ? 'boss_ready' : 'available'
+  return module.topics.every((t) => isTopicPassed(p, module, t)) ? 'exam_ready' : 'available'
 }
 
-// Rule 6: placement is offered on an unlocked module that is not passed yet.
-export function placementAvailable(
-  p: ProgressState,
-  curriculum: Module[],
-  module: Module,
-): boolean {
+// Rule T2: the exam is offered on an unlocked module that is not passed yet.
+export function examAvailable(p: ProgressState, curriculum: Module[], module: Module): boolean {
   return (
     module.status === 'ready' &&
-    module.placement !== undefined &&
     isModuleUnlocked(p, curriculum, module) &&
     !isModulePassed(p, module)
   )
 }
 
-// After a failed placement: the topics whose skills had errors, in curriculum order.
-export function placementAdvice(attempt: TestAttempt, module: Module): string[] {
+// After a failed exam: the topics whose skills had errors, in curriculum order.
+export function examAdvice(attempt: TestAttempt, module: Module): string[] {
   const failed = new Set<string>()
   attempt.questions.forEach((q, i) => {
     const r = attempt.responses[i]
@@ -155,16 +164,16 @@ export function placementAdvice(attempt: TestAttempt, module: Module): string[] 
 
 export type NextStep =
   | { kind: 'topic'; moduleId: string; topicId: string }
-  | { kind: 'boss'; moduleId: string }
+  | { kind: 'exam'; moduleId: string }
 
-// Rule 3: the first unpassed topic in suggested order, or the boss once topics are done.
+// Rule 3: the first unpassed topic in suggested order, or the exam once topics are done.
 export function recommendedNext(p: ProgressState, curriculum: Module[]): NextStep | null {
   for (const module of curriculum) {
     if (!isModuleUnlocked(p, curriculum, module) || module.status !== 'ready') continue
     if (isModulePassed(p, module)) continue
     const topic = module.topics.find((t) => !isTopicPassed(p, module, t))
     if (topic !== undefined) return { kind: 'topic', moduleId: module.id, topicId: topic.id }
-    return { kind: 'boss', moduleId: module.id }
+    return { kind: 'exam', moduleId: module.id }
   }
   return null
 }

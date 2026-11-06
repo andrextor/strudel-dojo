@@ -27,17 +27,17 @@ Versiones: se fijan exactas en `package.json`. La base son las de la referencia 
 
 Este proyecto **no usa query strings para ids**, a diferencia de la referencia: el contenido es estático y conocido en build, así que cada tema tiene su página generada con `getStaticPaths`. Solo el estado (progreso) vive en el cliente.
 
-Los segmentos son los ids en minúsculas y sin prefijo repetido: `M01-T03-K1` → `/m/m01/t03/kata/k1`. `combate` y `ubicacion` son rutas estáticas y ganan sobre `[topic]`. Los módulos `draft` no generan páginas de tema.
+Los segmentos son los ids en minúsculas y sin prefijo repetido: `M01-T03-K1` → `/m/m01/t03/kata/k1`. `combate` y `examen` son rutas estáticas y ganan sobre `[topic]`. Los módulos `draft` no generan páginas de tema.
 
 | Ruta | Isla principal | Contenido |
 |------|----------------|-----------|
 | `/` | `Home` | Selector de perfil la primera vez; luego, el camino de cinturones, "Continuar" y la racha. |
-| `/m/[module]` | `ModuleView` | Temas con su estado, prueba de ubicación y combate. |
+| `/m/[module]` | `ModuleView` | Temas con su estado y examen de cinturón. |
 | `/m/[module]/[topic]` | lección MDX (estática) + `TopicPanel` | Lección arriba; abajo, pestañas Práctica · Prueba · Katas. |
 | `/m/[module]/[topic]/prueba` | `TestView` | Prueba calificada. |
 | `/m/[module]/[topic]/kata/[kata]` | `KataView` | Editor, brief, aserciones en vivo, pista. |
 | `/m/[module]/combate` | `BossView` | Editor, rúbrica, envío al Sensei. |
-| `/m/[module]/ubicacion` | `TestView` (placement) | Prueba de ubicación. |
+| `/m/[module]/examen` | `TestView` (placement) | Examen de cinturón. |
 | `/resultado?intento=` | `ResultView` | El intento es dinámico (cliente), por eso usa query. |
 | `/repaso` | `ReviewSession` | Repaso espaciado. |
 | `/oido` | `EarGym` | Entrenamiento auditivo libre por tipo. |

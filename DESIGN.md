@@ -113,7 +113,7 @@ Relleno del cinturón; el texto sobre ellos es `belt-on` (fijo, en ambos temas),
 ## Elementos distintivos
 
 - **Camino de cinturones** (inicio): un cinturón horizontal por módulo, apilados como en un tablero de dojo. El activo brilla con `glow-torii` y cada tema aprobado agrega una raya. Los bloqueados se ven con 40 % de opacidad y llevan `Lock`.
-- **Ceremonia de cinturón**: al aprobar un combate, el cinturón nuevo se "anuda" (SVG con trazo animado de 1.2 s) y suenan tres acordes generados con Strudel (I–IV–I en la tonalidad del módulo). Se puede saltar y respeta reduced-motion (sin animación, con el sonido opcional).
+- **Ceremonia de cinturón**: al ganar un cinturón, el cinturón nuevo se "anuda" (SVG con trazo animado de 1.2 s) y suenan tres acordes generados con Strudel (I–IV–I en la tonalidad del módulo). Se puede saltar y respeta reduced-motion (sin animación, con el sonido opcional).
 - **Teclado** (`components/music/Keyboard.tsx`): SVG con teclas a escala real. Nota que suena = `dojo-neon` con glow; seleccionada = `dojo-violet`; correcta/incorrecta = success/danger con ícono encima.
 - **Diapasón** (`components/music/Fretboard.tsx`): 6 cuerdas, afinación estándar configurable, 0–15 trastes, marcadores en 3-5-7-9-12. Mismos estados que el teclado.
 - **Editor Strudel**: superficie `dojo-raised`, gutter `dojo-surface`, mini-notation en `dojo-gold`, funciones en `dojo-violet`, números en `dojo-neon`, eventos activos con fondo neón al 20 %.
@@ -133,7 +133,7 @@ Relleno del cinturón; el texto sobre ellos es `belt-on` (fijo, en ambos temas),
 | `Target` | Kata |
 | `ClipboardCheck` | Prueba |
 | `Dumbbell` | Práctica |
-| `Compass` | Prueba de ubicación |
+| `Compass` | Examen de cinturón |
 | `Ear` | Oído |
 | `Repeat` | Repaso espaciado |
 | `Terminal` | Dojo libre |

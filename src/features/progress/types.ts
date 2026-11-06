@@ -9,7 +9,7 @@ export type TopicStatus =
   | 'in_progress'
   | 'passed'
   | 'passed_by_placement'
-export type ModuleStatus = 'locked' | 'available' | 'boss_ready' | 'passed' | 'draft'
+export type ModuleStatus = 'locked' | 'available' | 'exam_ready' | 'passed' | 'draft'
 export type KataStatus = 'not_started' | 'attempted' | 'passed'
 
 export interface TestAttempt {

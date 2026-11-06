@@ -6,9 +6,10 @@
   "summary": "Notas, intervalos y ritmo a buen ritmo, más tus primeros sonidos en Strudel.",
   "status": "ready",
   "prerequisite": null,
-  "placement": {
+  "exam": {
     "questions": 20,
-    "passPercent": 90,
+    "skipPercent": 90,
+    "passPercent": 80,
     "mix": [
       {
         "generator": "note-name",

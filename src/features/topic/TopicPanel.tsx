@@ -108,6 +108,9 @@ export default function TopicPanel({ module, topicId, curriculum }: Props) {
 
         {tab === 'katas' && (
           <ul class="space-y-3">
+            <li class="text-sm text-dojo-muted">
+              Opcionales: el tema se aprueba solo con la prueba.
+            </li>
             {topic.katas.map((k) => {
               const ks = kataStatus(progress, k.id)
               return (

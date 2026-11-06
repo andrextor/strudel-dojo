@@ -12,13 +12,13 @@ const scope = { kind: 'test', scopeId: t1.id } as const
 test('only the best submitted attempt of a test counts toward XP', () => {
   const first = takeTest(fresh(), scope, t1.test, 8)
   const xp = totalXp(first.progress, curriculum)
-  assert.equal(xp, 8 * XP.testCorrect)
+  assert.equal(xp, 8 * XP.testCorrect + XP.topic)
   const same = takeTest(first.progress, scope, t1.test, 8)
   assert.equal(totalXp(same.progress, curriculum), xp)
   const worse = takeTest(same.progress, scope, t1.test, 3)
   assert.equal(totalXp(worse.progress, curriculum), xp)
   const better = takeTest(worse.progress, scope, t1.test, 10)
-  assert.equal(totalXp(better.progress, curriculum), 10 * XP.testCorrect)
+  assert.equal(totalXp(better.progress, curriculum), 10 * XP.testCorrect + XP.topic)
 })
 
 test('hinted answers are worth half and open attempts nothing', () => {

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import ProgressBar from '../../components/ui/ProgressBar.tsx'
 import { freshRng } from '../../lib/random.ts'
+import EarnedBelt from '../boss/EarnedBelt.tsx'
 import { resultHref } from '../curriculum/paths.ts'
 import type { MixEntry, Module } from '../curriculum/schema.ts'
 import { formatResponse } from '../exercises/format.ts'
@@ -10,8 +11,10 @@ import QuestionCard from '../exercises/QuestionCard.tsx'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import {
   answerQuestion,
+  examAvailable,
+  examPassPercent,
+  newlyPassedModule,
   openAttempt,
-  placementAvailable,
   recordSubmission,
   saveAttempt,
   startTest,
@@ -23,7 +26,7 @@ import { useProgress } from '../progress/use-progress.ts'
 
 interface Props {
   kind: TestAttempt['kind']
-  scopeId: string // topic id for a test, module id for a placement
+  scopeId: string // topic id for a test, module id for an exam
   title: string
   graded: { questions: number; passPercent: number; mix: MixEntry[] }
   module: Module
@@ -42,9 +45,15 @@ export default function TestView(props: Props) {
   const attempt = progress ? openAttempt(progress, kind, scopeId) : null
   const [index, setIndex] = useState<number | null>(null)
   const [confirming, setConfirming] = useState(false)
+  const [earned, setEarned] = useState<Module | null>(null)
+
+  const passPercent = (p: ProgressState) =>
+    kind === 'placement' && module.status === 'ready'
+      ? examPassPercent(p, module)
+      : graded.passPercent
 
   const allowed = (p: ProgressState) => {
-    if (kind === 'placement') return placementAvailable(p, curriculum, module)
+    if (kind === 'placement') return examAvailable(p, curriculum, module)
     const topic = module.topics.find((t) => t.id === scopeId)
     return topic !== undefined && topicStatus(p, curriculum, module, topic) !== 'locked'
   }
@@ -52,6 +61,7 @@ export default function TestView(props: Props) {
   // Rule 9: the attempt exists (and is saved) before the first answer, so it can be resumed.
   // Once per visit: after submitting there is no open attempt, and that must not start another.
   const started = useRef(false)
+  const lastAttempt = useRef<string | null>(null)
   useEffect(() => {
     if (progress === null || started.current || !allowed(progress)) return
     started.current = true
@@ -70,13 +80,25 @@ export default function TestView(props: Props) {
   }, [progress === null, attempt === null])
 
   if (active === null || progress === null) return <NeedProfile />
+  if (earned !== null && lastAttempt.current !== null) {
+    const id = lastAttempt.current
+    return (
+      <EarnedBelt
+        module={earned}
+        curriculum={curriculum}
+        onContinue={() => {
+          location.href = resultHref(id)
+        }}
+      />
+    )
+  }
   if (!allowed(progress)) {
     return (
       <section class="space-y-3 rounded-card bg-dojo-surface p-5 md:p-6">
         <p class="flex items-center gap-2">
           <Lock size={18} aria-hidden="true" />
           {kind === 'placement'
-            ? 'La prueba de ubicación no está disponible: el módulo está bloqueado o ya lo aprobaste.'
+            ? 'El examen no está disponible: el módulo está bloqueado o ya lo aprobaste.'
             : 'Este tema está bloqueado.'}
         </p>
         <a href={backHref} class={buttonClass('secondary')}>
@@ -101,19 +123,25 @@ export default function TestView(props: Props) {
   function submit() {
     if (attempt === null) return
     const now = new Date()
+    let belt: Module | null = null
     updateProgress((p) => {
       const open = openAttempt(p, kind, scopeId)
-      return open ? recordSubmission(p, submitTest(open, graded.passPercent, now), now) : p
+      if (open === null) return p
+      const next = recordSubmission(p, submitTest(open, passPercent(p), now), now)
+      belt = newlyPassedModule(p, next, curriculum)
+      return next
     })
-    location.href = resultHref(attempt.id)
+    lastAttempt.current = attempt.id
+    if (belt === null) location.href = resultHref(attempt.id)
+    else setEarned(belt)
   }
 
   return (
     <div class="space-y-6">
       <header class="space-y-2">
         <p class="text-sm text-dojo-muted">
-          {kind === 'placement' ? 'Prueba de ubicación' : 'Prueba'} · apruebas con{' '}
-          {graded.passPercent} %
+          {kind === 'placement' ? 'Examen de cinturón' : 'Prueba'} · apruebas con{' '}
+          {passPercent(progress)} %
         </p>
         <h1 class="font-display text-2xl font-bold md:text-3xl">{title}</h1>
         <div class="max-w-md">

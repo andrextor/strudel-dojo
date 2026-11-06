@@ -3,19 +3,19 @@ import BeltBadge from '../../components/ui/BeltBadge.tsx'
 import { buttonClass } from '../../components/ui/button.ts'
 import ProgressBar from '../../components/ui/ProgressBar.tsx'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
-import { bossHref, moduleHref, placementHref, topicHref } from '../curriculum/paths.ts'
+import { bossHref, examHref, moduleHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import { TOPIC_STATUS } from '../progress/labels.ts'
 import {
   bestScore,
   bossUnlocked,
+  examAvailable,
   isModulePassed,
   isTopicPassed,
   kataStatus,
   moduleStatus,
   percentOf,
-  placementAvailable,
   topicStatus,
 } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
@@ -78,8 +78,9 @@ export default function ModuleView({ module, curriculum }: Props) {
 
   const bossOpen = bossUnlocked(progress, curriculum, module)
   const bossPassed = (progress.bosses[module.boss.id] ?? []).some((r) => r.passed)
-  const placement = placementAvailable(progress, curriculum, module)
-  const placementBest = bestScore(progress, 'placement', module.id)
+  const exam = examAvailable(progress, curriculum, module)
+  const examBest = bestScore(progress, 'placement', module.id)
+  const topicsDone = passedTopics === module.topics.length
 
   return (
     <div class="space-y-8">
@@ -125,7 +126,7 @@ export default function ModuleView({ module, curriculum }: Props) {
         <section class="space-y-3 rounded-card bg-dojo-surface p-5 md:p-6">
           <h2 class="flex items-center gap-2 font-display text-xl font-bold">
             <Swords size={20} aria-hidden="true" />
-            Combate: {module.boss.title}
+            Combate opcional: {module.boss.title}
           </h2>
           <p class="text-dojo-muted">{module.boss.brief}</p>
           {bossPassed ? (
@@ -145,24 +146,29 @@ export default function ModuleView({ module, curriculum }: Props) {
           )}
         </section>
 
-        {(placement || placementBest) && module.placement && (
+        {(exam || examBest) && module.status === 'ready' && (
           <section class="space-y-3 rounded-card bg-dojo-surface p-5 md:p-6">
             <h2 class="flex items-center gap-2 font-display text-xl font-bold">
               <Compass size={20} aria-hidden="true" />
-              Prueba de ubicación
+              Examen de cinturón
             </h2>
             <p class="text-dojo-muted">
-              ¿Ya sabes esto? {module.placement.questions} preguntas; con{' '}
-              {module.placement.passPercent} % apruebas el módulo entero.
+              {module.exam.questions} preguntas.{' '}
+              {topicsDone
+                ? `Con ${module.exam.passPercent} % ganas el cinturón.`
+                : `¿Ya sabes esto? Con ${module.exam.skipPercent} % saltas el módulo; al terminar los temas basta con ${module.exam.passPercent} %.`}
             </p>
-            {placementBest && (
+            {examBest && (
               <p class="text-sm text-dojo-muted">
-                Tu mejor intento: {percentOf(placementBest.correct, placementBest.total)} %
+                Tu mejor intento: {percentOf(examBest.correct, examBest.total)} %
               </p>
             )}
-            {placement && !isModulePassed(progress, module) && (
-              <a href={placementHref(module.id)} class={buttonClass('secondary')}>
-                Hacer la prueba de ubicación
+            {exam && !isModulePassed(progress, module) && (
+              <a
+                href={examHref(module.id)}
+                class={buttonClass(topicsDone ? 'primary' : 'secondary')}
+              >
+                Hacer el examen
               </a>
             )}
           </section>

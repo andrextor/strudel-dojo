@@ -7,7 +7,7 @@ export const topicHref = (topicId: string) => `${moduleHref(topicId)}/${part(top
 export const testHref = (topicId: string) => `${topicHref(topicId)}/prueba`
 export const kataHref = (kataId: string) => `${topicHref(kataId)}/kata/${part(kataId, 2)}`
 export const bossHref = (moduleId: string) => `${moduleHref(moduleId)}/combate`
-export const placementHref = (moduleId: string) => `${moduleHref(moduleId)}/ubicacion`
+export const examHref = (moduleId: string) => `${moduleHref(moduleId)}/examen`
 export const resultHref = (attemptId: string) =>
   `/resultado?intento=${encodeURIComponent(attemptId)}`
 

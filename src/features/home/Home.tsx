@@ -1,18 +1,18 @@
 import {
   ArrowRight,
+  Award,
   Download,
   Ear,
   Guitar,
   Lock,
   Repeat,
-  Swords,
   Terminal,
   TrendingUp,
 } from 'lucide-preact'
 import BeltBadge from '../../components/ui/BeltBadge.tsx'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge, { type Status } from '../../components/ui/StatusBadge.tsx'
-import { bossHref, moduleHref, topicHref } from '../curriculum/paths.ts'
+import { examHref, moduleHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import ProfilePicker from '../profiles/ProfilePicker.tsx'
 import { needsBackupReminder } from '../progress/persist.ts'
@@ -24,7 +24,7 @@ import { dueSkills, reviewMixes } from '../review/schedule.ts'
 const MODULE_STATUS: Record<ModuleStatus, { status: Status; label: string }> = {
   locked: { status: 'locked', label: 'Bloqueado' },
   available: { status: 'in-progress', label: 'Disponible' },
-  boss_ready: { status: 'in-progress', label: 'Combate listo' },
+  exam_ready: { status: 'in-progress', label: 'Examen listo' },
   passed: { status: 'passed', label: 'Aprobado' },
   draft: { status: 'not-started', label: 'Próximamente' },
 }
@@ -60,21 +60,19 @@ export default function Home({ curriculum }: { curriculum: Module[] }) {
         <section class="enter rounded-card bg-dojo-surface p-5 md:p-6" style="--i: 1">
           <p class="text-sm text-dojo-muted">Continuar · {nextModule.title}</p>
           <p class="mt-1 font-display text-2xl font-bold">
-            {next.kind === 'boss'
-              ? `Combate: ${nextModule.status === 'ready' ? nextModule.boss.title : ''}`
-              : nextTopic?.title}
+            {next.kind === 'exam' ? 'Examen de cinturón' : nextTopic?.title}
           </p>
           {nextTopic && <p class="mt-1 text-dojo-muted">{nextTopic.goal}</p>}
           <a
-            href={next.kind === 'boss' ? bossHref(next.moduleId) : topicHref(next.topicId)}
+            href={next.kind === 'exam' ? examHref(next.moduleId) : topicHref(next.topicId)}
             class={buttonClass('primary', 'mt-4')}
           >
-            {next.kind === 'boss' ? (
-              <Swords size={18} aria-hidden="true" />
+            {next.kind === 'exam' ? (
+              <Award size={18} aria-hidden="true" />
             ) : (
               <ArrowRight size={18} aria-hidden="true" />
             )}
-            {next.kind === 'boss' ? 'Ir al combate' : 'Continuar'}
+            {next.kind === 'exam' ? 'Ir al examen' : 'Continuar'}
           </a>
         </section>
       )}

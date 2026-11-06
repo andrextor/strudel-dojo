@@ -144,8 +144,10 @@ const moduleBase = {
   prerequisite: moduleId.nullable(),
 }
 
-const placementSchema = z.object({
+// passPercent applies once every topic is passed; skipPercent, to jump a module with topics pending.
+const examSchema = z.object({
   questions: z.number().int().positive(),
+  skipPercent: z.number().int().min(1).max(100),
   passPercent: z.number().int().min(1).max(100),
   mix: z.array(mixEntrySchema).min(1),
 })
@@ -154,7 +156,7 @@ export const moduleSchema = z.discriminatedUnion('status', [
   z.object({
     ...moduleBase,
     status: z.literal('ready'),
-    placement: placementSchema.optional(),
+    exam: examSchema,
     topics: z.array(topicReadySchema).length(4),
     boss: bossSchema,
   }),

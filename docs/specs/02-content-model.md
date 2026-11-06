@@ -10,7 +10,7 @@ src/content/
   lessons/m01-t01.mdx …           # una lección por tema, con componentes interactivos
 ```
 
-Un módulo sin `lessons` completas puede existir con `status: "draft"`: se muestra como "Próximamente" y no bloquea a nadie, porque el que le sigue tampoco existe todavía. El esquema es una unión discriminada por `status`: en `draft`, cada tema solo exige `id`, `title`, `goal` y `skills`; `lesson`, `practice`, `test`, `katas`, `placement` y `boss` son opcionales, y la validación extra no los revisa. En `ready` todo es obligatorio.
+Un módulo sin `lessons` completas puede existir con `status: "draft"`: se muestra como "Próximamente" y no bloquea a nadie, porque el que le sigue tampoco existe todavía. El esquema es una unión discriminada por `status`: en `draft`, cada tema solo exige `id`, `title`, `goal` y `skills`; `lesson`, `practice`, `test`, `katas`, `exam` y `boss` son opcionales, y la validación extra no los revisa. En `ready` todo es obligatorio.
 
 ## Módulo (`modules/mNN.json`)
 
@@ -23,9 +23,10 @@ Un módulo sin `lessons` completas puede existir con `status: "draft"`: se muest
   "summary": "Notas, intervalos y ritmo, más tus primeros sonidos en Strudel.",
   "status": "ready",                     // ready | draft
   "prerequisite": null,                  // id del módulo anterior, o null
-  "placement": {                         // prueba de ubicación opcional
+  "exam": {                              // examen de cinturón, obligatorio en ready
     "questions": 20,
-    "passPercent": 90,
+    "skipPercent": 90,                   // con temas pendientes: salta el módulo
+    "passPercent": 80,                   // con todos los temas aprobados
     "mix": [{ "generator": "note-name", "weight": 1 }, { "generator": "interval-name", "weight": 2 }]
   },
   "topics": [ /* Topic */ ],

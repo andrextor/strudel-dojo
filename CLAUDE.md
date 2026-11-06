@@ -17,6 +17,7 @@ El copy visible está en español; código, identificadores, nombres de archivo 
 | Generadores, calificación, oído | `docs/specs/03-exercise-engine.md` |
 | Strudel, editor, katas, audio | `docs/specs/04-strudel-engine.md` |
 | Progreso, perfiles, respaldo | `docs/specs/05-progression.md` |
+| Separación Teoría / Strudel | `docs/specs/09-two-courses.md` |
 | Rutas API / Claude | `docs/specs/06-ai-sensei.md` (y carga la skill `claude-api`) |
 | UI | `DESIGN.md` |
 

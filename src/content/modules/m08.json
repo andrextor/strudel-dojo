@@ -321,9 +321,10 @@
       ]
     }
   ],
-  "placement": {
+  "exam": {
     "questions": 20,
-    "passPercent": 90,
+    "skipPercent": 90,
+    "passPercent": 80,
     "mix": [
       { "generator": "secondary-dominant", "weight": 3 },
       { "generator": "borrowed-chord", "weight": 3 },

@@ -102,10 +102,7 @@ test('ready modules come first, in order, and the rest are drafts', () => {
 test('each generator in a mix exists in the registry and its params validate', () => {
   for (const m of modules) {
     if (m.status !== 'ready') continue
-    const mixes = [
-      ...(m.placement ? [m.placement.mix] : []),
-      ...m.topics.flatMap((t) => [t.practice.mix, t.test.mix]),
-    ]
+    const mixes = [m.exam.mix, ...m.topics.flatMap((t) => [t.practice.mix, t.test.mix])]
     for (const mix of mixes) {
       for (const entry of mix) {
         assert.ok(validateEntry(entry), `${m.id}: invalid mix entry ${JSON.stringify(entry)}`)
@@ -114,11 +111,11 @@ test('each generator in a mix exists in the registry and its params validate', (
   }
 })
 
-test('every test and placement builds a full set for 30 seeds', () => {
+test('every test and exam builds a full set for 30 seeds', () => {
   for (const m of modules) {
     if (m.status !== 'ready') continue
     const sets = [
-      ...(m.placement ? [{ id: `${m.id} placement`, ...m.placement }] : []),
+      { id: `${m.id} exam`, ...m.exam },
       ...m.topics.map((t) => ({ id: t.id, ...t.test })),
     ]
     for (const set of sets) {

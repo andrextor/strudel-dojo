@@ -6,9 +6,10 @@
   "summary": "Construye la escala mayor, lee armaduras y encuentra la relativa menor.",
   "status": "ready",
   "prerequisite": "M01",
-  "placement": {
+  "exam": {
     "questions": 20,
-    "passPercent": 90,
+    "skipPercent": 90,
+    "passPercent": 80,
     "mix": [
       {
         "generator": "scale-spelling",

@@ -150,7 +150,7 @@ export default function ProgressView({ curriculum }: { curriculum: Module[] }) {
                   class="flex flex-wrap justify-between gap-2 py-2 hover:text-dojo-neon"
                 >
                   <span>
-                    {a.kind === 'placement' ? 'Ubicación · ' : ''}
+                    {a.kind === 'placement' ? 'Examen · ' : ''}
                     {scopeTitle(a.scopeId)}
                   </span>
                   <span class="text-dojo-muted">
