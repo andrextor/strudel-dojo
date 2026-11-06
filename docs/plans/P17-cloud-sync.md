@@ -16,62 +16,62 @@ La CLI tiene acceso a la organización donde vive `landak-apiario`, el proyecto 
 
 ## Antes de empezar: decisiones del dueño
 
-- [ ] Autoriza crear el proyecto en Supabase. Usa uno de los proyectos activos del plan gratis.
-- [ ] Elige el correo de la cuenta familiar.
-- [ ] Tiene dónde guardar la contraseña de la base.
+- [x] Autoriza crear el proyecto en Supabase. Usa uno de los proyectos activos del plan gratis.
+- [x] Elige el correo de la cuenta familiar.
+- [x] Tiene dónde guardar la contraseña de la base.
 
 ## Tareas
 
 ### Base de datos local
 
-- [ ] `supabase` como dependencia de desarrollo, con versión fija, y scripts `db:start`, `db:stop`, `db:reset`, `test:db`.
-- [ ] `supabase/config.toml`: `project_id = "strudel-dojo"`, puertos 544xx, `enable_signup = false`, Storage, Realtime y Edge desactivados.
-- [ ] Migración con la tabla, RLS, permisos y trigger del spec.
-- [ ] pgTAP:
-  - [ ] un usuario no ve ni modifica filas de otro;
-  - [ ] `anon` no accede;
-  - [ ] la restricción de tamaño rechaza una fila enorme;
-  - [ ] `updated_at` cambia al actualizar.
+- [x] `supabase` como dependencia de desarrollo, con versión fija, y scripts `db:start`, `db:stop`, `db:reset`, `test:db`.
+- [x] `supabase/config.toml`: `project_id = "strudel-dojo"`, puertos 544xx, `enable_signup = false`, Storage, Realtime y Edge desactivados.
+- [x] Migración con la tabla, RLS, permisos y trigger del spec.
+- [x] pgTAP:
+  - [x] un usuario no ve ni modifica filas de otro;
+  - [x] `anon` no accede;
+  - [x] la restricción de tamaño rechaza una fila enorme;
+  - [x] `updated_at` cambia al actualizar.
 
 ### Fusión
 
-- [ ] `ProgressState.deletedScrolls`, con lectura defensiva en `persist.ts`, `deleteScroll` y fusión. Tests: un pergamino borrado no vuelve, uno editado después de borrarse sí, y un respaldo viejo sigue siendo válido.
-- [ ] `features/sync/reconcile.ts`, puro. Tests:
-  - [ ] perfil nuevo en cada lado;
-  - [ ] mismo nombre con ids distintos;
-  - [ ] perfil borrado en otro dispositivo;
-  - [ ] borrado local pendiente;
-  - [ ] sin diferencias no hay escrituras;
-  - [ ] la fusión es idempotente.
+- [x] `ProgressState.deletedScrolls`, con lectura defensiva en `persist.ts`, `deleteScroll` y fusión. Tests: un pergamino borrado no vuelve, uno editado después de borrarse sí, y un respaldo viejo sigue siendo válido.
+- [x] `features/sync/reconcile.ts`, puro. Tests:
+  - [x] perfil nuevo en cada lado;
+  - [x] mismo nombre con ids distintos;
+  - [x] perfil borrado en otro dispositivo;
+  - [x] borrado local pendiente;
+  - [x] sin diferencias no hay escrituras;
+  - [x] la fusión es idempotente.
 
 ### Sincronización
 
-- [ ] `features/sync/client.ts`: crea el cliente con `import()`, envía y verifica el código, cierra sesión.
-- [ ] `features/sync/engine.ts`: lee filas, aplica `reconcile`, sube comparando `revision` y reintenta hasta 3 veces.
-- [ ] Renombrar un perfil local al id remoto mueve su clave `dojo_progress_v1:<id>` y conserva `activeProfileId`.
-- [ ] `store.ts`: `saveProgress` y `saveProfiles` marcan pendiente en `dojo_sync_v1`. Aplicar datos remotos no marca.
-- [ ] Disparadores de la tabla "Cuándo sincroniza". Una sola sincronización a la vez; las pestañas se coordinan con `navigator.locks` si existe.
-- [ ] `use-progress.ts`: borrar un perfil lo agrega a `pendingDeletes`.
+- [x] `features/sync/client.ts`: crea el cliente con `import()`, envía y verifica el código, cierra sesión.
+- [x] `features/sync/engine.ts`: lee filas, aplica `reconcile`, sube comparando `revision` y reintenta hasta 3 veces.
+- [x] Renombrar un perfil local al id remoto mueve su clave `dojo_progress_v1:<id>` y conserva `activeProfileId`.
+- [x] `store.ts`: `saveProgress` y `saveProfiles` marcan pendiente en `dojo_sync_v1`. Aplicar datos remotos no marca.
+- [x] Disparadores de la tabla "Cuándo sincroniza". Una sola sincronización a la vez; las pestañas se coordinan con `navigator.locks` si existe.
+- [x] `use-progress.ts`: borrar un perfil lo agrega a `pendingDeletes`.
 
 ### Interfaz
 
-- [ ] Indicador en `AppHeader`, solo con sesión, sin mover el layout.
-- [ ] Sección "Sincronización" en `/progreso`: correo, enlace, estado, "Sincronizar ahora" y "Cerrar sesión".
-- [ ] Errores en español: enlace vencido, correo sin cuenta, demasiados intentos, sin conexión.
+- [x] Indicador en `AppHeader`, solo con sesión, sin mover el layout.
+- [x] Sección "Sincronización" en `/progreso`: correo, enlace, estado, "Sincronizar ahora" y "Cerrar sesión".
+- [x] Errores en español: enlace vencido, correo sin cuenta, demasiados intentos, sin conexión.
 - [ ] Revisión en 390 px y 1440 px, en tema claro y oscuro.
 
 ### Proyecto remoto
 
-- [ ] Crear el proyecto con `supabase projects create`, en `us-east-1`, en la organización del dueño. La contraseña se genera aleatoria y se le entrega para su gestor; no entra al repo.
-- [ ] `supabase link`, `supabase db push --linked` y `supabase config push`.
-- [ ] Crear la cuenta familiar con la API de administración.
-- [ ] El dueño agrega `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` en Vercel y vuelve a desplegar.
+- [x] Crear el proyecto con `supabase projects create`, en `us-east-1`, en la organización del dueño. La contraseña se genera aleatoria y se le entrega para su gestor; no entra al repo.
+- [x] `supabase link`, `supabase db push --linked` y `supabase config push`.
+- [ ] Crear la cuenta familiar: la crea el dueño en el panel de Supabase.
+- [x] El dueño agrega `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` en Vercel y vuelve a desplegar.
 
 ### Documentación
 
-- [ ] Spec 00: quitar "Cuentas, login, sincronización en la nube" de fuera de alcance.
-- [ ] Spec 05 (`deletedScrolls`), spec 07 (carpetas y dependencia) y `.env.example`.
-- [ ] `README.md` y `CLAUDE.md`: comandos `db:*`, y `docs/specs/10-cloud-sync.md` en la tabla "Antes de tocar algo".
+- [x] Spec 00: quitar "Cuentas, login, sincronización en la nube" de fuera de alcance.
+- [x] Spec 05 (`deletedScrolls`), spec 07 (carpetas y dependencia) y `.env.example`.
+- [x] `README.md` y `CLAUDE.md`: comandos `db:*`, y `docs/specs/10-cloud-sync.md` en la tabla "Antes de tocar algo".
 
 ## Aceptación
 

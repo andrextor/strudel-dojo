@@ -16,6 +16,7 @@ Mismo stack y convenciones que `test-maria-del-oceano`, porque ya se probó en p
 | Íconos | `lucide-preact` | Igual. |
 | Fuentes | `@fontsource-variable/*` | Ver `DESIGN.md`. |
 | IA | `@anthropic-ai/sdk` | Igual patrón. |
+| Sincronización | **≠** `@supabase/supabase-js` | Opcional y con carga perezosa. Ver `10-cloud-sync.md`. |
 | Deploy | `@astrojs/vercel` | **≠** `maxDuration: 60` (no hay generación larga). |
 | Calidad | Biome 2 (2 espacios, comillas simples, sin `;`, `noExplicitAny: error`), `astro check` en modo `strictest`, `node --test` con strip-types | Igual. |
 | Paquetes | pnpm | Igual (`packageManager` fijado). |
@@ -64,6 +65,7 @@ src/
     exercises/              # generators/*, grade.ts, registry.ts, Question UI (QuestionCard.tsx)
     strudel/                # engine, evaluate, query, assertions, errors, editor e islas de lección
     strudel-course/         # vistas del curso Strudel: etapas, unidades, requisito de teoría
+    sync/                   # sincronización con Supabase: reconcile y engine son puros
     curriculum/             # acceso tipado a las colecciones + curriculum.test.ts
     progress/               # rules, persist, store, use-progress, points, streak
     profiles/               # perfiles, selector
