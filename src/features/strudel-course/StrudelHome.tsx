@@ -3,7 +3,7 @@ import { buttonClass } from '../../components/ui/button.ts'
 import ProgressBar from '../../components/ui/ProgressBar.tsx'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
 import { bossHref, stageHref, unitHref } from '../curriculum/paths.ts'
-import type { Module, Stage } from '../curriculum/schema.ts'
+import type { Module, StageOutline } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import { isStagePassed, recommendedStrudel, stageStatus } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
@@ -11,7 +11,7 @@ import { STAGE_STATUS } from './labels.ts'
 import TheoryGate from './TheoryGate.tsx'
 
 interface Props {
-  stages: Stage[]
+  stages: StageOutline[]
   curriculum: Module[]
 }
 

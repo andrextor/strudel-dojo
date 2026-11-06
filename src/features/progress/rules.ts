@@ -1,6 +1,6 @@
 // Every pass/lock decision lives here (docs/specs/05). Pure: time and randomness are injected.
 import { type Rng, randomId } from '../../lib/random.ts'
-import type { MixEntry, Module, Stage, Unit } from '../curriculum/schema.ts'
+import type { MixEntry, Module, StageOutline, UnitOutline } from '../curriculum/schema.ts'
 import { grade } from '../exercises/grade.ts'
 import { buildSet } from '../exercises/registry.ts'
 import type { Response } from '../exercises/types.ts'
@@ -52,7 +52,7 @@ const isTestPassed = (p: ProgressState, topicId: string) =>
 const isExamPassed = (p: ProgressState, moduleId: string) =>
   submitted(p, 'placement', moduleId).some((a) => a.passed === true)
 
-const isBossPassed = (p: ProgressState, bossId: string) =>
+export const isBossPassed = (p: ProgressState, bossId: string) =>
   (p.bosses[bossId] ?? []).some((r) => r.passed)
 
 // Best submitted score of a test or placement, or null if none was submitted.
@@ -136,15 +136,19 @@ export function moduleStatus(p: ProgressState, curriculum: Module[], module: Mod
 
 const isKataPassed = (p: ProgressState, kata: { id: string }) => kataStatus(p, kata.id) === 'passed'
 
-export const isUnitPassed = (p: ProgressState, unit: Unit): boolean =>
+export const isUnitPassed = (p: ProgressState, unit: UnitOutline): boolean =>
   unit.katas.every((k) => isKataPassed(p, k))
 
 // Rule S5.
-export const isStagePassed = (p: ProgressState, stage: Stage): boolean =>
+export const isStagePassed = (p: ProgressState, stage: StageOutline): boolean =>
   stage.units.every((u) => isUnitPassed(p, u)) && isBossPassed(p, stage.boss.id)
 
 // Rule S1: a passed kata keeps its stage open, so new content never locks earned progress.
-export function isStageUnlocked(p: ProgressState, stages: Stage[], stage: Stage): boolean {
+export function isStageUnlocked(
+  p: ProgressState,
+  stages: StageOutline[],
+  stage: StageOutline,
+): boolean {
   if (stage.prerequisite === null) return true
   const prerequisite = stages.find((s) => s.id === stage.prerequisite)
   return (
@@ -154,7 +158,7 @@ export function isStageUnlocked(p: ProgressState, stages: Stage[], stage: Stage)
 }
 
 // The theory topics a unit asks for that are not passed yet.
-export function missingTheory(p: ProgressState, curriculum: Module[], unit: Unit): string[] {
+export function missingTheory(p: ProgressState, curriculum: Module[], unit: UnitOutline): string[] {
   return unit.requires.filter(
     (id) => !curriculum.some((m) => m.topics.some((t) => t.id === id && isTopicPassed(p, m, t))),
   )
@@ -164,9 +168,9 @@ export function missingTheory(p: ProgressState, curriculum: Module[], unit: Unit
 export function unitStatus(
   p: ProgressState,
   curriculum: Module[],
-  stages: Stage[],
-  stage: Stage,
-  unit: Unit,
+  stages: StageOutline[],
+  stage: StageOutline,
+  unit: UnitOutline,
 ): UnitStatus {
   if (isUnitPassed(p, unit)) return 'passed'
   if (!isStageUnlocked(p, stages, stage)) return 'locked'
@@ -178,11 +182,19 @@ export function unitStatus(
 }
 
 // Rule S4.
-export function stageBossUnlocked(p: ProgressState, stages: Stage[], stage: Stage): boolean {
+export function stageBossUnlocked(
+  p: ProgressState,
+  stages: StageOutline[],
+  stage: StageOutline,
+): boolean {
   return isStageUnlocked(p, stages, stage) && stage.units.every((u) => isUnitPassed(p, u))
 }
 
-export function stageStatus(p: ProgressState, stages: Stage[], stage: Stage): StageStatus {
+export function stageStatus(
+  p: ProgressState,
+  stages: StageOutline[],
+  stage: StageOutline,
+): StageStatus {
   if (isStagePassed(p, stage)) return 'passed'
   if (!isStageUnlocked(p, stages, stage)) return 'locked'
   return stageBossUnlocked(p, stages, stage) ? 'boss_ready' : 'available'
@@ -197,12 +209,12 @@ export type NextStrudelStep =
 export function recommendedStrudel(
   p: ProgressState,
   curriculum: Module[],
-  stages: Stage[],
+  stages: StageOutline[],
 ): NextStrudelStep | null {
   for (const stage of stages) {
     if (!isStageUnlocked(p, stages, stage) || isStagePassed(p, stage)) continue
     const pending = stage.units.filter((u) => !isUnitPassed(p, u))
-    const statusOf = (u: Unit) => unitStatus(p, curriculum, stages, stage, u)
+    const statusOf = (u: UnitOutline) => unitStatus(p, curriculum, stages, stage, u)
     const open = pending.find((u) => statusOf(u) !== 'needs_theory')
     if (open !== undefined) return { kind: 'unit', stageId: stage.id, unitId: open.id }
     const [waiting] = pending

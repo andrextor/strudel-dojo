@@ -27,7 +27,7 @@ Este spec define la separación de la app en dos cursos. **Aplicado** en P13–P
 | Prueba de ubicación en Strudel | Un saltador de etapas pide generar preguntas de código. Se añade si S01–S02 resultan repetitivas para alguien que ya usa Strudel. |
 | Redirecciones de las URL viejas de katas y combates | La app tiene dos usuarios y esas rutas no están guardadas en el progreso. Una URL vieja cae en la página 404. |
 | Ceremonia de etapa en Strudel | La revisión del Sensei ya cierra el combate. La ceremonia sigue siendo de cinturones. |
-| Repaso espaciado de katas | `/repaso` sigue siendo solo de teoría. |
+| Repaso espaciado de katas | `/repaso` no repite katas. Sí incluye las preguntas de `practice` de las unidades abiertas (`sound-design`, `performance-signal`). |
 
 ## Estructura final
 

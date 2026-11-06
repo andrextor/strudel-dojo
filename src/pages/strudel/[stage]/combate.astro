@@ -2,13 +2,15 @@
 import BossView from '../../../features/boss/BossView.tsx'
 import { getCurriculum, getStages } from '../../../features/curriculum/index.ts'
 import { segment } from '../../../features/curriculum/paths.ts'
+import { stageOutline } from '../../../features/curriculum/schema.ts'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 
 export async function getStaticPaths() {
-  const [curriculum, stages] = await Promise.all([getCurriculum(), getStages()])
-  return stages.map((stage) => ({
+  const [curriculum, all] = await Promise.all([getCurriculum(), getStages()])
+  const stages = all.map(stageOutline)
+  return all.map((stage) => ({
     params: { stage: segment(stage.id, 0) },
-    props: { stage, stages, curriculum },
+    props: { stage: { ...stageOutline(stage), boss: stage.boss }, stages, curriculum },
   }))
 }
 

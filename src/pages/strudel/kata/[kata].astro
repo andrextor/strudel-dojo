@@ -1,15 +1,23 @@
 ---
 import { getCurriculum, getStages } from '../../../features/curriculum/index.ts'
+import { stageOutline, unitOutline } from '../../../features/curriculum/schema.ts'
 import KataView from '../../../features/kata/KataView.tsx'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 
 export async function getStaticPaths() {
-  const [curriculum, stages] = await Promise.all([getCurriculum(), getStages()])
-  return stages.flatMap((stage) =>
+  const [curriculum, all] = await Promise.all([getCurriculum(), getStages()])
+  const stages = all.map(stageOutline)
+  return all.flatMap((stage) =>
     stage.units.flatMap((unit) =>
       unit.katas.map((kata) => ({
         params: { kata: kata.id.toLowerCase() },
-        props: { stage, unit, kata, stages, curriculum },
+        props: {
+          stage: stageOutline(stage),
+          unit: unitOutline(unit),
+          kata,
+          stages,
+          curriculum,
+        },
       })),
     ),
   )

@@ -14,8 +14,8 @@ import {
 import BeltBadge from '../../components/ui/BeltBadge.tsx'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge, { type Status } from '../../components/ui/StatusBadge.tsx'
-import { bossHref, examHref, moduleHref, topicHref, unitHref } from '../curriculum/paths.ts'
-import type { Module, Stage } from '../curriculum/schema.ts'
+import { bossHref, moduleHref, nextStepHref, topicHref, unitHref } from '../curriculum/paths.ts'
+import type { Module, StageOutline } from '../curriculum/schema.ts'
 import ProfilePicker from '../profiles/ProfilePicker.tsx'
 import { needsBackupReminder } from '../progress/persist.ts'
 import {
@@ -45,12 +45,19 @@ const SHORTCUTS = [
   { href: '/progreso', label: 'Progreso', Icon: TrendingUp },
 ]
 
-export default function Home({ curriculum, stages }: { curriculum: Module[]; stages: Stage[] }) {
+export default function Home({
+  curriculum,
+  stages,
+}: {
+  curriculum: Module[]
+  stages: StageOutline[]
+}) {
   const { active, progress } = useProgress()
   if (active === null || progress === null) return <ProfilePicker />
 
   const now = new Date()
-  const due = dueSkills(progress.skillStats, new Set(reviewMixes(progress, curriculum).keys()), now)
+  const reviewable = new Set(reviewMixes(progress, curriculum, stages).keys())
+  const due = dueSkills(progress.skillStats, reviewable, now)
   const remindBackup = needsBackupReminder(progress, now)
   const next = recommendedNext(progress, curriculum)
   const nextModule = next && curriculum.find((m) => m.id === next.moduleId)
@@ -83,10 +90,7 @@ export default function Home({ curriculum, stages }: { curriculum: Module[]; sta
                 {next.kind === 'exam' ? 'Examen de cinturón' : nextTopic?.title}
               </p>
               {nextTopic && <p class="mt-1 text-dojo-muted">{nextTopic.goal}</p>}
-              <a
-                href={next.kind === 'exam' ? examHref(next.moduleId) : topicHref(next.topicId)}
-                class={buttonClass('primary', 'mt-4')}
-              >
+              <a href={nextStepHref(next)} class={buttonClass('primary', 'mt-4')}>
                 {next.kind === 'exam' ? (
                   <Award size={18} aria-hidden="true" />
                 ) : (

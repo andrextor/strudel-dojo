@@ -3,7 +3,7 @@ import { useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
 import { stageHref } from '../curriculum/paths.ts'
-import type { Module, Stage } from '../curriculum/schema.ts'
+import type { Boss, Module, StageOutline } from '../curriculum/schema.ts'
 import { AssertionList, useAssertions } from '../kata/challenge.tsx'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import { newlyPassedModule, recordBoss, rubricScore, stageBossUnlocked } from '../progress/rules.ts'
@@ -21,8 +21,8 @@ export default function BossView({
   stages,
   curriculum,
 }: {
-  stage: Stage
-  stages: Stage[]
+  stage: StageOutline & { boss: Boss }
+  stages: StageOutline[]
   curriculum: Module[]
 }) {
   const { boss } = stage

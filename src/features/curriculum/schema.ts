@@ -206,3 +206,32 @@ export type Module = z.infer<typeof moduleSchema>
 export type Lesson = z.infer<typeof lessonSchema>
 export type Stage = z.infer<typeof stageSchema>
 export type Unit = z.infer<typeof unitSchema>
+
+// What islands need from a stage: the rules work on ids, so solutions and assertions stay out of
+// every page that only shows status.
+export type UnitOutline = Pick<Unit, 'id' | 'title' | 'goal' | 'requires' | 'practice'> & {
+  katas: Pick<Kata, 'id'>[]
+}
+export type StageOutline = Pick<Stage, 'id' | 'order' | 'title' | 'summary' | 'prerequisite'> & {
+  units: UnitOutline[]
+  boss: Pick<Boss, 'id' | 'title' | 'brief'>
+}
+
+export const unitOutline = ({ id, title, goal, requires, practice, katas }: Unit): UnitOutline => ({
+  id,
+  title,
+  goal,
+  requires,
+  ...(practice ? { practice } : {}),
+  katas: katas.map((k) => ({ id: k.id })),
+})
+
+export const stageOutline = (stage: Stage): StageOutline => ({
+  id: stage.id,
+  order: stage.order,
+  title: stage.title,
+  summary: stage.summary,
+  prerequisite: stage.prerequisite,
+  units: stage.units.map(unitOutline),
+  boss: { id: stage.boss.id, title: stage.boss.title, brief: stage.boss.brief },
+})
