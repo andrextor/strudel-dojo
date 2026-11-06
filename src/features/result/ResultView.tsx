@@ -124,7 +124,7 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
           belt={beltFor(progress, curriculum).belt ?? 'white'}
           pose={passed ? 'cheer' : 'down'}
           settle="guard"
-          class="absolute top-4 right-4 h-24 w-20 md:h-32 md:w-28"
+          class="absolute top-4 right-4 size-20 md:size-28"
         />
         <h1 class="pr-24 text-sm text-dojo-muted">
           Resultado ·{' '}

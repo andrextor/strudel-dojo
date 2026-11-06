@@ -85,7 +85,7 @@ export default function Home({
         <Apprentice
           belt={beltFor(progress, curriculum).belt ?? 'white'}
           pose={restingPose(progress, now)}
-          class="h-28 w-24 md:h-32 md:w-28"
+          class="size-24 md:size-28"
         />
       </section>
 

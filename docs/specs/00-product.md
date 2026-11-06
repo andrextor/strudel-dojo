@@ -21,7 +21,7 @@ Implicaciones:
 
 ## Tono y estética
 
-Dojo nocturno con neón: fondo tinta, acentos naranja torii y cian neón, cinturones de colores, tipografía display con carácter. Vibra de "sala de práctica a medianoche / live coding en club", no de app para niños. Sin mascotas tiernas, sin lenguaje infantil, sin exceso de emojis. El **aprendiz** es la excepción deliberada: una silueta sin cara, que lleva tu cinturón y se expresa con la postura. Ver `DESIGN.md`.
+Dojo nocturno con neón: fondo tinta, acentos naranja torii y cian neón, cinturones de colores, tipografía display con carácter. Vibra de "sala de práctica a medianoche / live coding en club", no de app para niños. Sin lenguaje infantil, sin exceso de emojis. El **compañero del dojo** es la excepción deliberada a no tener mascotas: una criatura redonda que lleva tu cinturón y reacciona a lo que haces. Ver `DESIGN.md`.
 
 Copy en español neutro latinoamericano con "tú", en oraciones simples, sin asumir género.
 

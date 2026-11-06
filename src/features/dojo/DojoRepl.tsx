@@ -68,7 +68,7 @@ export default function DojoRepl({ curriculum }: { curriculum: Module[] }) {
             belt={progress ? (beltFor(progress, curriculum).belt ?? 'white') : 'white'}
             pose="guard"
             dances
-            class="h-20 w-16"
+            class="size-16"
           />
           <h1 class="font-display text-3xl font-bold">Dojo libre</h1>
         </div>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'preact/hooks'
+import { useEffect, useId, useRef, useState } from 'preact/hooks'
 import { BELT_NAME_ES, type BeltColor } from '../curriculum/belts.ts'
 import { onBeat, onPlaying } from './beat.ts'
 import { POSE_ES, type Pose } from './mood.ts'
@@ -14,9 +14,10 @@ interface Props {
 const SETTLE_MS = 2600
 const MIN_STEP_MS = 120 // fast patterns dance on every other hit instead of shaking
 
-// A faceless figure: posture carries the whole expression, the belt is its only strong color.
+// A soft dojo creature: squash, stretch and its eyes carry the mood; the belt is its strong color.
 export default function Apprentice({ belt, pose, settle, dances = false, class: extra }: Props) {
   const root = useRef<SVGSVGElement>(null)
+  const clip = useId()
   const [shown, setShown] = useState(pose)
   const [playing, setPlaying] = useState(false)
 
@@ -47,52 +48,43 @@ export default function Apprentice({ belt, pose, settle, dances = false, class: 
   return (
     <svg
       ref={root}
-      viewBox="0 0 120 150"
+      viewBox="0 0 120 120"
       class={`apprentice ${extra ?? ''}`}
       data-pose={current}
       data-belt={belt}
       role="img"
-      aria-label={`Tu aprendiz, con cinturón ${BELT_NAME_ES[belt].toLowerCase()}, ${POSE_ES[current]}`}
+      aria-label={`Tu compañero del dojo, con cinturón ${BELT_NAME_ES[belt].toLowerCase()}, ${POSE_ES[current]}`}
       style={{ '--belt': `var(--color-belt-${belt})` }}
     >
+      <defs>
+        <clipPath id={clip}>
+          <rect x="20" y="24" width="80" height="76" rx="34" />
+        </clipPath>
+      </defs>
       <g class="ap-ki">
-        <path d="M18 52 Q10 34 20 18" />
-        <path d="M102 52 Q110 34 100 18" />
-        <path d="M34 12 Q60 -4 86 12" />
+        <path d="M12 58 Q4 38 14 22" />
+        <path d="M108 58 Q116 38 106 22" />
+        <path d="M34 10 Q60 -4 86 10" />
       </g>
+      <ellipse class="ap-shadow" cx="60" cy="112" rx="34" ry="4" />
       <g class="ap-body">
-        <g class="ap-leg-l">
-          <path class="ap-limb" d="M53 96 L47 118" />
-          <g class="ap-shin-l">
-            <path class="ap-limb" d="M47 118 L44 140" />
-          </g>
+        <rect class="ap-foot ap-foot-l" x="38" y="96" width="17" height="12" rx="6" />
+        <rect class="ap-foot ap-foot-r" x="65" y="96" width="17" height="12" rx="6" />
+        <rect class="ap-arm ap-arm-l" x="11" y="60" width="15" height="10" rx="5" />
+        <rect class="ap-arm ap-arm-r" x="94" y="60" width="15" height="10" rx="5" />
+        <rect class="ap-torso" x="20" y="24" width="80" height="76" rx="34" />
+        <g clip-path={`url(#${clip})`}>
+          <rect class="ap-belt" x="20" y="74" width="80" height="11" />
         </g>
-        <g class="ap-leg-r">
-          <path class="ap-limb" d="M67 96 L73 118" />
-          <g class="ap-shin-r">
-            <path class="ap-limb" d="M73 118 L76 140" />
+        <path class="ap-belt-tails" d="M60 80 L51 95 M60 80 L69 94" />
+        <rect class="ap-knot" x="54" y="73" width="12" height="13" rx="3" />
+        <g class="ap-face">
+          <g class="ap-eyes-open">
+            <rect x="41" y="44" width="9" height="17" rx="4.5" />
+            <rect x="70" y="44" width="9" height="17" rx="4.5" />
           </g>
-        </g>
-        <g class="ap-upper">
-          <g class="ap-arm-l">
-            <path class="ap-limb" d="M46 47 L37 67" />
-            <g class="ap-fore-l">
-              <path class="ap-limb" d="M37 67 L34 87" />
-            </g>
-          </g>
-          <g class="ap-arm-r">
-            <path class="ap-limb" d="M74 47 L83 67" />
-            <g class="ap-fore-r">
-              <path class="ap-limb" d="M83 67 L86 87" />
-            </g>
-          </g>
-          <path class="ap-gi" d="M45 42 Q60 37 75 42 L72 100 L48 100 Z" />
-          <path class="ap-lapel" d="M52 40 L60 62 L68 40" />
-          <rect class="ap-belt" x="46" y="80" width="28" height="8" rx="2" />
-          <path class="ap-belt-tails" d="M60 86 L54 100 M60 86 L67 99" />
-          <g class="ap-head">
-            <circle class="ap-skull" cx="60" cy="24" r="13" />
-          </g>
+          <path class="ap-eyes-happy" d="M39 56 Q45.5 44 52 56 M68 56 Q74.5 44 81 56" />
+          <path class="ap-eyes-closed" d="M39 52 Q45.5 60 52 52 M68 52 Q74.5 60 81 52" />
         </g>
       </g>
     </svg>
