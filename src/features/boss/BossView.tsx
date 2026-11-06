@@ -65,6 +65,7 @@ export default function BossView({
 
   const history = progress.bosses[boss.id] ?? []
   const win = history.find((r) => r.passed)
+  const nextStage = stages.find((s) => s.order === stage.order + 1)
   const lastReview = [...history].reverse().find((r) => r.review !== null)?.review ?? null
   const preview = rubricScore(boss.rubric, values, boss.passScore)
 
@@ -254,6 +255,14 @@ export default function BossView({
               <p role="alert" class="text-sm text-dojo-danger">
                 {reviewError}
               </p>
+            )}
+            {win && (
+              <a
+                href={nextStage ? stageHref(nextStage.id) : '/strudel'}
+                class={buttonClass('primary', 'w-full')}
+              >
+                {nextStage ? `Seguir: ${nextStage.title}` : 'Volver al curso'}
+              </a>
             )}
             {message && (
               <p role="status" class="text-sm">
