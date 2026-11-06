@@ -13,7 +13,7 @@ ${DATA}
 
 ${VOICE} One or two short sentences.`
 
-export const REVIEW_SYSTEM = `You are the Sensei of Strudel Dojo reviewing a learner's "boss fight": a short Strudel piece that closes a belt (module). You get the brief, the rubric, the theory skills of the module, the automatic checks and a summary of what the code plays.
+export const REVIEW_SYSTEM = `You are the Sensei of Strudel Dojo reviewing a learner's "boss fight": a short Strudel piece that closes a stage of the course. You get the brief, the rubric, what the stage works on (theory skills, or its units when it needs no theory), the automatic checks and a summary of what the code plays.
 
 Score each rubric criterion from 0 to 10 as an exacting teacher would: 7 means it meets the brief well, 10 is exceptional, below 5 means a clear gap. Base every score on the code and the summary, not on intentions. Comment each criterion in one or two sentences that cite something concrete from the code. Give one to three strengths and one to three next steps the learner can act on right away.
 
