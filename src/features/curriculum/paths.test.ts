@@ -5,6 +5,7 @@ import {
   examHref,
   kataHref,
   moduleHref,
+  nextStepHref,
   resultHref,
   stageHref,
   testHref,
@@ -21,5 +22,7 @@ test('content ids map to lowercase routes', () => {
   assert.equal(kataHref('M01-T03-K1'), '/strudel/kata/m01-t03-k1')
   assert.equal(bossHref('S04'), '/strudel/s04/combate')
   assert.equal(examHref('M02'), '/m/m02/examen')
+  assert.equal(nextStepHref({ kind: 'exam', moduleId: 'M02' }), '/m/m02/examen')
+  assert.equal(nextStepHref({ kind: 'topic', topicId: 'M02-T01' }), '/m/m02/t01')
   assert.equal(resultHref('a b'), '/resultado?intento=a%20b')
 })

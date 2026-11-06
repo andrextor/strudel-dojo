@@ -11,6 +11,9 @@ export const bossHref = (stageId: string) => `${stageHref(stageId)}/combate`
 // The whole id, so a kata's URL does not depend on where it sits in the course.
 export const kataHref = (kataId: string) => `/strudel/kata/${kataId.toLowerCase()}`
 export const examHref = (moduleId: string) => `${moduleHref(moduleId)}/examen`
+export const nextStepHref = (
+  next: { kind: 'topic'; topicId: string } | { kind: 'exam'; moduleId: string },
+) => (next.kind === 'exam' ? examHref(next.moduleId) : topicHref(next.topicId))
 export const resultHref = (attemptId: string) =>
   `/resultado?intento=${encodeURIComponent(attemptId)}`
 

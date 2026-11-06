@@ -14,7 +14,7 @@ import {
 import BeltBadge from '../../components/ui/BeltBadge.tsx'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge, { type Status } from '../../components/ui/StatusBadge.tsx'
-import { bossHref, examHref, moduleHref, topicHref, unitHref } from '../curriculum/paths.ts'
+import { bossHref, moduleHref, nextStepHref, topicHref, unitHref } from '../curriculum/paths.ts'
 import type { Module, Stage } from '../curriculum/schema.ts'
 import ProfilePicker from '../profiles/ProfilePicker.tsx'
 import { needsBackupReminder } from '../progress/persist.ts'
@@ -83,10 +83,7 @@ export default function Home({ curriculum, stages }: { curriculum: Module[]; sta
                 {next.kind === 'exam' ? 'Examen de cinturón' : nextTopic?.title}
               </p>
               {nextTopic && <p class="mt-1 text-dojo-muted">{nextTopic.goal}</p>}
-              <a
-                href={next.kind === 'exam' ? examHref(next.moduleId) : topicHref(next.topicId)}
-                class={buttonClass('primary', 'mt-4')}
-              >
+              <a href={nextStepHref(next)} class={buttonClass('primary', 'mt-4')}>
                 {next.kind === 'exam' ? (
                   <Award size={18} aria-hidden="true" />
                 ) : (

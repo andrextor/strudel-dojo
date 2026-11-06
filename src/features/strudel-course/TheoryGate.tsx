@@ -1,6 +1,6 @@
 import { BookOpen } from 'lucide-preact'
 import { buttonClass } from '../../components/ui/button.ts'
-import { examHref, topicHref } from '../curriculum/paths.ts'
+import { nextStepHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import { isModuleUnlocked, recommendedNext } from '../progress/rules.ts'
 import type { ProgressState } from '../progress/types.ts'
@@ -36,10 +36,7 @@ export default function TheoryGate({ topicIds, curriculum, progress }: Props) {
         ))}
       </ul>
       {blocked && next && (
-        <a
-          href={next.kind === 'exam' ? examHref(next.moduleId) : topicHref(next.topicId)}
-          class={buttonClass('primary')}
-        >
+        <a href={nextStepHref(next)} class={buttonClass('primary')}>
           <BookOpen size={18} aria-hidden="true" />
           Seguir con la teoría
         </a>

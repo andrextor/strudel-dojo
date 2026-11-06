@@ -52,7 +52,7 @@ const isTestPassed = (p: ProgressState, topicId: string) =>
 const isExamPassed = (p: ProgressState, moduleId: string) =>
   submitted(p, 'placement', moduleId).some((a) => a.passed === true)
 
-const isBossPassed = (p: ProgressState, bossId: string) =>
+export const isBossPassed = (p: ProgressState, bossId: string) =>
   (p.bosses[bossId] ?? []).some((r) => r.passed)
 
 // Best submitted score of a test or placement, or null if none was submitted.

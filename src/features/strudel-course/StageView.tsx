@@ -6,6 +6,7 @@ import { bossHref, unitHref } from '../curriculum/paths.ts'
 import type { Module, Stage } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import {
+  isBossPassed,
   isStageUnlocked,
   isUnitPassed,
   kataStatus,
@@ -56,7 +57,7 @@ export default function StageView({ stage, stages, curriculum }: Props) {
 
   const unitsDone = stage.units.filter((u) => isUnitPassed(progress, u)).length
   const bossOpen = stageBossUnlocked(progress, stages, stage)
-  const bossPassed = (progress.bosses[stage.boss.id] ?? []).some((r) => r.passed)
+  const bossPassed = isBossPassed(progress, stage.boss.id)
 
   return (
     <div class="space-y-8">

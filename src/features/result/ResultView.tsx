@@ -2,7 +2,7 @@ import { ArrowRight, CircleCheck, CircleX, Dumbbell, Lightbulb, RotateCcw } from
 import type { ComponentChildren } from 'preact'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
-import { examHref, moduleHref, testHref, topicHref } from '../curriculum/paths.ts'
+import { examHref, moduleHref, nextStepHref, testHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import { SKILL_NAME_ES } from '../curriculum/skills.ts'
 import { formatAnswer, formatResponse } from '../exercises/format.ts'
@@ -70,12 +70,7 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
   if (attempt.kind === 'placement') {
     const next = recommendedNext(progress, curriculum)
     ctas = passed ? (
-      <Cta
-        href={
-          next ? (next.kind === 'exam' ? examHref(next.moduleId) : topicHref(next.topicId)) : '/'
-        }
-        primary
-      >
+      <Cta href={next ? nextStepHref(next) : '/'} primary>
         Seguir
         <ArrowRight size={18} aria-hidden="true" />
       </Cta>
