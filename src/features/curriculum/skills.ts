@@ -4,6 +4,7 @@ export const SKILL_NAME_ES: Record<string, string> = {
   semitones: 'Tonos y semitonos',
   'interval-quality': 'Intervalos',
   'interval-ear': 'Intervalos de oído',
+  'note-ear': 'Notas de oído',
   'chord-ear': 'Acordes de oído',
   'mode-ear': 'Modos de oído',
   'melodic-dictation': 'Dictado melódico',

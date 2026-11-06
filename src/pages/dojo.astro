@@ -1,10 +1,13 @@
 ---
+import { getCurriculum } from '../features/curriculum/index.ts'
 import DojoRepl from '../features/dojo/DojoRepl.tsx'
 import BaseLayout from '../layouts/BaseLayout.astro'
+
+const curriculum = await getCurriculum()
 ---
 
 <BaseLayout title="Dojo libre">
-  <DojoRepl client:only="preact">
+  <DojoRepl client:only="preact" curriculum={curriculum}>
     <div slot="fallback" class="min-h-96"></div>
   </DojoRepl>
 </BaseLayout>

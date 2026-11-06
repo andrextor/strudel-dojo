@@ -70,6 +70,7 @@ Los puntos (XP) y la racha **se derivan** de lo guardado y nunca se almacenan, a
 - XP: 10 por pregunta correcta en prueba (5 si se pidió pista), contando solo el **mejor intento entregado** de cada prueba, para que repetirla no infle el XP; 2 por correcta en práctica, con tope de 100 por día de `practiceDays`; 30 por kata aprobada sin ayuda; 100 por tema; 300 por combate.
 - Racha: días consecutivos con al menos una actividad calificada (`submittedAt`, `passedAt` de kata, o un día de `practiceDays` con `answered >= 10`).
 - Cualquier combate con un registro aprobado suma sus 300, sin importar a qué etapa pertenece.
+- La postura de reposo del aprendiz también se deriva (`features/apprentice/mood.ts`): 3 días de racha le dan energía y 3 días sin actividad lo ponen a meditar. Una ausencia nunca se muestra como tristeza.
 - El rango visible es el cinturón del último módulo aprobado. Las "rayas" (stripes, 0–4) del cinturón siguiente cuentan los temas aprobados de ese módulo.
 
 ## Perfiles

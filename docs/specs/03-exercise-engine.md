@@ -92,6 +92,7 @@ type Grade = { correct: boolean; feedback?: string }        // feedback: p. ej. 
 | `secondary-dominant` | secondary-dominants | V/x en la tonalidad Y. | `targets[]` |
 | `chord-scale` | chord-scale | Escala para el acorde X en contexto Y. | — |
 | `ear-interval` | interval-ear | Escucha e identifica el intervalo. | `set[]`, `direction: up|down|harmonic` |
+| `ear-note` | note-ear | Escucha una nota al azar y di cuál es, con Do de referencia o sin ella. Solo en `/oido`. | `accidentals`, `reference` |
 | `ear-chord` | chord-ear | Calidad del acorde escuchado. | `qualities[]`, `inversions` |
 | `ear-scale` | mode-ear | ¿Qué escala/modo suena? | `scales[]` |
 | `ear-melody` | melodic-dictation | Toca en el teclado la melodía escuchada. | `length`, `scale`, `maxLeap` |

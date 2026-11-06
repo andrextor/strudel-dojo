@@ -5,6 +5,7 @@ import { chordSpelling } from './generators/chord-spelling.ts'
 import { diatonicChord, diatonicChordMinor } from './generators/diatonic-chord.ts'
 import { earChord } from './generators/ear-chord.ts'
 import { earInterval } from './generators/ear-interval.ts'
+import { earNote } from './generators/ear-note.ts'
 import { enharmonic } from './generators/enharmonic.ts'
 import { erase, type Registered } from './generators/erase.ts'
 import { intervalBuild } from './generators/interval-build.ts'
@@ -34,6 +35,7 @@ const REGISTERED: Registered[] = [
   erase(intervalBuild),
   erase(intervalInvert),
   erase(earInterval),
+  erase(earNote),
   erase(rhythmMatch),
   erase(scaleSpelling),
   erase(keySignatureGen),

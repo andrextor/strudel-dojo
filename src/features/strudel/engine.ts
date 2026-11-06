@@ -25,7 +25,7 @@ async function importModules() {
 }
 
 let context: AudioContext | null = null
-const audioContext = () => {
+export const audioContext = () => {
   context ??= new AudioContext()
   return context
 }

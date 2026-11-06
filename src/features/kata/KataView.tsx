@@ -3,9 +3,11 @@ import { useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import Callout from '../../components/ui/Callout.tsx'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
+import Apprentice from '../apprentice/Apprentice.tsx'
 import { stageHref, unitHref } from '../curriculum/paths.ts'
 import type { Kata, Module, StageOutline, UnitOutline } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
+import { beltFor } from '../progress/points.ts'
 import {
   canSeeSolution,
   markSolutionSeen,
@@ -34,6 +36,7 @@ export default function KataView({ kata, unit, stage, stages, curriculum }: Prop
   const { active, progress, updateProgress } = useProgress()
   const { check, test } = useAssertions(kata.assertions, kata.cycles)
   const [hints, setHints] = useState(0)
+  const [cheer, setCheer] = useState(false)
   const lastCode = useRef('')
   const editor = useRef<EditorApi | null>(null)
   const sensei = useSenseiEnabled()
@@ -74,6 +77,7 @@ export default function KataView({ kata, unit, stage, stages, curriculum }: Prop
     if (code.trim() === '') return
     const result = await test(code)
     const ok = result.state === 'done' && result.passed
+    if (ok && !passed) setCheer(true)
     updateProgress((p) => recordKata(p, kata.id, code, ok, new Date()))
   }
 
@@ -86,12 +90,24 @@ export default function KataView({ kata, unit, stage, stages, curriculum }: Prop
         <ArrowLeft size={16} aria-hidden="true" />
         {unit.title}
       </a>
-      <header class="space-y-2">
-        <h1 class="font-display text-2xl font-bold md:text-3xl">{kata.title}</h1>
-        <p class="text-lg">{kata.brief}</p>
-        {passed && (
-          <StatusBadge status="passed" label={record?.helped ? 'Aprobada con ayuda' : 'Aprobada'} />
-        )}
+      <header class="flex items-start justify-between gap-4">
+        <div class="min-w-0 space-y-2">
+          <h1 class="font-display text-2xl font-bold md:text-3xl">{kata.title}</h1>
+          <p class="text-lg">{kata.brief}</p>
+          {passed && (
+            <StatusBadge
+              status="passed"
+              label={record?.helped ? 'Aprobada con ayuda' : 'Aprobada'}
+            />
+          )}
+        </div>
+        <Apprentice
+          belt={beltFor(progress, curriculum).belt ?? 'white'}
+          pose={cheer ? 'cheer' : 'guard'}
+          settle="guard"
+          dances
+          class="size-20 md:size-24"
+        />
       </header>
 
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">

@@ -2,12 +2,14 @@ import { ArrowRight, CircleCheck, CircleX, Dumbbell, Lightbulb, RotateCcw } from
 import type { ComponentChildren } from 'preact'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
+import Apprentice from '../apprentice/Apprentice.tsx'
 import { examHref, moduleHref, nextStepHref, testHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import { SKILL_NAME_ES } from '../curriculum/skills.ts'
 import { formatAnswer, formatResponse } from '../exercises/format.ts'
 import { grade } from '../exercises/grade.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
+import { beltFor } from '../progress/points.ts'
 import { examAdvice, percentOf, recommendedNext } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
 
@@ -117,8 +119,14 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
 
   return (
     <div class="space-y-8">
-      <section class="space-y-3 rounded-card bg-dojo-surface p-5 md:p-6">
-        <h1 class="text-sm text-dojo-muted">
+      <section class="relative space-y-3 rounded-card bg-dojo-surface p-5 md:p-6">
+        <Apprentice
+          belt={beltFor(progress, curriculum).belt ?? 'white'}
+          pose={passed ? 'cheer' : 'down'}
+          settle="guard"
+          class="absolute top-4 right-4 size-20 md:size-28"
+        />
+        <h1 class="pr-24 text-sm text-dojo-muted">
           Resultado ·{' '}
           {attempt.kind === 'placement' ? `Examen de ${module.title}` : (topic?.title ?? '')}
         </h1>

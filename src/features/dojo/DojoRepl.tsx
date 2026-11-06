@@ -2,7 +2,10 @@ import { ExternalLink, FolderOpen, Save, Trash2 } from 'lucide-preact'
 import { useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import { freshRng } from '../../lib/random.ts'
+import Apprentice from '../apprentice/Apprentice.tsx'
+import type { Module } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
+import { beltFor } from '../progress/points.ts'
 import { useProgress } from '../progress/use-progress.ts'
 import { useSenseiEnabled } from '../sensei/client.ts'
 import ExplainCode from '../sensei/ExplainCode.tsx'
@@ -17,7 +20,7 @@ stack(
   note("<c3 a2 f2 g2>").s("sawtooth").lpf(800),
 )`
 
-export default function DojoRepl() {
+export default function DojoRepl({ curriculum }: { curriculum: Module[] }) {
   const { active, progress, updateProgress } = useProgress()
   const editor = useRef<EditorApi | null>(null)
   const [name, setName] = useState('')
@@ -60,7 +63,15 @@ export default function DojoRepl() {
   return (
     <div class="space-y-6">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <h1 class="font-display text-3xl font-bold">Dojo libre</h1>
+        <div class="flex items-center gap-3">
+          <Apprentice
+            belt={progress ? (beltFor(progress, curriculum).belt ?? 'white') : 'white'}
+            pose="guard"
+            dances
+            class="size-16"
+          />
+          <h1 class="font-display text-3xl font-bold">Dojo libre</h1>
+        </div>
         <label class="flex items-start gap-3">
           <input
             type="checkbox"
