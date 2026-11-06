@@ -3,7 +3,7 @@ import { useMemo, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import ProgressBar from '../../components/ui/ProgressBar.tsx'
 import { freshRng, randomId } from '../../lib/random.ts'
-import type { Module } from '../curriculum/schema.ts'
+import type { Module, StageOutline } from '../curriculum/schema.ts'
 import { SKILL_NAME_ES } from '../curriculum/skills.ts'
 import QuestionCard from '../exercises/QuestionCard.tsx'
 import NeedProfile from '../profiles/NeedProfile.tsx'
@@ -13,15 +13,22 @@ import type { Prefs } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
 import { buildReviewSet } from './schedule.ts'
 
-export default function ReviewSession({ curriculum }: { curriculum: Module[] }) {
+export default function ReviewSession({
+  curriculum,
+  stages,
+}: {
+  curriculum: Module[]
+  stages: StageOutline[]
+}) {
   const { active, progress, updateProgress } = useProgress()
   const [session, setSession] = useState(() => randomId(freshRng()))
   const [index, setIndex] = useState(0)
   const [results, setResults] = useState<{ skill: string; correct: boolean }[]>([])
   // Built once per session from the stats at its start; answering mid-session reshuffles nothing.
   const set = useMemo(
-    () => (progress ? buildReviewSet(progress, curriculum, new Date(), `review:${session}`) : []),
-    [session, curriculum, progress === null],
+    () =>
+      progress ? buildReviewSet(progress, curriculum, stages, new Date(), `review:${session}`) : [],
+    [session, curriculum, stages, progress === null],
   )
   if (active === null || progress === null) return <NeedProfile />
 

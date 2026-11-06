@@ -2,10 +2,10 @@
 // and stale ones. Pure: `now` and the seed are passed in. The Leitner box itself is updated by
 // bumpSkill in progress/rules.ts on every graded answer.
 import { createRng } from '../../lib/random.ts'
-import type { MixEntry, Module } from '../curriculum/schema.ts'
+import type { MixEntry, Module, StageOutline } from '../curriculum/schema.ts'
 import { generateQuestion, registry } from '../exercises/registry.ts'
 import type { Question } from '../exercises/types.ts'
-import { isModuleUnlocked } from '../progress/rules.ts'
+import { isModuleUnlocked, unitStatus } from '../progress/rules.ts'
 import type { ProgressState, SkillStat } from '../progress/types.ts'
 
 // Days to wait before a skill in each box is due again (index = box 1–5).
@@ -29,16 +29,28 @@ export function priority(stat: SkillStat, now: Date): number {
   return (6 - box) * 10 + overdue
 }
 
-// Practice mixes of every unlocked topic, grouped by the skill each generator trains.
-export function reviewMixes(p: ProgressState, curriculum: Module[]): Map<string, MixEntry[]> {
+// Practice mixes of every unlocked topic and open unit, grouped by the skill each generator trains.
+export function reviewMixes(
+  p: ProgressState,
+  curriculum: Module[],
+  stages: StageOutline[],
+): Map<string, MixEntry[]> {
   const mixes = new Map<string, MixEntry[]>()
+  const add = (entry: MixEntry) => {
+    const skill = registry.get(entry.generator)?.skill
+    if (skill) mixes.set(skill, [...(mixes.get(skill) ?? []), entry])
+  }
   for (const m of curriculum) {
     if (m.status !== 'ready' || !isModuleUnlocked(p, curriculum, m)) continue
     for (const t of m.topics) {
-      for (const entry of t.practice.mix) {
-        const skill = registry.get(entry.generator)?.skill
-        if (skill) mixes.set(skill, [...(mixes.get(skill) ?? []), entry])
-      }
+      for (const entry of t.practice.mix) add(entry)
+    }
+  }
+  for (const stage of stages) {
+    for (const unit of stage.units) {
+      const status = unitStatus(p, curriculum, stages, stage, unit)
+      if (status === 'locked' || status === 'needs_theory') continue
+      for (const entry of unit.practice?.mix ?? []) add(entry)
     }
   }
   return mixes
@@ -59,11 +71,12 @@ export function dueSkills(
 export function buildReviewSet(
   p: ProgressState,
   curriculum: Module[],
+  stages: StageOutline[],
   now: Date,
   seed: string,
   count = 10,
 ): Question[] {
-  const mixes = reviewMixes(p, curriculum)
+  const mixes = reviewMixes(p, curriculum, stages)
   const weighted = Object.entries(p.skillStats)
     .filter(([skill]) => mixes.has(skill))
     .map(([skill, stat]) => ({ value: skill, weight: priority(stat, now) }))

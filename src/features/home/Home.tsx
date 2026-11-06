@@ -56,7 +56,8 @@ export default function Home({
   if (active === null || progress === null) return <ProfilePicker />
 
   const now = new Date()
-  const due = dueSkills(progress.skillStats, new Set(reviewMixes(progress, curriculum).keys()), now)
+  const reviewable = new Set(reviewMixes(progress, curriculum, stages).keys())
+  const due = dueSkills(progress.skillStats, reviewable, now)
   const remindBackup = needsBackupReminder(progress, now)
   const next = recommendedNext(progress, curriculum)
   const nextModule = next && curriculum.find((m) => m.id === next.moduleId)
