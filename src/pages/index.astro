@@ -1,13 +1,13 @@
 ---
-import { getCurriculum } from '../features/curriculum/index.ts'
+import { getCurriculum, getStages } from '../features/curriculum/index.ts'
 import Home from '../features/home/Home.tsx'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
-const curriculum = await getCurriculum()
+const [curriculum, stages] = await Promise.all([getCurriculum(), getStages()])
 ---
 
 <BaseLayout title="Inicio">
-  <Home client:only="preact" curriculum={curriculum}>
+  <Home client:only="preact" curriculum={curriculum} stages={stages}>
     <div slot="fallback" class="min-h-96"></div>
   </Home>
 </BaseLayout>

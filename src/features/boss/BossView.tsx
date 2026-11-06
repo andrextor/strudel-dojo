@@ -2,30 +2,30 @@ import { ArrowLeft, LoaderCircle, Lock, Sparkles, Swords } from 'lucide-preact'
 import { useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
-import { BELT_NAME_ES } from '../curriculum/belts.ts'
-import { moduleHref } from '../curriculum/paths.ts'
-import type { Module } from '../curriculum/schema.ts'
+import { stageHref } from '../curriculum/paths.ts'
+import type { Module, Stage } from '../curriculum/schema.ts'
 import { AssertionList, useAssertions } from '../kata/challenge.tsx'
 import NeedProfile from '../profiles/NeedProfile.tsx'
-import { bossUnlocked, recordBoss, rubricScore } from '../progress/rules.ts'
+import { newlyPassedModule, recordBoss, rubricScore, stageBossUnlocked } from '../progress/rules.ts'
+import type { BossRecord } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
 import { askReview, useSenseiEnabled } from '../sensei/client.ts'
 import { runKata } from '../strudel/assertions.ts'
 import { summarize } from '../strudel/query.ts'
 import StrudelEditor, { type EditorApi } from '../strudel/StrudelEditor.tsx'
-import BeltCeremony from './BeltCeremony.tsx'
+import EarnedBelt from './EarnedBelt.tsx'
 import ReviewCard from './ReviewCard.tsx'
 
-type ReadyModule = Extract<Module, { status: 'ready' }>
-
 export default function BossView({
-  module,
+  stage,
+  stages,
   curriculum,
 }: {
-  module: ReadyModule
+  stage: Stage
+  stages: Stage[]
   curriculum: Module[]
 }) {
-  const { boss } = module
+  const { boss } = stage
   const { active, progress, updateProgress } = useProgress()
   const { check, test } = useAssertions(boss.assertions, boss.cycles)
   const editor = useRef<EditorApi | null>(null)
@@ -39,25 +39,25 @@ export default function BossView({
   const [reviewing, setReviewing] = useState(false)
   const [reviewError, setReviewError] = useState<string | null>(null)
   const sensei = useSenseiEnabled()
-  const [ceremony, setCeremony] = useState(false)
+  const [earned, setEarned] = useState<Module | null>(null)
 
   if (active === null || progress === null) return <NeedProfile />
   const back = (
     <a
-      href={moduleHref(module.id)}
+      href={stageHref(stage.id)}
       class="inline-flex items-center gap-2 text-sm text-dojo-muted hover:text-dojo-neon"
     >
       <ArrowLeft size={16} aria-hidden="true" />
-      {module.title}
+      {stage.title}
     </a>
   )
-  if (!bossUnlocked(progress, curriculum, module)) {
+  if (!stageBossUnlocked(progress, stages, stage)) {
     return (
       <section class="space-y-3">
         {back}
         <p class="flex items-center gap-2 rounded-card bg-dojo-surface p-5">
           <Lock size={18} aria-hidden="true" />
-          El combate se abre cuando apruebas los 4 temas del módulo.
+          El combate se abre cuando apruebas todas las unidades de la etapa.
         </p>
       </section>
     )
@@ -65,8 +65,17 @@ export default function BossView({
 
   const history = progress.bosses[boss.id] ?? []
   const win = history.find((r) => r.passed)
+  const nextStage = stages.find((s) => s.order === stage.order + 1)
   const lastReview = [...history].reverse().find((r) => r.review !== null)?.review ?? null
   const preview = rubricScore(boss.rubric, values, boss.passScore)
+
+  function save(record: BossRecord) {
+    updateProgress((p) => {
+      const next = recordBoss(p, boss.id, record)
+      setEarned(newlyPassedModule(p, next, curriculum))
+      return next
+    })
+  }
 
   async function submit() {
     const code = editor.current?.getCode() ?? lastCode.current
@@ -76,21 +85,18 @@ export default function BossView({
     const assertionsOk = result.state === 'done' && result.passed
     const { score, passed: rubricOk } = rubricScore(boss.rubric, values, boss.passScore)
     const passed = assertionsOk && rubricOk
-    if (passed && !win) setCeremony(true)
-    updateProgress((p) =>
-      recordBoss(p, boss.id, {
-        submittedAt: new Date().toISOString(),
-        code,
-        assertions: result.state === 'done' ? result.results : [],
-        review: null,
-        selfAssessed: true,
-        score,
-        passed,
-      }),
-    )
+    save({
+      submittedAt: new Date().toISOString(),
+      code,
+      assertions: result.state === 'done' ? result.results : [],
+      review: null,
+      selfAssessed: true,
+      score,
+      passed,
+    })
     setMessage(
       passed
-        ? '¡Combate aprobado! Ganaste el cinturón.'
+        ? '¡Combate aprobado!'
         : !assertionsOk
           ? 'Todavía no cumple los requisitos de abajo. Ajusta el código y vuelve a entregar.'
           : `Tu puntaje (${score}) no llega a ${boss.passScore}. Mejora la pieza y vuelve a evaluarte.`,
@@ -112,39 +118,29 @@ export default function BossView({
     setReviewing(false)
     if (!r.ok) return setReviewError(r.error)
     const { review: rv, assertions, passed } = r.data
-    if (passed && !win) setCeremony(true)
-    updateProgress((p) =>
-      recordBoss(p, boss.id, {
-        submittedAt: new Date().toISOString(),
-        code,
-        assertions,
-        review: rv,
-        selfAssessed: false,
-        score: rv.score,
-        passed,
-      }),
-    )
+    save({
+      submittedAt: new Date().toISOString(),
+      code,
+      assertions,
+      review: rv,
+      selfAssessed: false,
+      score: rv.score,
+      passed,
+    })
     setMessage(
       passed
-        ? '¡Combate aprobado por el Sensei! Ganaste el cinturón.'
+        ? '¡Combate aprobado por el Sensei!'
         : assertions.every((a) => a.pass)
           ? `El Sensei te dio ${rv.score}; se aprueba con ${boss.passScore}. Mira sus siguientes pasos.`
           : 'Todavía no cumple los requisitos. Ajusta el código y pide otra revisión.',
     )
   }
 
-  const nextModule = curriculum.find((m) => m.order === module.order + 1)
-  const ceremonyCard = ceremony && (
-    <BeltCeremony
-      belt={module.belt}
-      order={module.order}
-      next={
-        nextModule
-          ? `Ahora vas por el cinturón ${BELT_NAME_ES[nextModule.belt].toLowerCase()}: ${nextModule.title}.`
-          : null
-      }
+  const ceremonyCard = earned && (
+    <EarnedBelt
+      module={earned}
+      curriculum={curriculum}
       onContinue={() => {
-        setCeremony(false)
         location.href = '/'
       }}
     />
@@ -259,6 +255,14 @@ export default function BossView({
               <p role="alert" class="text-sm text-dojo-danger">
                 {reviewError}
               </p>
+            )}
+            {win && (
+              <a
+                href={nextStage ? stageHref(nextStage.id) : '/strudel'}
+                class={buttonClass('primary', 'w-full')}
+              >
+                {nextStage ? `Seguir: ${nextStage.title}` : 'Volver al curso'}
+              </a>
             )}
             {message && (
               <p role="status" class="text-sm">

@@ -1,0 +1,19 @@
+---
+unit: S10-U01
+title: Dominantes secundarias
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+
+## Insertar dominantes
+
+Toma una progresión diatónica y cambia un acorde por su dominante secundaria:
+
+<Listen showCode client:visible code='chord("<C E7 Am F>").voicing().s("piano")' label="Escuchar C E7 Am F" />
+
+Con `stack` puedes sumar el bajo con `rootNotes` y encadenar dos dominantes secundarias seguidas:
+
+<Example client:visible code={`stack(
+  chord("<C A7 Dm E7 Am G7>").voicing(),
+  chord("<C A7 Dm E7 Am G7>").rootNotes(2)
+).s("piano")`} />

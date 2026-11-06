@@ -5,29 +5,38 @@ import type { Module } from '../curriculum/schema.ts'
 import {
   answerQuestion,
   bestScore,
-  bossUnlocked,
   bumpSkill,
   canSeeSolution,
+  examAdvice,
+  examAvailable,
+  examPassPercent,
   isModulePassed,
   isModuleUnlocked,
+  isStagePassed,
+  isStageUnlocked,
   isTopicPassed,
+  isUnitPassed,
   kataStatus,
   markSolutionSeen,
+  missingTheory,
   moduleStatus,
+  newlyPassedModule,
   openAttempt,
   passes,
   percentOf,
-  placementAdvice,
-  placementAvailable,
   recommendedNext,
+  recommendedStrudel,
   recordBoss,
   recordKata,
   recordPractice,
   rubricScore,
   saveAttempt,
+  stageBossUnlocked,
+  stageStatus,
   startTest,
   submitTest,
   topicStatus,
+  unitStatus,
 } from './rules.ts'
 import {
   bossRecord,
@@ -38,6 +47,7 @@ import {
   passModule,
   passTopic,
   ready,
+  stages,
   takeTest,
 } from './test-helpers.ts'
 import type { ProgressState } from './types.ts'
@@ -81,24 +91,11 @@ test('draft modules report draft', () => {
   assert.equal(moduleStatus(fresh(), [...curriculum, draft], draft), 'draft')
 })
 
-test('rule 2: a passed test with a pending kata does not pass the topic, in either order', () => {
-  const [kata, ...others] = t1.katas
-  assert.ok(kata)
-  const passOthers = (p: ProgressState) =>
-    others.reduce((acc, k) => recordKata(acc, k.id, k.solution, true, NOW), p)
-  let p = passOthers(
-    takeTest(fresh(), { kind: 'test', scopeId: t1.id }, t1.test, t1.test.questions).progress,
-  )
-  assert.equal(isTopicPassed(p, m01, t1), false)
-  assert.equal(topicStatus(p, curriculum, m01, t1), 'in_progress')
-  p = recordKata(p, kata.id, kata.solution, true, NOW)
+test('rule T1: the test alone passes the topic, with every kata pending', () => {
+  const p = takeTest(fresh(), { kind: 'test', scopeId: t1.id }, t1.test, t1.test.questions).progress
+  assert.equal(isTopicPassed(p, m01, t1), true)
   assert.equal(topicStatus(p, curriculum, m01, t1), 'passed')
-
-  // Katas first, then the test.
-  let q = passOthers(recordKata(fresh(), kata.id, kata.solution, true, NOW))
-  assert.equal(isTopicPassed(q, m01, t1), false)
-  q = takeTest(q, { kind: 'test', scopeId: t1.id }, t1.test, t1.test.questions).progress
-  assert.equal(isTopicPassed(q, m01, t1), true)
+  assert.equal(kataStatus(p, 'M01-T01-K1'), 'not_started')
 })
 
 test('rule 2: 7/10 on an 80 % test does not pass, 8/10 does', () => {
@@ -127,18 +124,25 @@ test('rule 3: topics are free to do in any order and the next one is recommended
   })
 })
 
-test('rules 4 and 5: the boss opens with all topics and passing it passes the module', () => {
-  let p = fresh()
-  for (let i = 0; i < 3; i++) p = passTopic(p, 'M01', i)
-  assert.equal(bossUnlocked(p, curriculum, m01), false)
-  p = passTopic(p, 'M01', 3)
-  assert.equal(bossUnlocked(p, curriculum, m01), true)
-  assert.equal(moduleStatus(p, curriculum, m01), 'boss_ready')
-  assert.deepEqual(recommendedNext(p, curriculum), { kind: 'boss', moduleId: 'M01' })
-  p = recordBoss(p, m01.boss.id, bossRecord(false))
-  assert.equal(isModulePassed(p, m01), false)
-  p = recordBoss(p, m01.boss.id, { ...bossRecord(true), submittedAt: '2026-03-11T10:00:00Z' })
+const passTests = (p: ProgressState, moduleId: string) =>
+  ready(moduleId).topics.reduce(
+    (acc, t) => takeTest(acc, { kind: 'test', scopeId: t.id }, t.test, t.test.questions).progress,
+    p,
+  )
+
+const takeExam = (p: ProgressState, moduleId: string, right: number) => {
+  const m = ready(moduleId)
+  const graded = { ...m.exam, passPercent: examPassPercent(p, m) }
+  return takeTest(p, { kind: 'placement', scopeId: moduleId }, graded, right)
+}
+
+test('rule T3: after the tests the exam is next and passing it passes the module', () => {
+  let p = passTests(fresh(), 'M01')
+  assert.equal(moduleStatus(p, curriculum, m01), 'exam_ready')
+  assert.deepEqual(recommendedNext(p, curriculum), { kind: 'exam', moduleId: 'M01' })
+  p = takeExam(p, 'M01', 16).progress
   assert.equal(isModulePassed(p, m01), true)
+  assert.equal(moduleStatus(p, curriculum, m02), 'available')
   assert.deepEqual(recommendedNext(p, curriculum), {
     kind: 'topic',
     moduleId: 'M02',
@@ -146,36 +150,71 @@ test('rules 4 and 5: the boss opens with all topics and passing it passes the mo
   })
 })
 
-test('rule 6: a passed placement passes the module without the boss, which stays optional', () => {
-  const placement = m01.placement
-  assert.ok(placement)
+test('rule T2: 16/20 passes with every topic done, 18/20 is needed with topics pending', () => {
+  const done = passTests(fresh(), 'M01')
+  assert.equal(takeExam(done, 'M01', 15).attempt.passed, false)
+  assert.equal(takeExam(done, 'M01', 16).attempt.passed, true)
+  assert.equal(takeExam(fresh(), 'M01', 16).attempt.passed, false)
+  assert.equal(takeExam(fresh(), 'M01', 18).attempt.passed, true)
+})
+
+test('rule T3: every topic plus the boss passes the module without the exam', () => {
+  let p = passTests(fresh(), 'M01')
+  p = recordBoss(p, 'M01-BOSS', bossRecord(false))
+  assert.equal(isModulePassed(p, m01), false)
+  p = recordBoss(p, 'M01-BOSS', { ...bossRecord(true), submittedAt: '2026-03-11T10:00:00Z' })
+  assert.equal(isModulePassed(p, m01), true)
+  // A boss alone is not enough: the tests are still theory's own gate.
+  assert.equal(isModulePassed(recordBoss(fresh(), 'M01-BOSS', bossRecord(true)), m01), false)
+})
+
+test('progress never goes back: an old full pass still passes without an exam', () => {
+  const p = passModule(fresh(), 'M01')
+  assert.equal(isModulePassed(p, m01), true)
+  for (const t of m01.topics) assert.equal(topicStatus(p, curriculum, m01, t), 'passed')
+})
+
+test('rule T5: a skip exam passes the topics and the module', () => {
   let p = fresh()
-  assert.equal(placementAvailable(p, curriculum, m01), true)
-  assert.equal(placementAvailable(p, curriculum, m02), false)
-  p = takeTest(p, { kind: 'placement', scopeId: 'M01' }, placement, placement.questions).progress
+  assert.equal(examAvailable(p, curriculum, m01), true)
+  assert.equal(examAvailable(p, curriculum, m02), false)
+  p = takeExam(p, 'M01', m01.exam.questions).progress
   for (const t of m01.topics) {
     assert.equal(topicStatus(p, curriculum, m01, t), 'passed_by_placement')
   }
   assert.equal(isModulePassed(p, m01), true)
-  assert.equal(bossUnlocked(p, curriculum, m01), true)
-  assert.equal(placementAvailable(p, curriculum, m01), false)
-  // To skip M02 you then take M02's placement.
-  assert.equal(placementAvailable(p, curriculum, m02), m02.placement !== undefined)
+  assert.equal(examAvailable(p, curriculum, m01), false)
+  assert.equal(examAvailable(p, curriculum, m02), true)
 })
 
-test('rule 6: a failed placement suggests the topics whose skills had errors', () => {
-  const placement = m01.placement
-  assert.ok(placement)
-  const { progress, attempt } = takeTest(
-    fresh(),
-    { kind: 'placement', scopeId: 'M01' },
-    placement,
-    10,
-  )
+test('rule T6: a belt is new on the exam, on the boss and on a last topic test', () => {
+  const tests = passTests(fresh(), 'M01')
+  const byExam = takeExam(tests, 'M01', 16).progress
+  assert.equal(newlyPassedModule(tests, byExam, curriculum)?.id, 'M01')
+  assert.equal(newlyPassedModule(byExam, byExam, curriculum), null)
+
+  const byBoss = recordBoss(tests, 'M01-BOSS', bossRecord(true))
+  assert.equal(newlyPassedModule(tests, byBoss, curriculum)?.id, 'M01')
+
+  const last = m01.topics[3]
+  assert.ok(last)
+  let before = recordBoss(fresh(), 'M01-BOSS', bossRecord(true))
+  for (let i = 0; i < 3; i++) before = passTopic(before, 'M01', i)
+  const after = takeTest(
+    before,
+    { kind: 'test', scopeId: last.id },
+    last.test,
+    last.test.questions,
+  ).progress
+  assert.equal(newlyPassedModule(before, after, curriculum)?.id, 'M01')
+})
+
+test('a failed exam suggests the topics whose skills had errors', () => {
+  const { progress, attempt } = takeExam(fresh(), 'M01', 10)
   assert.equal(attempt.passed, false)
   assert.equal(isModulePassed(progress, m01), false)
   const failedSkills = new Set(attempt.questions.slice(10).map((q) => q.skill))
-  const advice = placementAdvice(attempt, m01)
+  const advice = examAdvice(attempt, m01)
   assert.ok(advice.length > 0)
   for (const id of advice) {
     const topic = m01.topics.find((t) => t.id === id)
@@ -191,7 +230,7 @@ test('rule 7: attempts are unlimited and each one gets a fresh set', () => {
     first.attempt.questions.map((q) => q.key),
     second.attempt.questions.map((q) => q.key),
   )
-  assert.equal(isTopicPassed(second.progress, m01, t1), false) // kata still pending
+  assert.equal(isTopicPassed(second.progress, m01, t1), true)
   assert.equal(second.progress.attempts.length, 2)
 })
 
@@ -214,24 +253,21 @@ test('rules 8 and 9: answers are stored ungraded and an open attempt resumes', (
   assert.equal(openAttempt(saveAttempt(p, done), 'test', t1.id), null)
 })
 
-test('rule 10: the solution opens after 3 fails and a helped kata still passes the topic', () => {
-  const [kata, ...others] = t1.katas
-  assert.ok(kata)
-  let p = others.reduce((acc, k) => recordKata(acc, k.id, k.solution, true, NOW), fresh())
-  assert.equal(kataStatus(p, kata.id), 'not_started')
-  for (let i = 0; i < 2; i++) p = recordKata(p, kata.id, 's("x")', false, NOW)
-  assert.equal(kataStatus(p, kata.id), 'attempted')
-  assert.equal(canSeeSolution(p, kata.id), false)
-  assert.equal(markSolutionSeen(p, kata.id), p)
-  p = recordKata(p, kata.id, 's("x")', false, NOW)
-  assert.equal(canSeeSolution(p, kata.id), true)
-  p = markSolutionSeen(p, kata.id)
-  assert.equal(kataStatus(p, kata.id), 'attempted') // seeing it passes nothing
-  p = recordKata(p, kata.id, kata.solution, true, NOW)
-  assert.equal(kataStatus(p, kata.id), 'passed')
-  assert.equal(p.katas[kata.id]?.helped, true)
-  p = takeTest(p, { kind: 'test', scopeId: t1.id }, t1.test, 10).progress
-  assert.equal(isTopicPassed(p, m01, t1), true)
+test('rule 10: the solution opens after 3 fails and a helped kata still passes', () => {
+  const id = 'M01-T01-K1'
+  let p = fresh()
+  assert.equal(kataStatus(p, id), 'not_started')
+  for (let i = 0; i < 2; i++) p = recordKata(p, id, 's("x")', false, NOW)
+  assert.equal(kataStatus(p, id), 'attempted')
+  assert.equal(canSeeSolution(p, id), false)
+  assert.equal(markSolutionSeen(p, id), p)
+  p = recordKata(p, id, 's("x")', false, NOW)
+  assert.equal(canSeeSolution(p, id), true)
+  p = markSolutionSeen(p, id)
+  assert.equal(kataStatus(p, id), 'attempted') // seeing it passes nothing
+  p = recordKata(p, id, 's("bd sd hh")', true, NOW)
+  assert.equal(kataStatus(p, id), 'passed')
+  assert.equal(p.katas[id]?.helped, true)
 })
 
 test('a kata keeps its first pass date', () => {
@@ -272,4 +308,118 @@ test('bestScore keeps the highest submitted attempt', () => {
   assert.equal(bestScore(p, 'test', t1.id), null)
   for (const right of [7, 9, 8]) p = takeTest(p, scope, t1.test, right).progress
   assert.deepEqual(bestScore(p, 'test', t1.id), { correct: 9, total: 10 })
+})
+
+const stage = (id: string) => {
+  const s = stages.find((x) => x.id === id)
+  if (s === undefined) throw new Error(`no stage ${id}`)
+  return s
+}
+
+const passKatas = (p: ProgressState, ids: string[]) =>
+  ids.reduce((acc, id) => recordKata(acc, id, 'code', true, NOW), p)
+
+const passStage = (p: ProgressState, id: string) => {
+  const s = stage(id)
+  const katas = s.units.flatMap((u) => u.katas.map((k) => k.id))
+  return recordBoss(passKatas(p, katas), s.boss.id, bossRecord(true))
+}
+
+const s01 = stage('S01')
+const s02 = stage('S02')
+const s03 = stage('S03')
+const s05 = stage('S05')
+
+test('rule S1: S01 starts open, S02 opens when S01 is passed, boss included', () => {
+  let p = fresh()
+  assert.equal(stageStatus(p, stages, s01), 'available')
+  assert.equal(stageStatus(p, stages, s02), 'locked')
+  p = passKatas(
+    p,
+    s01.units.flatMap((u) => u.katas.map((k) => k.id)),
+  )
+  assert.equal(stageStatus(p, stages, s01), 'boss_ready')
+  assert.equal(isStageUnlocked(p, stages, s02), false)
+  p = recordBoss(p, s01.boss.id, bossRecord(true))
+  assert.equal(isStagePassed(p, s01), true)
+  assert.equal(stageStatus(p, stages, s02), 'available')
+})
+
+test('rule S1: a passed kata keeps its stage open even if earlier stages are not done', () => {
+  const p = passKatas(fresh(), ['M03-T01-K1'])
+  assert.equal(isStagePassed(p, s01), false)
+  assert.equal(isStageUnlocked(p, stages, s05), true)
+})
+
+test('rule S2: a unit waits on its theory and says what is missing', () => {
+  const unit = s03.units[0]
+  assert.ok(unit)
+  let p = passStage(passStage(fresh(), 'S01'), 'S02')
+  assert.equal(unitStatus(p, curriculum, stages, s03, unit), 'needs_theory')
+  assert.deepEqual(missingTheory(p, curriculum, unit), ['M01-T01', 'M01-T02'])
+  p = passTopic(p, 'M01', 0)
+  assert.deepEqual(missingTheory(p, curriculum, unit), ['M01-T02'])
+  p = passTopic(p, 'M01', 1)
+  assert.equal(unitStatus(p, curriculum, stages, s03, unit), 'not_started')
+})
+
+test('rule S2: a topic passed by the exam opens the unit', () => {
+  const unit = s03.units[0]
+  assert.ok(unit)
+  const p = takeExam(fresh(), 'M01', m01.exam.questions).progress
+  assert.deepEqual(missingTheory(p, curriculum, unit), [])
+})
+
+test('rule S2: a passed kata keeps its unit open without the theory', () => {
+  const unit = s05.units[0]
+  assert.ok(unit)
+  const p = passKatas(fresh(), ['M03-T01-K1'])
+  assert.equal(unitStatus(p, curriculum, stages, s05, unit), 'in_progress')
+})
+
+test('rules S3–S5: units pass on their katas and the boss closes the stage', () => {
+  const [unit] = s01.units
+  assert.ok(unit)
+  let p = passKatas(
+    fresh(),
+    unit.katas.map((k) => k.id),
+  )
+  assert.equal(isUnitPassed(p, unit), true)
+  assert.equal(stageBossUnlocked(p, stages, s01), false)
+  p = passKatas(
+    p,
+    s01.units.flatMap((u) => u.katas.map((k) => k.id)),
+  )
+  assert.equal(stageBossUnlocked(p, stages, s01), true)
+  assert.equal(isStagePassed(p, s01), false)
+})
+
+test('strudel next step: a unit, then the boss, then a theory wait, then nothing', () => {
+  let p = fresh()
+  assert.deepEqual(recommendedStrudel(p, curriculum, stages), {
+    kind: 'unit',
+    stageId: 'S01',
+    unitId: 'S01-U01',
+  })
+  p = passKatas(
+    p,
+    s01.units.flatMap((u) => u.katas.map((k) => k.id)),
+  )
+  assert.deepEqual(recommendedStrudel(p, curriculum, stages), { kind: 'boss', stageId: 'S01' })
+  p = passStage(passStage(fresh(), 'S01'), 'S02')
+  assert.deepEqual(recommendedStrudel(p, curriculum, stages), {
+    kind: 'theory',
+    stageId: 'S03',
+    unitId: 'S03-U01',
+    topicIds: ['M01-T01', 'M01-T02'],
+  })
+  // A unit waiting on theory is skipped while another one is open.
+  p = passTopic(passTopic(p, 'M01', 2), 'M01', 3)
+  assert.deepEqual(recommendedStrudel(p, curriculum, stages), {
+    kind: 'unit',
+    stageId: 'S03',
+    unitId: 'S03-U02',
+  })
+  const everything = stages.reduce((acc, s) => passStage(acc, s.id), fresh())
+  assert.equal(recommendedStrudel(everything, curriculum, stages), null)
 })

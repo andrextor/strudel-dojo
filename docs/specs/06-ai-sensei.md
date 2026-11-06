@@ -27,7 +27,7 @@ response: { hint: string }              // 1–2 frases
 
 // review
 request:  { bossId: string; code: string; checks: AssertionResult[]; summary: string }
-          // el servidor busca el combate (brief, rúbrica, passScore, módulo y skills) y calcula el
+          // el servidor busca el combate en las etapas (brief, rúbrica, passScore, etapa y skills) y calcula el
           // puntaje de la rúbrica; las aserciones y el resumen vienen del navegador (el progreso
           // es local, así que falsearlos solo engaña al propio perfil)
 response: { review: SenseiReview; assertions: AssertionResult[]; passed: boolean }

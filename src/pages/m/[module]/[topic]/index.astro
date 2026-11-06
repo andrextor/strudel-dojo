@@ -1,8 +1,8 @@
 ---
 import { getEntry, render } from 'astro:content'
 import { ArrowLeft, ArrowRight } from 'lucide-preact'
-import { getCurriculum } from '../../../../features/curriculum/index.ts'
-import { moduleHref, segment, topicHref } from '../../../../features/curriculum/paths.ts'
+import { getCurriculum, getStages } from '../../../../features/curriculum/index.ts'
+import { moduleHref, segment, topicHref, unitHref } from '../../../../features/curriculum/paths.ts'
 import TopicPanel from '../../../../features/topic/TopicPanel.tsx'
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
 
@@ -26,6 +26,10 @@ const { module, topic, curriculum, prev, next } = Astro.props
 const lesson = await getEntry('lessons', topic.lesson)
 if (lesson === undefined) throw new Error(`missing lesson ${topic.lesson}`)
 const { Content } = await render(lesson)
+const strudelUnits = (await getStages())
+  .flatMap((s) => s.units)
+  .filter((u) => u.requires.includes(topic.id))
+  .map((u) => ({ title: u.title, href: unitHref(u.id) }))
 ---
 
 <BaseLayout title={topic.title} description={topic.goal}>
@@ -43,7 +47,7 @@ const { Content } = await render(lesson)
   </article>
 
   <div class="mt-10">
-    <TopicPanel client:only="preact" module={module} topicId={topic.id} curriculum={curriculum}>
+    <TopicPanel client:only="preact" module={module} topicId={topic.id} curriculum={curriculum} strudelUnits={strudelUnits}>
       <div slot="fallback" class="min-h-96 rounded-card bg-dojo-surface"></div>
     </TopicPanel>
   </div>

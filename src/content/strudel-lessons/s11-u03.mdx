@@ -1,0 +1,22 @@
+---
+unit: S11-U03
+title: Patrones simétricos
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Callout from '../../components/ui/Callout.tsx'
+
+## Patrones simétricos
+
+Una escala simétrica pide patrones que también se repitan. `ply` repite cada nota las veces que le pidas, dentro de su espacio. `iter` divide el patrón en partes y en cada ciclo empieza por la siguiente: el motivo rota.
+
+<StrudelRef name="ply" summary="Repite cada evento n veces dentro de su espacio." />
+<StrudelRef name="iter" summary="Divide el ciclo en n partes y en cada vuelta empieza por la siguiente." />
+
+<Example client:visible code='n("0 2 4 6").ply(2).scale("C4:diminished").s("piano")' />
+
+<Example client:visible code='n("0 1 2 3").iter(4).scale("C4:whole:tone").s("piano")' />
+
+<Callout tone="hint" title="Para el oído">
+  Tonos enteros: flota, sin dirección. Disminuida: tensa, como música de suspenso. Si al escuchar no encuentras dónde "descansa" la escala, piensa en una simétrica.
+</Callout>

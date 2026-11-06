@@ -1,21 +1,19 @@
-import { ArrowRight, Compass, Lock, Swords, Target } from 'lucide-preact'
+import { Compass, Lock } from 'lucide-preact'
 import BeltBadge from '../../components/ui/BeltBadge.tsx'
 import { buttonClass } from '../../components/ui/button.ts'
 import ProgressBar from '../../components/ui/ProgressBar.tsx'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
-import { bossHref, moduleHref, placementHref, topicHref } from '../curriculum/paths.ts'
+import { examHref, moduleHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import { TOPIC_STATUS } from '../progress/labels.ts'
 import {
   bestScore,
-  bossUnlocked,
+  examAvailable,
   isModulePassed,
   isTopicPassed,
-  kataStatus,
   moduleStatus,
   percentOf,
-  placementAvailable,
   topicStatus,
 } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
@@ -76,10 +74,9 @@ export default function ModuleView({ module, curriculum }: Props) {
     )
   }
 
-  const bossOpen = bossUnlocked(progress, curriculum, module)
-  const bossPassed = (progress.bosses[module.boss.id] ?? []).some((r) => r.passed)
-  const placement = placementAvailable(progress, curriculum, module)
-  const placementBest = bestScore(progress, 'placement', module.id)
+  const exam = examAvailable(progress, curriculum, module)
+  const examBest = bestScore(progress, 'placement', module.id)
+  const topicsDone = passedTopics === module.topics.length
 
   return (
     <div class="space-y-8">
@@ -92,8 +89,6 @@ export default function ModuleView({ module, curriculum }: Props) {
         {module.topics.map((t, i) => {
           const ts = topicStatus(progress, curriculum, module, t)
           const score = bestScore(progress, 'test', t.id)
-          const katas = 'katas' in t ? t.katas : []
-          const katasDone = katas.filter((k) => kataStatus(progress, k.id) === 'passed').length
           return (
             <li key={t.id}>
               <a
@@ -104,14 +99,8 @@ export default function ModuleView({ module, curriculum }: Props) {
                 <span class="min-w-0 flex-1">
                   <span class="block font-semibold">{t.title}</span>
                   <span class="block text-sm text-dojo-muted">{t.goal}</span>
-                  <span class="mt-1 flex flex-wrap gap-x-4 text-sm text-dojo-muted">
-                    <span>
-                      Prueba: {score ? `${percentOf(score.correct, score.total)} %` : 'sin rendir'}
-                    </span>
-                    <span class="inline-flex items-center gap-1">
-                      <Target size={14} aria-hidden="true" />
-                      Katas {katasDone}/{katas.length}
-                    </span>
+                  <span class="mt-1 block text-sm text-dojo-muted">
+                    Prueba: {score ? `${percentOf(score.correct, score.total)} %` : 'sin rendir'}
                   </span>
                 </span>
                 <StatusBadge {...TOPIC_STATUS[ts]} />
@@ -121,48 +110,30 @@ export default function ModuleView({ module, curriculum }: Props) {
         })}
       </ol>
 
-      <div class="grid gap-4 md:grid-cols-2">
-        <section class="space-y-3 rounded-card bg-dojo-surface p-5 md:p-6">
-          <h2 class="flex items-center gap-2 font-display text-xl font-bold">
-            <Swords size={20} aria-hidden="true" />
-            Combate: {module.boss.title}
-          </h2>
-          <p class="text-dojo-muted">{module.boss.brief}</p>
-          {bossPassed ? (
-            <StatusBadge status="passed" label="Combate aprobado" />
-          ) : bossOpen ? (
-            <a href={bossHref(module.id)} class={buttonClass('primary')}>
-              Ir al combate
-              <ArrowRight size={18} aria-hidden="true" />
-            </a>
-          ) : (
-            <StatusBadge status="locked" label="Aprueba los 4 temas para desbloquearlo" />
-          )}
-          {bossPassed && (
-            <a href={bossHref(module.id)} class={buttonClass('ghost')}>
-              Volver a combatir
-            </a>
-          )}
-        </section>
-
-        {(placement || placementBest) && module.placement && (
+      <div class="max-w-xl">
+        {(exam || examBest) && module.status === 'ready' && (
           <section class="space-y-3 rounded-card bg-dojo-surface p-5 md:p-6">
             <h2 class="flex items-center gap-2 font-display text-xl font-bold">
               <Compass size={20} aria-hidden="true" />
-              Prueba de ubicación
+              Examen de cinturón
             </h2>
             <p class="text-dojo-muted">
-              ¿Ya sabes esto? {module.placement.questions} preguntas; con{' '}
-              {module.placement.passPercent} % apruebas el módulo entero.
+              {module.exam.questions} preguntas.{' '}
+              {topicsDone
+                ? `Con ${module.exam.passPercent} % ganas el cinturón.`
+                : `¿Ya sabes esto? Con ${module.exam.skipPercent} % saltas el módulo; al terminar los temas basta con ${module.exam.passPercent} %.`}
             </p>
-            {placementBest && (
+            {examBest && (
               <p class="text-sm text-dojo-muted">
-                Tu mejor intento: {percentOf(placementBest.correct, placementBest.total)} %
+                Tu mejor intento: {percentOf(examBest.correct, examBest.total)} %
               </p>
             )}
-            {placement && !isModulePassed(progress, module) && (
-              <a href={placementHref(module.id)} class={buttonClass('secondary')}>
-                Hacer la prueba de ubicación
+            {exam && !isModulePassed(progress, module) && (
+              <a
+                href={examHref(module.id)}
+                class={buttonClass(topicsDone ? 'primary' : 'secondary')}
+              >
+                Hacer el examen
               </a>
             )}
           </section>

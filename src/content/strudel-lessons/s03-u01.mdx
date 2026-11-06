@@ -1,0 +1,19 @@
+---
+unit: S03-U01
+title: note y octavas
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Notas con `note`
+
+`note` toca alturas. Puedes escribirlas con letras (`c d e`, con `#` y `b` para las alteraciones) y agregar la **octava** con un número: `c3`, `c4` (Do central), `c5`.
+
+<StrudelRef name="note" summary="Toca notas por nombre (c, f#, bb4) o por número MIDI (60 = Do central)." />
+
+<Example client:visible code='note("c3 c#3 d3 d#3 e3 f3 f#3 g3 g#3 a3 a#3 b3 c4").s("piano")' />
+
+También puedes usar números MIDI: el Do central es 60 y cada semitono suma 1. Así, contar semitonos es solo restar.
+
+<Listen showCode client:visible code='note("60 62 64 65 67").s("piano")' label="Escuchar 60 62 64 65 67: Do Re Mi Fa Sol" />

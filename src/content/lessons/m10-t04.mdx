@@ -1,68 +1,35 @@
 ---
 topic: M10-T04
-title: Performance
+title: Tensión y liberación
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Callout from '../../components/ui/Callout.tsx'
 
 <Callout tone="info" title="En 30 segundos">
-  En un set en vivo (*live set*) la música se construye mientras suena: entradas de capas, **tensión y liberación** (*tension and release*), transiciones. Las **señales** (`sine`, `saw`, `rand`, `perlin`) mueven parámetros solas, y el azar controlado (`sometimesBy`, `irand`) hace que nada se repita igual.
+  Una pieza se mueve entre **tensión y liberación** (*tension and release*). La tensión crece cuando **sube algo**: densidad, registro, brillo o volumen. Se libera cuando vuelve a bajar o cuando llega el acorde de tónica.
 </Callout>
 
-## Tensión y liberación
+## Recursos
 
-La tensión crece cuando **sube algo**: densidad, registro, brillo del filtro, volumen. Se libera cuando vuelve a bajar o cuando llega el acorde de tónica. Recursos típicos:
+- **Build-up**: crecimiento gradual que prepara un punto alto, por ejemplo con capas que entran una a una.
+- **Clímax**: el momento de mayor intensidad de la pieza.
+- **Corte** (*drop*): un silencio súbito antes de que todo vuelva a entrar.
+- **Pedal**: una nota grave fija mientras la armonía cambia encima.
+- **Resolución**: la llegada al acorde de tónica, que suelta la tensión.
+- **Respiro**: una bajada de densidad justo después de un punto alto.
 
-- **Build-up**: el filtro se abre poco a poco y el hi-hat se duplica.
-- **Corte** (*drop*): todo calla un instante y vuelve el ritmo completo.
-- **Pedal**: el bajo se queda en la dominante mientras arriba todo cambia.
+<Listen client:visible code='s("bd*4, hh*<4 8 16 16>").mask("<1 1 1 0>")' label="Escuchar un hi-hat cada vez más denso y un corte" />
 
-## Señales
+<Listen client:visible code='stack(note("g2").s("piano"), chord("<C F G C>").voicing().s("piano"))' label="Escuchar un pedal de Sol bajo acordes que cambian" />
 
-Una señal es un valor continuo entre 0 y 1. `range` lo lleva a los números que necesitas y `slow` lo estira.
+## La curva de una pieza
 
-<StrudelRef name="sine" summary="Una onda suave que sube y baja entre 0 y 1." />
-<StrudelRef name="saw" summary="Una rampa de 0 a 1 que vuelve a empezar en cada ciclo." />
-<StrudelRef name="rand" summary="Un valor al azar en cada evento." />
-<StrudelRef name="perlin" summary="Azar suave: cambia poco a poco, sin saltos." />
-<StrudelRef name="range" summary="Lleva una señal de 0–1 al rango que indiques." />
+Una pieza larga suele seguir una curva: entrada mínima, crecimiento capa a capa, un punto alto, un respiro y un final. La tónica sirve de llegada: si aparece demasiado pronto, la tensión se pierde.
 
-<Listen client:visible code='note("c2*8").s("sawtooth").lpf(sine.range(300, 3000).slow(4))' label="Escuchar el filtro que se abre y se cierra con sine" />
-
-<Example client:visible code='s("hh*16").gain(perlin.range(0.3, 0.9)).pan(rand)' />
-
-## Azar con intención
-
-<StrudelRef name="irand" summary="Un entero al azar entre 0 y n − 1: ideal para elegir grados de una escala." />
-<StrudelRef name="segment" summary="Toma n valores por ciclo de una señal, para que haga notas." />
-<StrudelRef name="sometimesBy" summary="Aplica una función a algunos eventos, con la probabilidad que indiques." />
-<StrudelRef name="degradeBy" summary="Quita eventos al azar con la probabilidad dada." />
-
-<Example client:visible code='n(irand(8).segment(8)).scale("C4:minor:pentatonic").s("gm_epiano1").room(0.4)' />
-
-<Listen client:visible code='s("bd*4, hh*8").sometimesBy(0.3, (x) => x.fast(2))' label="Escuchar un hi-hat que a veces se duplica" />
-
-Si la escala de una melodía generativa es la de la pieza, el azar nunca desafina: elige entre notas que ya funcionan.
-
-## Transiciones
-
-<StrudelRef name="mask" summary="Silencia el patrón donde la máscara tiene 0: entradas y cortes de capas." />
-<StrudelRef name="every" summary="Aplica una función solo un ciclo de cada n." />
-
-<Example client:visible code={`stack(
-  s("bd*4").mask("<1 1 1 0>"),
-  s("hh*8").every(4, (x) => x.fast(2)),
-  chord("<C Am F G>").voicing().s("piano")
-)`} />
-
-<details>
-  <summary>Construir un set</summary>
-
-Un set de 10 a 20 minutos suele seguir una curva: entrada mínima, crecimiento capa a capa, un punto alto, un respiro y un final. Prepara antes las secciones con `arrange` o en bloques de código que puedas activar, y deja para el momento lo que improvisas: los valores de las señales, la probabilidad del azar, qué capa entra. En el Dojo puedes activar visuales con Hydra como acompañamiento; son opcionales y no forman parte de las katas.
-</details>
+<Callout tone="hint" title="Una cosa a la vez">
+  Si todo sube al mismo tiempo, nada se destaca. Sube una variable, deja las otras quietas y guarda algo para el punto alto.
+</Callout>
 
 <Callout tone="info" title="Para la prueba necesitas…">
-  Saber qué hace cada señal y cada función de azar o de transición, y cuál usar para un efecto en vivo; también repasas diseño de sonido, relativas y el campo armónico menor.
+  Reconocer cada recurso por su descripción y decir qué hace subir o bajar la tensión. También repasas timbre, relativas y el campo armónico menor.
 </Callout>

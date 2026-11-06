@@ -5,22 +5,28 @@ Todas las reglas viven en `src/features/progress/rules.ts` como funciones puras 
 ## Reglas
 
 1. `M01` empieza desbloqueado. Un módulo se desbloquea cuando su `prerequisite` está aprobado.
-2. **Tema aprobado** = prueba aprobada (`correct * 100 >= passPercent * total`, enteros, sin redondeo) **y** todas sus katas aprobadas. El orden entre la prueba y las katas es libre.
+2. **Tema aprobado** = prueba aprobada (`correct * 100 >= passPercent * total`, enteros, sin redondeo). Las katas no intervienen (ver `09-two-courses.md`).
 3. Dentro de un módulo desbloqueado, los temas se pueden hacer en cualquier orden. El currículo sugiere un orden y la UI marca el "siguiente recomendado".
-4. **Módulo aprobado** = todos sus temas aprobados **y** el combate aprobado (aserciones + rúbrica `>= passScore`).
-5. El combate se desbloquea cuando todos los temas del módulo están aprobados.
-6. **Prueba de ubicación**: disponible en cada módulo desbloqueado y todavía no aprobado (para saltar M01 y M02 se aprueba la ubicación de M01 y luego la de M02). Si se aprueba (`passPercent`, por defecto 90), los temas quedan `passedByPlacement`: el módulo cuenta como aprobado sin combate, y el combate sigue disponible como desafío opcional. Si no se aprueba, el resultado indica qué temas conviene hacer según los errores por `skill`.
+4. **Módulo aprobado** = examen de cinturón aprobado, **o** todos los temas aprobados y el combate `Mnn-BOSS` aprobado (aserciones + rúbrica `>= passScore`). Esta segunda opción conserva los cinturones ya ganados y sigue vigente.
+5. La ceremonia de cinturón aparece cuando un módulo pasa a aprobado, sea por el examen, por el combate o por la última prueba de tema (`newlyPassedModule`).
+6. **Examen de cinturón**: disponible en cada módulo desbloqueado y todavía no aprobado (para saltar M01 y M02 se aprueba el examen de M01 y luego el de M02). El umbral se decide al entregar: con todos los temas aprobados vale `passPercent` (80); con temas pendientes, `skipPercent` (90), y los temas quedan `passedByPlacement`. Si no se aprueba, el resultado indica qué temas conviene hacer según los errores por `skill`. En el almacenamiento el intento sigue siendo `kind: 'placement'`.
 7. Los intentos de prueba son ilimitados (las preguntas se generan). Tras reprobar, la pantalla de resultado propone repasar la lección y practicar las habilidades falladas antes del siguiente intento, sin bloquear.
 8. Las respuestas y explicaciones de una **prueba** solo se muestran al entregarla. En **práctica** se muestran al responder cada pregunta.
 9. Una prueba abierta se guarda pregunta por pregunta: si se cierra la pestaña, se retoma.
 10. **Kata con ayuda**: "Ver solución" se habilita tras 3 intentos fallidos. Ver la solución no aprueba nada: la kata se aprueba igual que siempre, al pasar las aserciones con tu código, pero queda `helped: true` y no da XP de kata. Cuenta como aprobada para el tema.
 
+## Curso Strudel
+
+Las reglas S1–S6 de `09-two-courses.md` también viven en `rules.ts`: etapas en cadena, unidades que pueden pedir temas de teoría, y un combate que cierra cada etapa.
+
 ## Estados
 
 ```ts
 type TopicStatus = 'locked' | 'not_started' | 'in_progress' | 'passed' | 'passed_by_placement'
-type ModuleStatus = 'locked' | 'available' | 'boss_ready' | 'passed' | 'draft'
+type ModuleStatus = 'locked' | 'available' | 'exam_ready' | 'passed' | 'draft'
 type KataStatus = 'not_started' | 'attempted' | 'passed'
+type StageStatus = 'locked' | 'available' | 'boss_ready' | 'passed'
+type UnitStatus = 'locked' | 'needs_theory' | 'not_started' | 'in_progress' | 'passed'
 ```
 
 ## Datos guardados (por perfil)
@@ -28,7 +34,7 @@ type KataStatus = 'not_started' | 'attempted' | 'passed'
 ```ts
 interface ProgressState {
   version: 1
-  attempts: TestAttempt[]               // pruebas y ubicaciones
+  attempts: TestAttempt[]               // pruebas y exámenes
   katas: Record<KataId, KataRecord>     // { code, attempts, passedAt: string | null, helped, solutionSeen }
   bosses: Record<BossId, BossRecord[]>  // historial de envíos con revisión
   skillStats: Record<Skill, SkillStat>  // repaso espaciado
@@ -62,6 +68,7 @@ interface BossRecord {
 Los puntos (XP) y la racha **se derivan** de lo guardado y nunca se almacenan, así no pueden desincronizarse:
 - XP: 10 por pregunta correcta en prueba (5 si se pidió pista), contando solo el **mejor intento entregado** de cada prueba, para que repetirla no infle el XP; 2 por correcta en práctica, con tope de 100 por día de `practiceDays`; 30 por kata aprobada sin ayuda; 100 por tema; 300 por combate.
 - Racha: días consecutivos con al menos una actividad calificada (`submittedAt`, `passedAt` de kata, o un día de `practiceDays` con `answered >= 10`).
+- Cualquier combate con un registro aprobado suma sus 300, sin importar a qué etapa pertenece.
 - El rango visible es el cinturón del último módulo aprobado. Las "rayas" (stripes, 0–4) del cinturón siguiente cuentan los temas aprobados de ese módulo.
 
 ## Perfiles

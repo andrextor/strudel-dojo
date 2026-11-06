@@ -1,0 +1,25 @@
+---
+unit: S02-U02
+title: Envolvente
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## La envolvente: ADSR
+
+La **envolvente** (*envelope*) dice cómo nace y se apaga cada nota:
+
+| Etapa | Qué controla |
+|-------|--------------|
+| **A**taque (*attack*) | Cuánto tarda en llegar al volumen máximo |
+| **D**ecaimiento (*decay*) | Cuánto tarda en bajar al nivel de sostenimiento |
+| **S**ostenimiento (*sustain*) | El nivel mientras la nota sigue |
+| **R**elajación (*release*) | Cuánto tarda en apagarse al terminar |
+
+Un ataque largo hace un **pad** que entra despacio; uno corto, un sonido percusivo.
+
+<StrudelRef name="attack" summary="Ataque: segundos hasta el volumen máximo." />
+<StrudelRef name="release" summary="Relajación: segundos que tarda en apagarse la nota." />
+<StrudelRef name="adsr" summary="Las cuatro etapas en un valor: ataque:decaimiento:sostenimiento:relajación." />
+
+<Example client:visible code='note("<[a3,c4,e4] [f3,a3,c4]>").s("sawtooth").attack(0.5).release(1).gain(0.6)' />

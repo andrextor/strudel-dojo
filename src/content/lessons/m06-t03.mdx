@@ -2,8 +2,6 @@
 topic: M06-T03
 title: Modos paralelos
 ---
-import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -28,18 +26,6 @@ Los tres primeros tienen tercera mayor (suenan "mayores"); dórico, eólico y fr
 <Keyboard low="C4" high="C5" highlight={["C", "D", "E", "F#", "G", "A", "B"]} labels="name" label="Do lidio, el más brillante: Fa♯" />
 
 <Keyboard low="C4" high="C5" highlight={["C", "Db", "Eb", "F", "Gb", "Ab", "Bb"]} labels="name" label="Do locrio, el más oscuro: cinco notas bajadas" />
-
-## Strudel: un modo por ciclo
-
-Con `<>` dentro de `scale`, la misma línea cambia de modo en cada ciclo. Escucha cómo se oscurece:
-
-<Listen client:visible code='n("0 1 2 3 4 5 6 7").scale("<C:lydian C:ionian C:mixolydian C:dorian C:aeolian C:phrygian C:locrian>").s("piano")' label="Escuchar los siete modos de Do, de brillante a oscuro" />
-
-La tríada de la tónica también cambia: mayor en lidio, jónico y mixolidio; menor en dórico, eólico y frigio; disminuida en locrio.
-
-<Listen client:visible code='n("[0,2,4]").scale("<C:ionian C:dorian C:locrian>").s("piano")' label="Escuchar la tríada de Do en jónico, dórico y locrio" />
-
-<Example client:visible code='n("0 2 4 5 4 2 1 0").scale("<D:dorian D:aeolian>").s("piano")' />
 
 ## De oído
 

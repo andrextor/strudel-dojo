@@ -142,11 +142,14 @@ type Mode = (typeof MODES)[number]
 interface Layer {
   role: Role
   code: string
+  text: string // what the learner reads: theory questions show no code
   audio: string
   hits: number // onsets per cycle
 }
 
 const LAYER_TONICS = ['C', 'G', 'D', 'A', 'F', 'Bb', 'Eb'] as const
+
+const attacks = (n: number) => (n === 1 ? '1 ataque por compás' : `${n} ataques por compás`)
 
 function makeLayer(role: Role, tonic: string, rng: Rng): Layer {
   const triads = diatonicTriads(tonic, 'major') ?? []
@@ -154,14 +157,14 @@ function makeLayer(role: Role, tonic: string, rng: Rng): Layer {
   const symbols = prog.map((t) => `${t.root}${t.quality === 'minor' ? 'm' : ''}`).join(' ')
   const roots = prog.map((t) => `${t.root.toLowerCase()}2`).join(' ')
   if (role === 'rhythm') {
-    const [code, hits] = rng.pick([
-      ['s("bd sd bd sd")', 4],
-      ['s("bd ~ sd ~")', 2],
-      ['s("bd(3,8)")', 3],
-      ['s("hh*8")', 8],
-      ['s("bd*2 [~ bd] sd")', 4],
+    const [code, hits, text] = rng.pick([
+      ['s("bd sd bd sd")', 4, 'bombo y caja alternados'],
+      ['s("bd ~ sd ~")', 2, 'bombo y caja con silencios'],
+      ['s("bd(3,8)")', 3, 'bombo en tresillo cubano'],
+      ['s("hh*8")', 8, 'hi-hat en corcheas'],
+      ['s("bd*2 [~ bd] sd")', 4, 'bombo sincopado y caja'],
     ] as const)
-    return { role, code, audio: code, hits }
+    return { role, code, text: `${text}, ${attacks(hits)}`, audio: code, hits }
   }
   if (role === 'bass') {
     const [suffix, hits] = rng.pick([
@@ -170,21 +173,34 @@ function makeLayer(role: Role, tonic: string, rng: Rng): Layer {
     ] as const)
     const struct = rng.next() < 0.5 && suffix === ''
     const code = `note("<${roots}>${suffix}")${struct ? '.struct("x ~ x x")' : ''}`
-    return { role, code, audio: `${code}.s("sawtooth")`, hits: struct ? 3 : hits }
+    const count = struct ? 3 : hits
+    return {
+      role,
+      code,
+      text: `notas graves sobre la fundamental de cada acorde, ${attacks(count)}`,
+      audio: `${code}.s("sawtooth")`,
+      hits: count,
+    }
   }
   if (role === 'harmony') {
-    const [tail, hits] = rng.pick([
-      ['', 1],
-      ['.struct("~ x ~ x")', 2],
-      ['.arp("0 1 2 1")', 4],
+    const [tail, hits, text] = rng.pick([
+      ['', 1, 'acordes sostenidos en el registro medio'],
+      ['.struct("~ x ~ x")', 2, 'acordes a contratiempo en el registro medio'],
+      ['.arp("0 1 2 1")', 4, 'acordes arpegiados en el registro medio'],
     ] as const)
     const code = `chord("<${symbols}>").voicing()${tail}`
-    return { role, code, audio: `${code}.s("piano")`, hits }
+    return { role, code, text: `${text}, ${attacks(hits)}`, audio: `${code}.s("piano")`, hits }
   }
   const length = rng.pick([3, 5, 6, 8])
   const degrees = Array.from({ length }, () => rng.int(0, 7)).join(' ')
   const code = `n("${degrees}").scale("${tonic}4:major")`
-  return { role, code, audio: `${code}.s("piano")`, hits: length }
+  return {
+    role,
+    code,
+    text: `una línea de notas sueltas en el registro agudo, ${attacks(length)}`,
+    audio: `${code}.s("piano")`,
+    hits: length,
+  }
 }
 
 interface LayerParams {
@@ -210,13 +226,13 @@ export const layerRole: Generator<LayerParams> = {
       if (layers.filter((l) => l.hits === max).length === 1) break
       layers = roles.map((r) => makeLayer(r, tonic, rng))
     }
-    const listing = layers.map((l, i) => `capa ${i + 1}: ${l.code}`).join(' · ')
+    const listing = layers.map((l, i) => `capa ${i + 1}: ${l.text}`).join(' · ')
     const base = {
       generator: 'layer-role',
       skill: 'arrangement',
       audio: `stack(${layers.map((l) => l.audio).join(', ')})`,
     }
-    const intro = `Un arreglo en ${keyName(tonic)} con stack(…) — ${listing}.`
+    const intro = `Un arreglo en ${keyName(tonic)} — ${listing}.`
 
     if (mode === 'role') {
       const k = rng.int(0, layers.length - 1)
@@ -252,10 +268,10 @@ export const layerRole: Generator<LayerParams> = {
       id: '',
       ...base,
       key: `layer-role:density:${tonic}:${layers.map((l) => l.code).join('|')}`,
-      prompt: `${intro} ¿Qué capa es la más densa, con más ataques por ciclo?`,
+      prompt: `${intro} ¿Qué capa es la más densa?`,
       input: { kind: 'choice', options: labels },
       answer: { kind: 'choice', index: busiest },
-      explanation: `Ataques por ciclo: ${layers.map((l, i) => `capa ${i + 1} = ${l.hits}`).join(', ')}. La más densa es la capa ${busiest + 1}.`,
+      explanation: `Ataques por compás: ${layers.map((l, i) => `capa ${i + 1} = ${l.hits}`).join(', ')}. La más densa es la capa ${busiest + 1}.`,
     }
   },
 }
@@ -265,11 +281,11 @@ function roleWhy(role: Role): string {
     case 'rhythm':
       return 'sonidos de batería sin altura, que marcan el pulso'
     case 'bass':
-      return 'las fundamentales de los acordes en la octava 2, el registro grave'
+      return 'las fundamentales de los acordes en el registro grave'
     case 'harmony':
-      return 'acordes con chord y voicing, el colchón del registro medio'
+      return 'acordes que forman el colchón del registro medio'
     case 'melody':
-      return 'una línea de grados de la escala en la octava 4, por encima del resto'
+      return 'una línea de notas sueltas por encima del resto'
   }
 }
 
@@ -404,6 +420,76 @@ function catalogGenerator(id: string, skill: string, catalog: readonly Entry[]) 
   return gen
 }
 
+// ---------- concept generators: timbre, tension and release (no code) ----------
+
+interface Concept {
+  term: string
+  does: string
+}
+
+const TIMBRE: readonly Concept[] = [
+  { term: 'Ataque', does: 'Cuánto tarda el sonido en llegar a su volumen máximo' },
+  { term: 'Decaimiento', does: 'Cuánto tarda en bajar del pico al nivel en que se sostiene' },
+  { term: 'Sostenimiento', does: 'El nivel que mantiene mientras la nota sigue' },
+  { term: 'Relajación', does: 'Cuánto tarda en apagarse cuando la nota termina' },
+  { term: 'Filtro pasa bajos', does: 'Deja pasar lo grave y apaga lo agudo' },
+  { term: 'Filtro pasa altos', does: 'Quita los graves y deja lo agudo' },
+  { term: 'Reverberación', does: 'Hace que el sonido parezca estar en una sala' },
+  { term: 'Eco', does: 'Repite el sonido un instante después' },
+  { term: 'Distorsión', does: 'Ensucia y endurece el sonido al saturarlo' },
+  { term: 'Onda senoidal', does: 'Un tono puro, casi sin armónicos' },
+  { term: 'Onda de sierra', does: 'Un sonido brillante, lleno de armónicos' },
+]
+
+// Each entry must rule out the others: distractors come from this same list.
+const TENSION: readonly Concept[] = [
+  { term: 'Build-up', does: 'Crecimiento gradual que prepara un punto alto' },
+  { term: 'Clímax', does: 'El momento de mayor intensidad de la pieza' },
+  { term: 'Corte', does: 'Un silencio súbito antes de que todo vuelva a entrar' },
+  { term: 'Pedal', does: 'Una nota grave fija mientras la armonía cambia encima' },
+  { term: 'Resolución', does: 'La llegada al acorde de tónica, que suelta la tensión' },
+  { term: 'Respiro', does: 'Una bajada de densidad justo después de un punto alto' },
+]
+
+function conceptGenerator(id: string, skill: string, catalog: readonly Concept[]) {
+  const gen: Generator<{ directions: Direction[] }> = {
+    id,
+    skill,
+    parseParams(raw) {
+      const directions = subset(asRecord(raw).directions, DIRECTIONS)
+      return directions ? { directions } : null
+    },
+    generate(params, rng) {
+      const entry = rng.pick([...catalog])
+      const direction = rng.pick(params.directions)
+      const others = rng.shuffle(catalog.filter((e) => e !== entry))
+      const base = {
+        key: `${id}:${direction}:${entry.term}`,
+        generator: id,
+        skill,
+        explanation: `${entry.term}: ${entry.does.charAt(0).toLowerCase()}${entry.does.slice(1)}.`,
+      }
+      return direction === 'describe'
+        ? choiceQuestion(
+            rng,
+            { ...base, prompt: `¿Qué describe «${entry.term}»?` },
+            entry.does,
+            others.map((e) => e.does),
+          )
+        : choiceQuestion(
+            rng,
+            { ...base, prompt: `¿Cómo se llama esto? ${entry.does}.` },
+            entry.term,
+            others.map((e) => e.term),
+          )
+    },
+  }
+  return gen
+}
+
+export const timbreConcept = conceptGenerator('timbre-concept', 'timbre', TIMBRE)
+export const tensionDevice = conceptGenerator('tension-device', 'tension-release', TENSION)
+
 export const soundDesign = catalogGenerator('sound-design', 'sound-design', SOUND_DESIGN)
 export const performanceSignal = catalogGenerator('performance-signal', 'performance', PERFORMANCE)
 
@@ -412,4 +498,6 @@ export const m10: Registered[] = [
   erase(layerRole),
   erase(soundDesign),
   erase(performanceSignal),
+  erase(timbreConcept),
+  erase(tensionDevice),
 ]

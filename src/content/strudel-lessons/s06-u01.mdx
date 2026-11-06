@@ -1,0 +1,18 @@
+---
+unit: S06-U01
+title: Una banda en capas
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Una banda en capas
+
+Con `stack` superpones capas que suenan a la vez: batería, acordes y bajo. Para el bajo, `rootNotes(2)` toca la fundamental de cada acorde en la octava 2, así la función se oye clara aunque el `voicing` ponga otra nota abajo.
+
+<StrudelRef name="stack" summary="Toca varios patrones a la vez, uno encima de otro: cada uno es una capa." />
+
+<Example client:visible code={`stack(
+  s("bd ~ sd ~, hh*8"),
+  chord("<C F G C>").voicing().s("piano"),
+  chord("<C F G C>").rootNotes(2).s("piano")
+)`} />

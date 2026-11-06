@@ -1,0 +1,19 @@
+---
+unit: S02-U03
+title: Filtros
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Filtros
+
+Un filtro decide qué frecuencias pasan. El número es la frecuencia de corte en Hz.
+
+<StrudelRef name="lpf" summary="Filtro pasa bajos: deja pasar lo grave y apaga lo agudo." />
+<StrudelRef name="hpf" summary="Filtro pasa altos: quita los graves." />
+<StrudelRef name="lpq" summary="Resonancia del filtro pasa bajos: realza la zona del corte." />
+<StrudelRef name="vowel" summary="Filtro de formantes: hace que el sonido imite una vocal (a, e, i, o, u)." />
+
+<Listen showCode client:visible code='note("c2 c2 eb2 g1").s("sawtooth").lpf("<4000 1500 600 300>").lpq(8)' label="Escuchar el bajo cada vez más oscuro con el filtro" />
+
+<Listen showCode client:visible code='note("c3*4").s("sawtooth").vowel("<a e i o>")' label="Escuchar las vocales" />

@@ -1,0 +1,19 @@
+---
+unit: S07-U04
+title: Ciclos con add
+---
+import Example from '../../features/strudel/Example.tsx'
+
+## Ciclos con `< >` y `add` incremental
+
+No hace falta escribir cada acorde. Toma la tríada de Do y súmale semitonos distintos en cada ciclo: 7 por cada quinta arriba (y 12 menos, para no subir demasiado).
+
+<Example client:visible code='note("[c3,e3,g3]".add("<0 7 2 9>")).s("piano")' />
+
+Hacia la izquierda, cada paso suma 5 semitonos (una cuarta, que es una quinta abajo):
+
+<Example client:visible code='note("[c3,e3,g3]".add("<0 5 10 15>")).s("piano")' />
+
+Y para encadenar ii–V, escribe el par una vez y bájalo un tono (`-2`) cada dos ciclos:
+
+<Example client:visible code='note("<[d3,f3,a3] [g3,b3,d4]>".add("<0 0 -2 -2 -4 -4>")).s("piano")' />

@@ -3,13 +3,11 @@ topic: M01-T04
 title: Ritmo y métrica
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Staff from '../../components/music/Staff.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
 <Callout tone="info" title="En 30 segundos">
-  Cada figura dura la mitad de la anterior: redonda, blanca, negra, corchea, semicorchea. En Strudel, **un ciclo es un compás**: si escribes cuatro pasos, son cuatro negras; si escribes ocho, son ocho corcheas.
+  Cada figura dura la mitad de la anterior: redonda, blanca, negra, corchea, semicorchea. El **compás** agrupa esas figuras en tiempos.
 </Callout>
 
 ## Figuras y silencios
@@ -23,41 +21,13 @@ El **puntillo** suma la mitad de la figura: una negra con puntillo dura tres cor
 En un compás **simple** (2/4, 3/4, 4/4) cada tiempo se divide en dos. En uno **compuesto** (6/8, 12/8) cada tiempo se divide en tres. La **síncopa** acentúa una parte débil, y el **tresillo** mete tres notas donde normalmente caben dos.
 
 <details>
-  <summary>¿Cómo se ve un 6/8 en Strudel?</summary>
+  <summary>¿Cómo suena un 6/8?</summary>
 
 Seis corcheas agrupadas de a tres: dos tiempos fuertes por compás.
 
 <Listen client:visible code='s("[bd hh hh] [sd hh hh]")' label="Escuchar un compás de 6/8" />
 </details>
 
-## Strudel: dividir el ciclo
-
-Todo lo que pongas entre comillas se reparte en un ciclo:
-
-- `@` le da más peso a un paso: `bd@3 sd` es una negra con puntillo y una corchea.
-- `!` repite un paso **sin** acelerar: `bd!3 sd` son cuatro pasos.
-- `/` estira un paso a varios ciclos: `bd/2` suena un ciclo sí y otro no.
-- `?` deja sonar el paso solo la mitad de las veces, al azar.
-- `bd(3,8)` reparte 3 golpes en 8 pasos, lo más parejo posible: es un ritmo **euclidiano**. Este en particular es el tresillo cubano.
-
-<Listen client:visible code='s("bd@3 sd")' label="Escuchar bd@3 sd" />
-<Listen client:visible code='s("bd(3,8), hh*8?")' label="Escuchar el tresillo euclidiano con hi-hat al azar" />
-
-<StrudelRef name="euclid" summary="La forma larga de bd(3,8): reparte golpes en pasos de manera pareja." />
-
-## Capas con `stack`
-
-`stack` hace sonar varios patrones a la vez. Así se arma un beat: una capa por instrumento.
-
-<StrudelRef name="stack" summary="Hace sonar varios patrones juntos, uno sobre otro." />
-
-<Example client:visible code={`stack(
-  s("bd(3,8)"),
-  s("~ sd ~ sd"),
-  s("hh*8"),
-  note("c2 ~ g2 ~").s("piano")
-)`} />
-
 <Callout tone="info" title="Para la prueba necesitas…">
-  Escuchar un ritmo de 8 pasos y elegir la mini-notation que suena igual (`bd` es golpe, `~` es silencio).
+  Escuchar un ritmo de 8 pasos y elegir el dibujo que suena igual (`●` es golpe, `·` es silencio).
 </Callout>

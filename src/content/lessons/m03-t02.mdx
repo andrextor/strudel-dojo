@@ -3,8 +3,6 @@ topic: M03-T02
 title: Inversiones y voicings
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Fretboard from '../../components/lesson/LessonFretboard.tsx'
 import Staff from '../../components/music/Staff.tsx'
@@ -41,14 +39,6 @@ Un **voicing** es cómo repartes las notas del acorde. **Cerrado**: todas dentro
 <Listen client:visible code='note("<[c3,e3,g3] [c2,g3,e4]>").s("piano")' label="Escuchar Do mayor cerrado y abierto" />
 
 <Fretboard highlight={["C", "E", "G"]} frets={12} label="Todas las notas de Do mayor hasta el traste 12: de ahí salen las formas CAGED" />
-
-## Strudel: `voicing` y `anchor`
-
-`voicing` elige posiciones que se mueven poco de un acorde al siguiente. Con `anchor` decides hasta qué nota llega arriba (por defecto c5): así subes o bajas el registro sin cambiar los acordes.
-
-<StrudelRef name="anchor" summary="Fija la nota más aguda hasta la que llega el voicing (por defecto c5)." />
-
-<Example client:visible code='chord("<C Am F G>").anchor("c4").voicing().s("piano")' />
 
 <details>
   <summary>¿Por qué importa la inversión?</summary>

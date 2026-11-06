@@ -1,0 +1,292 @@
+{
+  "id": "S03",
+  "order": 3,
+  "title": "Notas e intervalos",
+  "summary": "Melodías con note, octavas e intervalos en código.",
+  "prerequisite": "S02",
+  "units": [
+    {
+      "id": "S03-U01",
+      "title": "note y octavas",
+      "goal": "Tocar notas por nombre, octava y número MIDI.",
+      "lesson": "s03-u01",
+      "requires": ["M01-T01", "M01-T02"],
+      "katas": [
+        {
+          "id": "M01-T01-K3",
+          "title": "Dos nombres, un sonido",
+          "brief": "Con `note`, toca Fa♯ y luego su enarmónico (la misma tecla con otro nombre).",
+          "starter": "note(\"f#\").s(\"piano\")",
+          "solution": "note(\"f# gb\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["F#", "Gb"],
+              "voice": "all"
+            }
+          ],
+          "hints": [
+            "En Strudel el sostenido se escribe `#` y el bemol `b`, en minúscula: `gb` es Sol♭."
+          ]
+        },
+        {
+          "id": "M01-T02-K1",
+          "title": "Cuatro notas",
+          "brief": "Toca Do, Re, Mi y Fa con `note` y el sonido de piano.",
+          "starter": "note(\"c d e\").s(\"piano\")",
+          "solution": "note(\"c d e f\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "D", "E", "F"],
+              "voice": "all"
+            }
+          ],
+          "hints": ["Falta una nota al final."]
+        },
+        {
+          "id": "M01-T02-K2",
+          "title": "Cromática completa",
+          "brief": "Sube por la escala cromática desde c3 hasta c4: los 12 semitonos y la octava, con sostenidos.",
+          "starter": "note(\"c3 c#3 d3\").s(\"piano\")",
+          "solution": "note(\"c3 c#3 d3 d#3 e3 f3 f#3 g3 g#3 a3 a#3 b3 c4\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": [
+                "C",
+                "C#",
+                "D",
+                "D#",
+                "E",
+                "F",
+                "F#",
+                "G",
+                "G#",
+                "A",
+                "A#",
+                "B",
+                "C"
+              ],
+              "voice": "all"
+            }
+          ],
+          "hints": [
+            "Entre Mi y Fa, y entre Si y Do, no hay tecla negra: ahí el semitono es natural.",
+            "La última nota es c4, una octava arriba."
+          ]
+        },
+        {
+          "id": "M01-T02-K3",
+          "title": "Tono, tono, semitono",
+          "brief": "Con números MIDI (Do central = 60), toca Do, sube un tono, otro tono y un semitono.",
+          "starter": "note(\"60\").s(\"piano\")",
+          "solution": "note(\"60 62 64 65\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "D", "E", "F"],
+              "voice": "all"
+            },
+            {
+              "type": "avoidsFunction",
+              "names": ["n"]
+            }
+          ],
+          "hints": ["Un semitono suma 1 al número; un tono suma 2."]
+        }
+      ]
+    },
+    {
+      "id": "S03-U02",
+      "title": "Intervalos en código",
+      "goal": "Tocar intervalos melódicos y armónicos, y sumarlos a un beat.",
+      "lesson": "s03-u02",
+      "requires": ["M01-T03", "M01-T04"],
+      "katas": [
+        {
+          "id": "M01-T03-K1",
+          "title": "Quintas en paralelo",
+          "brief": "Toca la melodía C D E F G y súmale una quinta justa arriba a cada nota, como un power chord.",
+          "starter": "note(\"c3 d3 e3 f3 g3\").s(\"piano\")",
+          "solution": "note(\"[c3,g3] [d3,a3] [e3,b3] [f3,c4] [g3,d4]\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "harmonicIntervals",
+              "interval": "5P",
+              "minRatio": 1
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "D", "E", "F", "G"],
+              "voice": "lowest"
+            }
+          ],
+          "hints": [
+            "La coma dentro de `[ ]` hace que dos notas suenen juntas: `[c3,g3]`.",
+            "Una quinta justa son 7 semitonos: de E sube a B, de F sube a C."
+          ]
+        },
+        {
+          "id": "M01-T03-K2",
+          "title": "Melodía por intervalos",
+          "brief": "Empieza en c4 y sube una tercera mayor, luego una cuarta justa y por último una segunda menor. Termina con un silencio.",
+          "starter": "note(\"c4 ~\").s(\"piano\")",
+          "solution": "note(\"c4 e4 a4 bb4 ~\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "E", "A", "Bb"],
+              "voice": "all"
+            },
+            {
+              "type": "eventsPerCycle",
+              "min": 4,
+              "max": 4
+            }
+          ],
+          "hints": [
+            "3M = 4 semitonos, 4J = 5, 2m = 1.",
+            "`~` es un silencio: ocupa un paso pero no suena."
+          ]
+        },
+        {
+          "id": "M01-T03-K3",
+          "title": "Un intervalo por ciclo",
+          "brief": "Deja c3 fijo y, con `< >`, haz que suene arriba una tercera mayor en el ciclo 1, una quinta justa en el 2 y una octava en el 3.",
+          "starter": "note(\"[c3,e3]\").s(\"piano\")",
+          "solution": "note(\"[c3,<e3 g3 c4>]\").s(\"piano\")",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "E"],
+              "voice": "all",
+              "cycle": 0
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "G"],
+              "voice": "all",
+              "cycle": 1
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "C"],
+              "voice": "all",
+              "cycle": 2
+            }
+          ],
+          "hints": [
+            "`< >` toma un elemento distinto en cada ciclo.",
+            "Puedes poner `< >` dentro de los corchetes: `[c3,<… … …>]`."
+          ]
+        },
+        {
+          "id": "M01-T04-K3",
+          "title": "Capas",
+          "brief": "Con `stack`, junta tres capas: el tresillo de bombo, la caja en los tiempos 2 y 4, y un bajo de piano que toque c2 y g2.",
+          "starter": "stack(\n  s(\"bd(3,8)\")\n)",
+          "solution": "stack(\n  s(\"bd(3,8)\"),\n  s(\"~ sd ~ sd\"),\n  note(\"c2 ~ g2 ~\").s(\"piano\")\n)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "sd"]
+            },
+            {
+              "type": "pitchClassesInclude",
+              "pitchClasses": ["C", "G"]
+            }
+          ],
+          "hints": [
+            "Cada capa va separada por una coma dentro de `stack( … )`.",
+            "La caja en 2 y 4 de un compás de 4: `~ sd ~ sd`."
+          ]
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "id": "M01-BOSS",
+    "title": "Primer beat",
+    "brief": "Arma un beat de 4 compases con bombo, caja y hi-hat, más una melodía de 8 notas que use al menos 3 intervalos distintos.",
+    "starter": "stack(\n  s(\"bd ~ sd ~\"),\n  note(\"c4 e4 g4 c5\").s(\"piano\")\n)",
+    "cycles": 4,
+    "assertions": [
+      {
+        "type": "usesFunction",
+        "names": ["stack"]
+      },
+      {
+        "type": "soundsInclude",
+        "names": ["bd", "sd", "hh"]
+      },
+      {
+        "type": "distinctMelodicIntervals",
+        "min": 3
+      }
+    ],
+    "rubric": [
+      {
+        "id": "rhythm",
+        "label": "El ritmo es coherente y tiene variación",
+        "weight": 3
+      },
+      {
+        "id": "theory",
+        "label": "Usa los intervalos de la etapa con intención",
+        "weight": 3
+      },
+      {
+        "id": "code",
+        "label": "Código claro y mini-notation variada",
+        "weight": 2
+      },
+      {
+        "id": "music",
+        "label": "Suena musical, con inicio y cierre",
+        "weight": 2
+      }
+    ],
+    "passScore": 7
+  }
+}

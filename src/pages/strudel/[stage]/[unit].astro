@@ -1,0 +1,87 @@
+---
+import { getEntry, render } from 'astro:content'
+import { ArrowLeft, ArrowRight } from 'lucide-preact'
+import { getCurriculum, getStages } from '../../../features/curriculum/index.ts'
+import { segment, stageHref, topicHref, unitHref } from '../../../features/curriculum/paths.ts'
+import UnitPanel from '../../../features/strudel-course/UnitPanel.tsx'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const [curriculum, stages] = await Promise.all([getCurriculum(), getStages()])
+  const flat = stages.flatMap((stage) => stage.units.map((unit) => ({ stage, unit })))
+  return flat.map(({ stage, unit }, i) => ({
+    params: { stage: segment(stage.id, 0), unit: segment(unit.id, 1) },
+    props: {
+      stage,
+      unit,
+      stages,
+      curriculum,
+      prev: flat[i - 1]?.unit ?? null,
+      next: flat[i + 1]?.unit ?? null,
+    },
+  }))
+}
+
+const { stage, unit, stages, curriculum, prev, next } = Astro.props
+const lesson = await getEntry('strudelLessons', unit.lesson)
+if (lesson === undefined) throw new Error(`missing lesson ${unit.lesson}`)
+const { Content } = await render(lesson)
+const theory = curriculum.flatMap((m) => m.topics).filter((t) => unit.requires.includes(t.id))
+---
+
+<BaseLayout title={unit.title} description={unit.goal}>
+  <nav class="mb-4 text-sm text-dojo-muted">
+    <a href={stageHref(stage.id)} class="hover:text-dojo-neon">{stage.title}</a>
+  </nav>
+  <article class="space-y-4">
+    <header class="space-y-2">
+      <h1 class="font-display text-3xl font-bold md:text-4xl">{unit.title}</h1>
+      <p class="max-w-2xl text-lg text-dojo-muted">{unit.goal}</p>
+      {
+        theory.length > 0 && (
+          <p class="text-sm text-dojo-muted">
+            Viene de teoría:{' '}
+            {theory.map((t, i) => (
+              <>
+                {i > 0 && ', '}
+                <a href={topicHref(t.id)} class="text-dojo-neon hover:underline">
+                  {t.title}
+                </a>
+              </>
+            ))}
+          </p>
+        )
+      }
+    </header>
+    <div class="lesson max-w-3xl space-y-4">
+      <Content />
+    </div>
+  </article>
+
+  <div class="mt-10">
+    <UnitPanel client:only="preact" unit={unit} stage={stage} stages={stages} curriculum={curriculum}>
+      <div slot="fallback" class="min-h-96 rounded-card bg-dojo-surface"></div>
+    </UnitPanel>
+  </div>
+
+  <nav class="mt-10 flex flex-wrap justify-between gap-3" aria-label="Unidades">
+    {
+      prev ? (
+        <a href={unitHref(prev.id)} class="inline-flex min-h-11 items-center gap-2 text-dojo-neon hover:underline">
+          <ArrowLeft size={18} aria-hidden="true" />
+          {prev.title}
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      next && (
+        <a href={unitHref(next.id)} class="inline-flex min-h-11 items-center gap-2 text-dojo-neon hover:underline">
+          {next.title}
+          <ArrowRight size={18} aria-hidden="true" />
+        </a>
+      )
+    }
+  </nav>
+</BaseLayout>

@@ -3,8 +3,6 @@ topic: M04-T01
 title: Tónica, subdominante, dominante
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -49,18 +47,6 @@ El iii (Mi–Sol–Si en Do) comparte Mi y Sol con el I y Sol y Si con el V. Por
 <Listen client:visible code='chord("<G G7 C C>").voicing().s("piano")' label="Escuchar G, G7 y la resolución a C" />
 
 El vii° (Si–Re–Fa) tiene el mismo tritono, y por eso también es dominante. Los acordes de séptima los verás a fondo en M07.
-
-## Strudel: una banda en capas
-
-Con `stack` superpones capas que suenan a la vez: batería, acordes y bajo. Para el bajo, `rootNotes(2)` toca la fundamental de cada acorde en la octava 2, así la función se oye clara aunque el `voicing` ponga otra nota abajo.
-
-<StrudelRef name="stack" summary="Toca varios patrones a la vez, uno encima de otro: cada uno es una capa." />
-
-<Example client:visible code={`stack(
-  s("bd ~ sd ~, hh*8"),
-  chord("<C F G C>").voicing().s("piano"),
-  chord("<C F G C>").rootNotes(2).s("piano")
-)`} />
 
 <Callout tone="info" title="Para la prueba necesitas…">
   Decir la función (tónica, subdominante o dominante) de los grados I, ii, IV, V, vi y vii° en cualquier tonalidad mayor, y repasar el campo armónico y el deletreo de tríadas.

@@ -1,0 +1,14 @@
+---
+unit: S08-U01
+title: El modo dentro de scale
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## El modo dentro de `scale`
+
+`scale` acepta los siete nombres en inglés: `ionian`, `dorian`, `phrygian`, `lydian`, `mixolydian`, `aeolian` y `locrian`. Escribe la tónica, dos puntos y el modo. Si en lugar de cambiar el nombre sumas a los números con `add`, recorres los siete modos de Do mayor sin salir de sus notas:
+
+<StrudelRef name="scale" summary="Convierte los números de n en notas de la escala o el modo que nombres (tónica:modo)." />
+
+<Example client:visible code='n("0 1 2 3 4 5 6 7".add("<0 1 2 3 4 5 6>")).scale("C:major").s("piano")' />

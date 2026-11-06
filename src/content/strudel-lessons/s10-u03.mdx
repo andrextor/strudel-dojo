@@ -1,0 +1,20 @@
+---
+unit: S10-U03
+title: Sustitución tritonal
+---
+import Example from '../../features/strudel/Example.tsx'
+
+## Reharmonizar en código
+
+Separa el bajo con `stack` para que se oiga el cromatismo:
+
+<Example client:visible code={`stack(
+  note("<[d3,g3,b3] [db3,g3,bb3] [c3,f3,a3] [cb3,f3,ab3] [b2,e3,g3]>"),
+  note("<e2 eb2 d2 db2 c2>")
+).s("piano")`} />
+
+<details>
+  <summary>¿Por qué escribo cb4 y no b3?</summary>
+
+Suenan igual, pero el acorde es D♭7 y su séptima es Do♭. Strudel acepta `cb4`, y así el código dice la verdad sobre el acorde. Las comprobaciones comparan el sonido, así que `b3` también pasaría.
+</details>

@@ -1,0 +1,23 @@
+---
+unit: S01-U04
+title: Capas de batería
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  `stack` hace sonar varios patrones a la vez. Así se arma un beat: una capa por instrumento, cada una fácil de cambiar sin tocar las otras.
+</Callout>
+
+## Capas con `stack`
+
+<StrudelRef name="stack" summary="Hace sonar varios patrones juntos, uno sobre otro." />
+
+<Example client:visible code={`stack(
+  s("bd(3,8)"),
+  s("~ sd ~ sd"),
+  s("hh*8")
+)`} />
+
+La coma de la mini-notation hace lo mismo dentro de un patrón. `stack` conviene cuando cada capa va a tener sus propias funciones.

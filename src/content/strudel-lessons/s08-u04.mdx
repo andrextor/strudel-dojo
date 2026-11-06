@@ -1,0 +1,21 @@
+---
+unit: S08-U04
+title: Vamps y drones
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Vamps
+
+Una vamp es un patrón corto de acordes que se repite. Con `chord` y `< >` sostienes un modo con dos acordes:
+
+<Listen showCode client:visible code='chord("<Dm G>").voicing().s("piano")' label="Escuchar i–IV en Re dórico" />
+
+## Drones
+
+Un dron se construye con un sinte (`s("sawtooth")`) y tres controles que ya conoces: `sustain` para que no se apague, `lpf` para oscurecerlo y `room` para darle espacio.
+
+<StrudelRef name="sustain" summary="Nivel de la envolvente mientras la nota sigue sonando (0 a 1): con 1 el dron no se apaga hasta el final del evento." />
+
+<Example client:visible code='stack(note("d2").s("sawtooth").sustain(1).lpf(500).room(0.6), n("<[0 2 4 5] [4 5 7 5]>").scale("D3:dorian").s("piano"))' />

@@ -3,8 +3,6 @@ topic: M09-T01
 title: Menor armónica y melódica
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -37,7 +35,7 @@ Para suavizar ese salto, la menor melódica sube también el 6.º grado. Queda c
 <details>
   <summary>¿Y al bajar?</summary>
 
-En la música clásica, la menor melódica baja como la natural (Sol y Fa vuelven a su lugar). En el jazz se usa igual en las dos direcciones, y así la entiende Strudel y esta prueba: siempre con 6.º y 7.º subidos.
+En la música clásica, la menor melódica baja como la natural (Sol y Fa vuelven a su lugar). En el jazz se usa igual en las dos direcciones, y así la entiende esta prueba: siempre con 6.º y 7.º subidos.
 </details>
 
 ## Tres modos clave
@@ -52,14 +50,10 @@ Como con la mayor y sus modos, puedes tocar estas escalas desde otro grado:
 
 Mi frigio dominante tiene las mismas notas que La menor armónica: es la escala del E7 que resuelve en Am.
 
-<Example client:visible code={`stack(
+<Listen client:visible code={`stack(
   chord("<E7 Am>").voicing().s("piano"),
   n("0 1 2 3 4 5 6 7").scale("<E4:phrygian:dominant A4:harmonic:minor>").s("piano")
-)`} />
-
-<Callout tone="warning" title="Nombres con espacio en Strudel">
-  En `scale`, cada espacio del nombre se escribe con dos puntos: `"A:harmonic:minor"`, `"C:melodic:minor"`, `"E:phrygian:dominant"`, `"C:lydian:dominant"`. Con un espacio, la mini-notation lo parte en dos y no suena lo que esperas.
-</Callout>
+)`} label="Escuchar Mi frigio dominante sobre E7 y La menor armónica sobre Am" />
 
 <details>
   <summary>¿Por qué la alterada se escribe con Re♯ y no con Mi♭?</summary>

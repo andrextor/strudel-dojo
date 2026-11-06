@@ -44,4 +44,6 @@ export const SKILL_NAME_ES: Record<string, string> = {
   arrangement: 'Arreglo',
   'sound-design': 'Diseño de sonido',
   performance: 'Interpretación en vivo',
+  timbre: 'Timbre y envolvente',
+  'tension-release': 'Tensión y liberación',
 }

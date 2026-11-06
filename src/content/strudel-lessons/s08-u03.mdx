@@ -1,0 +1,18 @@
+---
+unit: S08-U03
+title: Un modo por ciclo
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+
+## Un modo por ciclo
+
+Con `<>` dentro de `scale`, la misma línea cambia de modo en cada ciclo. Escucha cómo se oscurece:
+
+<Listen showCode client:visible code='n("0 1 2 3 4 5 6 7").scale("<C:lydian C:ionian C:mixolydian C:dorian C:aeolian C:phrygian C:locrian>").s("piano")' label="Escuchar los siete modos de Do, de brillante a oscuro" />
+
+La tríada de la tónica también cambia: mayor en lidio, jónico y mixolidio; menor en dórico, eólico y frigio; disminuida en locrio.
+
+<Listen showCode client:visible code='n("[0,2,4]").scale("<C:ionian C:dorian C:locrian>").s("piano")' label="Escuchar la tríada de Do en jónico, dórico y locrio" />
+
+<Example client:visible code='n("0 2 4 5 4 2 1 0").scale("<D:dorian D:aeolian>").s("piano")' />

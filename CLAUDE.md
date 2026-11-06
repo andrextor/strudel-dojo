@@ -4,7 +4,7 @@ Guía para Claude Code (claude.ai/code) cuando trabaja en este repositorio.
 
 ## Proyecto
 
-**Strudel Dojo**: app para aprender teoría musical completa y live coding con Strudel, organizada en 10 cinturones (módulos) de 4 temas. Cada tema tiene lección (MDX con ejemplos que suenan), práctica generada ilimitada, prueba calificada y katas Strudel validadas automáticamente. Cada módulo cierra con un combate creativo que revisa el Sensei (Claude). Tiene perfiles locales (dueño + su hijo), con el progreso en `localStorage`. Se despliega en Vercel.
+**Strudel Dojo**: app con dos cursos. **Teoría**: 10 cinturones (módulos) de 4 temas, con lección (MDX con ejemplos que suenan), práctica generada ilimitada y prueba calificada; cada cinturón se gana con un examen. **Strudel**: 12 etapas con unidades de lección y katas validadas automáticamente, y un combate creativo por etapa que revisa el Sensei (Claude). La teoría nunca pide código; una unidad de Strudel puede pedir temas de teoría. Tiene perfiles locales (dueño + su hijo), con el progreso en `localStorage`. Se despliega en Vercel.
 
 El copy visible está en español; código, identificadores, nombres de archivo y comentarios van en **inglés**. Los comentarios son solo para lógica no obvia.
 
@@ -13,10 +13,11 @@ El copy visible está en español; código, identificadores, nombres de archivo 
 | Si vas a tocar… | Lee |
 |-----------------|-----|
 | Cualquier cosa (primera vez) | `docs/specs/00-product.md`, `docs/specs/07-architecture.md` |
-| Contenido, módulos, lecciones | `docs/specs/01-curriculum.md`, `docs/specs/02-content-model.md` |
+| Contenido, módulos, etapas, lecciones | `docs/specs/01-curriculum.md`, `docs/specs/02-content-model.md`, `docs/specs/09-two-courses.md` |
 | Generadores, calificación, oído | `docs/specs/03-exercise-engine.md` |
 | Strudel, editor, katas, audio | `docs/specs/04-strudel-engine.md` |
 | Progreso, perfiles, respaldo | `docs/specs/05-progression.md` |
+| Separación Teoría / Strudel | `docs/specs/09-two-courses.md` |
 | Rutas API / Claude | `docs/specs/06-ai-sensei.md` (y carga la skill `claude-api`) |
 | UI | `DESIGN.md` |
 
@@ -24,7 +25,7 @@ Los specs son requisitos. Si la implementación necesita desviarse (porque una A
 
 ## Planes
 
-El trabajo se ejecuta por fases en `docs/plans/` (índice y protocolo en `docs/plans/README.md`). Cada fase es una rama `feat/pNN-<slug>` y un PR. Marca las casillas del plan a medida que avanzas.
+El trabajo se ejecuta por fases en `docs/plans/` (índice y protocolo en `docs/plans/README.md`). Cada fase es una rama `feat/pNN-<slug>` y un PR, salvo que el dueño pida agruparlas en una sola rama. Marca las casillas del plan a medida que avanzas.
 
 ## Comandos (objetivo tras P00)
 

@@ -8,8 +8,11 @@ export { BELTS }
 
 const moduleId = z.string().regex(/^M\d{2}$/)
 const topicId = z.string().regex(/^M\d{2}-T\d{2}$/)
-const kataId = z.string().regex(/^M\d{2}-T\d{2}-K\d$/)
-const bossId = z.string().regex(/^M\d{2}-BOSS$/)
+// Katas and bosses moved from the belts keep their M ids: they key saved progress.
+const kataId = z.string().regex(/^(M\d{2}-T\d{2}|S\d{2}-U\d{2})-K\d$/)
+const bossId = z.string().regex(/^(M\d{2}|S\d{2})-BOSS$/)
+const stageId = z.string().regex(/^S\d{2}$/)
+const unitId = z.string().regex(/^S\d{2}-U\d{2}$/)
 
 const nonEmptyNames = z.array(z.string().min(1)).min(1)
 
@@ -125,7 +128,6 @@ const topicReadySchema = z.object({
   skills,
   practice: practiceSchema,
   test: gradedSchema,
-  katas: z.array(kataSchema).min(1),
 })
 
 const topicDraftSchema = z.object({
@@ -144,8 +146,10 @@ const moduleBase = {
   prerequisite: moduleId.nullable(),
 }
 
-const placementSchema = z.object({
+// passPercent applies once every topic is passed; skipPercent, to jump a module with topics pending.
+const examSchema = z.object({
   questions: z.number().int().positive(),
+  skipPercent: z.number().int().min(1).max(100),
   passPercent: z.number().int().min(1).max(100),
   mix: z.array(mixEntrySchema).min(1),
 })
@@ -154,9 +158,8 @@ export const moduleSchema = z.discriminatedUnion('status', [
   z.object({
     ...moduleBase,
     status: z.literal('ready'),
-    placement: placementSchema.optional(),
+    exam: examSchema,
     topics: z.array(topicReadySchema).length(4),
-    boss: bossSchema,
   }),
   z.object({
     ...moduleBase,
@@ -165,8 +168,33 @@ export const moduleSchema = z.discriminatedUnion('status', [
   }),
 ])
 
+const unitSchema = z.object({
+  id: unitId,
+  title: z.string().min(1),
+  goal: z.string().min(1),
+  lesson: z.string().min(1),
+  requires: z.array(topicId),
+  katas: z.array(kataSchema).min(1),
+  practice: practiceSchema.optional(),
+})
+
+export const stageSchema = z.object({
+  id: stageId,
+  order: z.number().int().positive(),
+  title: z.string().min(1),
+  summary: z.string().min(1),
+  prerequisite: stageId.nullable(),
+  units: z.array(unitSchema).min(1),
+  boss: bossSchema,
+})
+
 export const lessonSchema = z.object({
   topic: topicId,
+  title: z.string().min(1),
+})
+
+export const unitLessonSchema = z.object({
+  unit: unitId,
   title: z.string().min(1),
 })
 
@@ -176,3 +204,5 @@ export type Boss = z.infer<typeof bossSchema>
 export type MixEntry = z.infer<typeof mixEntrySchema>
 export type Module = z.infer<typeof moduleSchema>
 export type Lesson = z.infer<typeof lessonSchema>
+export type Stage = z.infer<typeof stageSchema>
+export type Unit = z.infer<typeof unitSchema>

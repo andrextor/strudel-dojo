@@ -1,0 +1,19 @@
+---
+unit: S09-U03
+title: Tensiones y diccionarios
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Cifrados con tensiones y diccionarios
+
+`chord` entiende cifrados con tensiones como `C^9`, `Dm9`, `G13` o `C69`. Cómo los reparte depende del **diccionario** de voicings que elijas con `dictionary`. El diccionario `lefthand` toca voicings de mano izquierda de jazz: sin fundamental y con la 9 en su lugar; en G7, además, la 13 reemplaza a la 5.ª.
+
+<StrudelRef name="dictionary" summary="Elige el diccionario de voicings: lefthand, guidetones, triads, ireal…" />
+
+<Example client:visible code='chord("<Dm7 G7 C^7 C^7>").dictionary("lefthand").voicing().s("piano")' />
+
+Sin la fundamental, el acorde queda flotando. Un bajo debajo lo asienta:
+
+<Listen showCode client:visible code='stack(chord("<Dm7 G7 C^7 C^7>").dictionary("lefthand").voicing(), note("<d2 g2 c2 c2>")).s("piano")' label="Escuchar ii–V–I con voicings lefthand y bajo" />

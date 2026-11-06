@@ -40,7 +40,9 @@ export function totalXp(p: ProgressState, curriculum: Module[]): number {
 
   for (const m of curriculum) {
     for (const t of m.topics) if (isTopicPassed(p, m, t)) total += XP.topic
-    if (m.status === 'ready' && (p.bosses[m.boss.id] ?? []).some((r) => r.passed)) total += XP.boss
+  }
+  for (const records of Object.values(p.bosses)) {
+    if (records.some((r) => r.passed)) total += XP.boss
   }
   return total
 }

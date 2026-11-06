@@ -1,0 +1,26 @@
+---
+unit: S06-U04
+title: Comping
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Acompañar con ritmo
+
+Un acompañamiento (*comping*) no tiene que tocar en cada tiempo. Con `euclid(3,8)` los acordes suenan en 3 golpes repartidos en 8 pasos, un ritmo que se usa mucho en el pop y la música latina.
+
+<Example client:visible code={`stack(
+  note("<[e5 g5] [f5 a5] [d5 b4] c5>").s("piano"),
+  chord("<C F G C>").voicing().euclid(3,8).s("piano"),
+  chord("<C F G C>").rootNotes(2).s("piano")
+)`} />
+
+`mask` deja sonar el patrón donde hay `1` y lo calla donde hay `0`. Con `< >` puedes callar una capa en compases enteros, por ejemplo el hi-hat del último compás para que el final respire:
+
+<StrudelRef name="mask" summary="Silencia el patrón donde la máscara tiene 0 y lo deja sonar donde tiene 1." />
+
+<Example client:visible code={`stack(
+  s("bd ~ sd ~"),
+  s("hh*8").mask("<1 1 1 0>"),
+  chord("<C F G C>").voicing().euclid(3,8).s("piano")
+)`} />

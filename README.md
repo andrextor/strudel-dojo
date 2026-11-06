@@ -2,7 +2,13 @@
 
 Aprende teoría musical de verdad (intervalos, escalas, armonía, transporte, modos y composición) y live coding con [Strudel](https://strudel.cc), cinturón por cinturón.
 
-- 10 cinturones, del blanco al Dan, con 4 temas cada uno.
+Dos cursos en una app:
+
+- **Teoría**: 10 cinturones, del blanco al Dan, con 4 temas cada uno y un examen por cinturón. Sin código.
+- **Strudel**: 12 etapas, del primer golpe al live coding, con katas y un combate por etapa.
+
+Además:
+
 - Práctica infinita generada y siempre correcta (la calcula [`tonal`](https://github.com/tonaljs/tonal)).
 - Katas de Strudel que se validan analizando lo que suena tu patrón.
 - Respuestas con teclado, diapasón, texto o teclado MIDI.
@@ -12,7 +18,7 @@ Aprende teoría musical de verdad (intervalos, escalas, armonía, transporte, mo
 
 ## Estado
 
-Cinturones blanco (M01) y amarillo (M02) completos; M03–M10 aparecen como "Próximamente" y se agregan siguiendo [`docs/plans/P11-content-recipe.md`](docs/plans/P11-content-recipe.md). Los specs están en [`docs/specs/`](docs/specs) y el plan por fases en [`docs/plans/`](docs/plans).
+Los 10 cinturones y las 12 etapas están completos. La separación en dos cursos está en [`docs/specs/09-two-courses.md`](docs/specs/09-two-courses.md).
 
 ## Desarrollo
 

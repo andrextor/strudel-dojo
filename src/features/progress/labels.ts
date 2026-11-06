@@ -7,5 +7,5 @@ export const TOPIC_STATUS: Record<TopicStatus, { status: Status; label: string }
   not_started: { status: 'not-started', label: 'Sin empezar' },
   in_progress: { status: 'in-progress', label: 'En progreso' },
   passed: { status: 'passed', label: 'Aprobado' },
-  passed_by_placement: { status: 'passed', label: 'Aprobado por ubicación' },
+  passed_by_placement: { status: 'passed', label: 'Aprobado por examen' },
 }

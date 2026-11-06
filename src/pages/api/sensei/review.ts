@@ -1,6 +1,6 @@
 import { betaJSONSchemaOutputFormat } from '@anthropic-ai/sdk/helpers/beta/json-schema'
 import type { APIRoute } from 'astro'
-import { getCurriculum } from '../../../features/curriculum/index.ts'
+import { findBossStage, getCurriculum } from '../../../features/curriculum/index.ts'
 import { SKILL_NAME_ES } from '../../../features/curriculum/skills.ts'
 import { rubricScore } from '../../../features/progress/rules.ts'
 import { parseReview, readRequest } from '../../../features/sensei/contracts.ts'
@@ -70,20 +70,22 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   if (!client) return NO_KEY()
   const { bossId, code, checks, summary } = parsed.value
 
-  const module = (await getCurriculum()).find((m) => m.status === 'ready' && m.boss.id === bossId)
-  if (module === undefined || module.status !== 'ready') {
-    return json({ error: 'Ese combate no existe.' }, 404)
-  }
-  const { boss } = module
+  const stage = await findBossStage(bossId)
+  if (stage === null) return json({ error: 'Ese combate no existe.' }, 404)
+  const { boss } = stage
   // ponytail: the checks come from the browser (running user code on the server is remote code
   // execution). Progress is local anyway, so a forged pass only fools its own profile.
   if (checks.length !== boss.assertions.length) return json({ error: RETRY }, 400)
-  const skills = [...new Set(module.topics.flatMap((t) => t.skills))].map(
-    (s) => SKILL_NAME_ES[s] ?? s,
-  )
+  const required = new Set(stage.units.flatMap((u) => u.requires))
+  const topics = (await getCurriculum()).flatMap((m) => m.topics)
+  const theory = topics.filter((t) => required.has(t.id)).flatMap((t) => t.skills)
+  const skills =
+    theory.length > 0
+      ? [...new Set(theory)].map((s) => SKILL_NAME_ES[s] ?? s)
+      : stage.units.map((u) => u.title)
   const ids = boss.rubric.map((c) => c.id)
 
-  const content = `<brief>Belt: ${module.title}. Skills: ${skills.join(', ')}.
+  const content = `<brief>Stage: ${stage.title}. Skills: ${skills.join(', ')}.
 Boss: ${boss.title}. ${boss.brief}
 Rubric (id: criterion, weight): ${boss.rubric.map((c) => `${c.id}: ${c.label} (${c.weight})`).join('; ')}
 Automatic checks: ${checks.map((r) => `${r.pass ? 'PASS' : 'FAIL'} ${r.message}`).join(' | ')}

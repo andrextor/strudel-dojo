@@ -1,0 +1,20 @@
+---
+unit: S11-U01
+title: Menores y sus modos
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+## Escalas con varias palabras
+
+<Callout tone="warning" title="Nombres con espacio en Strudel">
+  En `scale`, cada espacio del nombre se escribe con dos puntos: `"A:harmonic:minor"`, `"C:melodic:minor"`, `"E:phrygian:dominant"`, `"C:lydian:dominant"`. Con un espacio, la mini-notation lo parte en dos y no suena lo que esperas.
+</Callout>
+
+<Listen showCode client:visible code='n("0 1 2 3 4 5 6 7").scale("<A3:harmonic:minor A3:melodic:minor>").s("piano")' label="Escuchar la menor armónica y luego la melódica" />
+
+<Example client:visible code={`stack(
+  chord("<E7 Am>").voicing().s("piano"),
+  n("0 1 2 3 4 5 6 7").scale("<E4:phrygian:dominant A4:harmonic:minor>").s("piano")
+)`} />

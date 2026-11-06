@@ -1,0 +1,31 @@
+---
+unit: S02-U04
+title: Efectos y mezcla
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Efectos
+
+<StrudelRef name="room" summary="Reverberación: el sonido parece estar en una sala; más alto, sala más grande." />
+<StrudelRef name="delay" summary="Eco: repite el sonido un instante después." />
+<StrudelRef name="shape" summary="Distorsión por saturación: ensucia y endurece el sonido (de 0 a 1)." />
+
+<Example client:visible code='note("c4 eb4 g4 c5").s("gm_epiano1").room(0.6).delay(0.4)' />
+
+<Listen showCode client:visible code='note("c2 ~ c2 eb2").s("sawtooth").lpf(900).shape("<0 0.7>")' label="Escuchar el bajo limpio y luego distorsionado" />
+
+Piensa en la cadena como un camino: **fuente → envolvente → filtro → distorsión → espacio (reverb, delay)**. El orden en que escribes las funciones no cambia esa cadena, pero pensarla así te ayuda a decidir qué tocar primero cuando un sonido no te convence.
+
+## Mezcla
+
+<StrudelRef name="gain" summary="Volumen de una capa." />
+<StrudelRef name="pan" summary="Posición en estéreo: 0 es izquierda, 1 es derecha." />
+<StrudelRef name="orbit" summary="Canal de efectos: capas en orbits distintos no comparten reverb ni delay." />
+<StrudelRef name="sustain" summary="Nivel de la envolvente mientras la nota sigue sonando (0 a 1): con 1 no se apaga hasta el final del evento." />
+
+<Example client:visible code={`stack(
+  s("bd*4").gain(1),
+  s("hh*8").gain(0.4).pan(0.8)
+)`} />

@@ -106,3 +106,9 @@ La pregunta trae `audio`: código Strudel (p. ej. `note("c4 e4").s("piano")`) qu
 ## Repaso espaciado
 
 Cada respuesta en prueba o práctica actualiza `skillStats[skill]` (cuenta de aciertos y errores, última vez vista, caja Leitner 1–5). La sesión de "Repaso" toma 10 preguntas de las habilidades **ya desbloqueadas**, ponderando caja baja y tiempo desde la última vista. Las fórmulas viven en `features/review/schedule.ts` con tests.
+
+## Cambios por la separación en dos cursos
+
+- `rhythm-match` muestra el ritmo con `●` y `·`; el audio y la calificación no cambian.
+- `timbre-concept` (skill `timbre`) y `tension-device` (skill `tension-release`) son las preguntas de M10-T03 y M10-T04.
+- `sound-design` y `performance-signal` preguntan por funciones: solo se usan como práctica en S02-U04 y S12-U03.

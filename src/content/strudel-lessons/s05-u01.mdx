@@ -1,0 +1,20 @@
+---
+unit: S05-U01
+title: note y chord
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Callout from '../../components/ui/Callout.tsx'
+
+## Acordes con `note` y con `chord`
+
+Con `note`, la coma dentro de `[ ]` hace sonar las notas juntas. Con `chord` escribes el cifrado y `voicing` lo convierte en notas, eligiendo una buena distribución.
+
+<StrudelRef name="chord" summary="Escribe acordes por su cifrado: C, Am, Bo (disminuido), Caug." />
+<StrudelRef name="voicing" summary="Convierte el cifrado de chord en notas reales, bien repartidas." />
+
+<Example client:visible code='chord("<C Am F G>").voicing().s("piano")' />
+
+<Callout tone="warning" title="Cifrado en Strudel">
+  Dentro de `chord`, la disminuida se escribe con `o` (`Bo`) y la aumentada con `aug` (`Caug`): el `+` tiene otro significado en la mini-notation.
+</Callout>

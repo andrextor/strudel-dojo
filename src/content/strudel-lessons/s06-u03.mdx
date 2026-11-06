@@ -1,0 +1,28 @@
+---
+unit: S06-U03
+title: Ordenar secciones
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Ordenar secciones
+
+`cat` pone patrones uno detrás de otro, un ciclo cada uno. `seq` hace lo mismo pero los comprime todos en un solo ciclo.
+
+<StrudelRef name="cat" summary="Encadena patrones: cada uno ocupa un ciclo completo, uno tras otro." />
+<StrudelRef name="seq" summary="Encadena patrones dentro de un mismo ciclo, repartiendo el tiempo entre ellos." />
+
+<Example client:visible code='cat(chord("Dm"), chord("G"), chord("C")).voicing().s("piano")' />
+
+<Example client:visible code='seq(chord("Dm"), chord("G"), chord("C")).voicing().s("piano")' />
+
+Para una canción con secciones, `arrange` toca cada patrón el número de ciclos que le digas: `[ciclos, patrón]`.
+
+<StrudelRef name="arrange" summary="Arma una forma con secciones: cada una es [ciclos, patrón] y suenan en orden." />
+
+<Example client:visible code={`arrange(
+  [4, chord("<C G Am F>")],
+  [4, chord("<Am F C G>")]
+).voicing().s("piano")`} />
+
+`!` repite un elemento: `C7!4` son cuatro compases de C7.

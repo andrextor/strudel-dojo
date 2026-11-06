@@ -3,8 +3,6 @@ topic: M02-T01
 title: Construir la escala mayor
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Fretboard from '../../components/lesson/LessonFretboard.tsx'
 import Staff from '../../components/music/Staff.tsx'
@@ -41,19 +39,6 @@ Tres tonalidades tienen dos nombres posibles: **Si = Do♭**, **Fa♯ = Sol♭**
 Una escala mayor completa cabe en una posición de cuatro trastes. Esta es Do mayor desde el traste 0 al 5: todas las notas naturales.
 
 <Fretboard highlight={["C", "D", "E", "F", "G", "A", "B"]} frets={5} label="Do mayor del traste 0 al 5" />
-
-## Strudel: grados con `n` y `scale`
-
-En lugar de escribir las notas, `n` toca **grados** y `scale` dice de qué escala. Se cuenta desde 0: `0` es la tónica, `4` la quinta, `7` la octava.
-
-<StrudelRef name="n" summary="Con scale, toca grados de la escala contando desde 0." />
-<StrudelRef name="scale" summary="Elige la escala para n: tónica y tipo, por ejemplo C:major o D:major." />
-
-<Example client:visible code='n("0 1 2 3 4 5 6 7").scale("D:major").s("piano")' />
-
-Cambiar de tonalidad es cambiar una letra, y Strudel deletrea la escala por ti:
-
-<Listen client:visible code='n("0 2 4 7 4 2 0").scale("<C G Eb>:major").s("piano")' label="Escuchar el mismo arpegio en Do, Sol y Mi♭ mayor" />
 
 <Callout tone="info" title="Para la prueba necesitas…">
   Escribir la escala mayor de cualquiera de las 15 tonalidades, con el deletreo correcto: si suena bien pero usas otra letra (Sol♭ en vez de Fa♯), cuenta como incorrecta.

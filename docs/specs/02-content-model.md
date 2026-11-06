@@ -6,11 +6,13 @@ Todo el contenido vive en el repo y se valida en build con colecciones de conten
 
 ```
 src/content/
-  modules/m01.json … m10.json     # metadata, temas, generadores, katas, combate
-  lessons/m01-t01.mdx …           # una lección por tema, con componentes interactivos
+  modules/m01.json … m10.json     # teoría: metadata, temas, generadores, examen
+  lessons/m01-t01.mdx …           # una lección de teoría por tema, sin código
+  stages/s01.json … s12.json      # Strudel: unidades, katas y combate
+  strudel-lessons/s01-u01.mdx …   # una lección por unidad
 ```
 
-Un módulo sin `lessons` completas puede existir con `status: "draft"`: se muestra como "Próximamente" y no bloquea a nadie, porque el que le sigue tampoco existe todavía. El esquema es una unión discriminada por `status`: en `draft`, cada tema solo exige `id`, `title`, `goal` y `skills`; `lesson`, `practice`, `test`, `katas`, `placement` y `boss` son opcionales, y la validación extra no los revisa. En `ready` todo es obligatorio.
+Un módulo sin `lessons` completas puede existir con `status: "draft"`: se muestra como "Próximamente" y no bloquea a nadie, porque el que le sigue tampoco existe todavía. El esquema es una unión discriminada por `status`: en `draft`, cada tema solo exige `id`, `title`, `goal` y `skills`; `lesson`, `practice`, `test`, `katas`, `exam` y `boss` son opcionales, y la validación extra no los revisa. En `ready` todo es obligatorio.
 
 ## Módulo (`modules/mNN.json`)
 
@@ -23,13 +25,13 @@ Un módulo sin `lessons` completas puede existir con `status: "draft"`: se muest
   "summary": "Notas, intervalos y ritmo, más tus primeros sonidos en Strudel.",
   "status": "ready",                     // ready | draft
   "prerequisite": null,                  // id del módulo anterior, o null
-  "placement": {                         // prueba de ubicación opcional
+  "exam": {                              // examen de cinturón, obligatorio en ready
     "questions": 20,
-    "passPercent": 90,
+    "skipPercent": 90,                   // con temas pendientes: salta el módulo
+    "passPercent": 80,                   // con todos los temas aprobados
     "mix": [{ "generator": "note-name", "weight": 1 }, { "generator": "interval-name", "weight": 2 }]
   },
-  "topics": [ /* Topic */ ],
-  "boss": { /* Boss */ }
+  "topics": [ /* Topic */ ]
 }
 ```
 
@@ -52,10 +54,13 @@ Un módulo sin `lessons` completas puede existir con `status: "draft"`: se muest
     "questions": 10,
     "passPercent": 80,
     "mix": [ /* igual que practice; puede ser más difícil */ ]
-  },
-  "katas": [ /* Kata */ ]
+  }
 }
 ```
+
+## Etapa (`stages/sNN.json`)
+
+La forma de etapas y unidades está en `09-two-courses.md`. Katas y combates no cambian de forma: las katas nuevas usan ids `Snn-Unn-Kn`, y las movidas conservan su id `Mnn-Tnn-Kn`, porque son la clave del progreso guardado.
 
 ## Kata
 
@@ -106,7 +111,7 @@ Frontmatter mínimo: `topic: M01-T03`, `title`. El cuerpo es MDX y puede usar es
 
 | Componente | Uso |
 |------------|-----|
-| `<Listen code="note('c4 g4')" />` | Botón que reproduce un fragmento Strudel (sin editor). |
+| `<Listen code="note('c4 g4')" />` | Botón que reproduce un fragmento Strudel (sin editor). Oculta el código salvo con `showCode`, que usan las lecciones de unidad. |
 | `<Example code="…" />` | Mini-editor Strudel editable con su visual (pianoroll). |
 | `<Keyboard highlight={["C","E","G"]} labels="name" low="C4" high="B4" label="…" />` | Teclado de solo lectura (`components/lesson/LessonKeyboard.tsx`, sin JS). `"C"` marca todos los Do del rango, `"C4"` solo esa tecla. `labels`: `name` (con el deletreo dado), `degree` (con `tonic`) o `none`; solo se rotulan las teclas marcadas. |
 | `<Fretboard highlight={["C","G"]} frets={5} strings={[5]} label="…" />` | Diapasón de solo lectura (`LessonFretboard.tsx`): todas las posiciones de esas notas hasta `frets`, opcionalmente en algunas cuerdas. |
@@ -115,6 +120,8 @@ Frontmatter mínimo: `topic: M01-T03`, `title`. El cuerpo es MDX y puede usar es
 | `<StrudelRef name="scale" summary="…" />` | Ficha de la función, desde `@strudel/reference`, con un resumen en español. |
 
 Cada lección importa sus componentes al inicio del MDX. `Listen`, `Example` y `Staff` llevan `client:visible`; `Keyboard`, `Fretboard`, `Callout` y `StrudelRef` se renderizan en build. El código Strudel va entre comillas simples (`code='note("c e g")'`) o en plantilla (``code={`…`}``) para que el test lo encuentre.
+
+Las lecciones de teoría no llevan `<Example>`, `<StrudelRef>` ni encabezados `## Strudel`: un test lo exige.
 
 Reglas para escribir lecciones:
 - Que sean cortas: lo que se lee en 5–8 minutos. La práctica enseña el resto.
@@ -128,6 +135,7 @@ Reglas para escribir lecciones:
 - que cada `generator` exista en el registro y que sus `params` pasen el validador de ese generador;
 - que cada `lesson` exista;
 - que cada `solution` de kata pase sus aserciones, y que el `starter` evalúe pero **no** apruebe ya (este test corre en Node con `@strudel/core` + `mini` + `tonal` + `transpiler`, sin audio). Los combates no tienen `solution` en el contenido (son creativos y así no viaja al navegador): su pieza de referencia vive en el propio test;
-- que cada función que una kata o un combate exige (`usesFunction`) o usa en su solución aparezca antes en una lección del mismo módulo o de uno anterior (en un `<StrudelRef>` o en el código de un `<Listen>`/`<Example>`);
+- que cada función que una kata o un combate exige (`usesFunction`) o usa en su solución aparezca antes en la lección de esa unidad o de una anterior, en orden de etapas (en un `<StrudelRef>` o en el código de un `<Listen>`/`<Example>`);
+- que las 120 katas y los 10 combates de los cinturones sigan existiendo con el mismo id;
 - que ninguna lección de un módulo `ready` siga con texto provisional;
 - que la cadena de `prerequisite` siga el orden `order`.

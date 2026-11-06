@@ -3,8 +3,6 @@ topic: M03-T04
 title: Campo armónico menor
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Fretboard from '../../components/lesson/LessonFretboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -31,26 +29,6 @@ En la menor natural, el v (Em en La menor) no tiene sensible: Sol está a un ton
 
 <Listen client:visible code='chord("<Am Em Am E Am>").voicing().s("piano")' label="Escuchar v menor y luego V mayor resolviendo a Am" />
 </details>
-
-## Strudel: arpegios y ritmo de acompañamiento
-
-`arp` toca las notas de un acorde una tras otra, por su índice. `struct` le da un ritmo: suena en cada `x`.
-
-<StrudelRef name="arp" summary="Arpegia: toca las notas del acorde por su índice, una tras otra." />
-<StrudelRef name="struct" summary="Aplica un ritmo al patrón: suena donde hay x, calla en ~." />
-
-<Example client:visible code='chord("<Am F C G>").voicing().arp("0 1 2 3 4 3 2 1").s("piano")' />
-
-<Listen client:visible code='chord("<Em Am Bm Em>").voicing().struct("x ~ x x").s("piano")' label="Escuchar i–iv–v–i en Mi menor con ritmo" />
-
-Para el bajo, `rootNotes` toma la fundamental de cada acorde en la octava que le pidas:
-
-<StrudelRef name="rootNotes" summary="La fundamental de cada acorde de chord, en la octava indicada." />
-
-<Example client:visible code={`stack(
-  chord("<Am F C G>").voicing().arp("0 2 1 3").s("piano"),
-  chord("<Am F C G>").rootNotes(2).s("piano")
-)`} />
 
 <Callout tone="info" title="Para la prueba necesitas…">
   Nombrar los acordes de cualquier tonalidad menor natural en cifrado romano y americano, y repasar relativas mayores y menores.

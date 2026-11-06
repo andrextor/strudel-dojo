@@ -1,0 +1,23 @@
+---
+unit: S09-U02
+title: Progresiones y mode
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Progresiones con `chord` y `mode`
+
+Con `chord(…).voicing()` Strudel elige un voicing que suena bien, pero a veces omite una nota (la 5.ª de Dm7, por ejemplo). Si quieres el acorde **completo** con la fundamental abajo, usa `mode("root")` antes de `voicing`:
+
+<StrudelRef name="mode" summary="Cómo se acomoda el voicing respecto al ancla; con root pone la fundamental abajo." />
+
+<Example client:visible code='chord("<Dm7 G7 C^7 C^7>").mode("root").voicing().s("piano")' />
+
+La misma progresión sin `mode` usa el voicing por defecto: suena bien, pero en el pianoroll verás que Dm7 llega sin su 5.ª (La).
+
+<Listen showCode client:visible code='chord("<Dm7 G7 C^7 C^7>").voicing().s("piano")' label="Escuchar ii–V–I con el voicing por defecto" />
+
+Y con `n` y `add` ya no necesitas escribir acordes: sumar `[0,2,4,6]` a cada grado apila la séptima dentro de la escala.
+
+<Example client:visible code='n("<0 5 1 4>".add("[0,2,4,6]")).scale("Bb:major").s("piano")' />

@@ -1,0 +1,30 @@
+---
+unit: S09-U01
+title: Séptimas con chord
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+## Séptimas con `chord`
+
+`chord` y `voicing` ya los conoces. El diccionario de voicings de Strudel tiene su propio cifrado para las séptimas:
+
+| Acorde | En `chord` |
+|--------|------------|
+| Cmaj7 | `C^7` |
+| C7 | `C7` |
+| Cm7 | `Cm7` |
+| Cø7 | `Cm7b5` |
+| C°7 | `Co7` |
+| CmMaj7 | `Cm^7` |
+
+<Example client:visible code='chord("<G^7 G7 Gm7 Gm7b5 Go7 Gm^7>").voicing().s("piano")' />
+
+<Callout tone="warning" title="Cifrado en Strudel">
+  `voicing` no reconoce `Cmaj7` ni `CmMaj7`: escribe `C^7` y `Cm^7`. Igual que en las tríadas, el disminuido va con `o`.
+</Callout>
+
+<Listen showCode client:visible code='chord("<C^7 Dm7 G7 C^7>").voicing().s("piano")' label="Escuchar séptimas encadenadas con voicing" />
+
+La séptima disminuida de Do se deletrea Si𝄫, pero en el código escribes `a3`: aquí solo cuenta el sonido.

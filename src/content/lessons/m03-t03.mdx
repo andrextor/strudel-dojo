@@ -3,8 +3,6 @@ topic: M03-T03
 title: Campo armónico mayor
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -31,14 +29,6 @@ El patrón de calidades (mayor, menor, menor, mayor, mayor, menor, disminuido) n
 El **romano** dice la función (el grado) sin importar la tonalidad; el **americano** dice las notas. "I–V–vi–IV" es la misma progresión en Do (C G Am F) y en Sol (G D Em C).
 
 <Listen client:visible code='chord("<G D Em C>").voicing().s("piano")' label="Escuchar I–V–vi–IV en Sol mayor" />
-
-## Strudel: apilar terceras con `add`
-
-`add` suma un número a cada valor. Si sumas `[0,2,4]` a un grado dentro de `n`, obtienes la tríada de ese grado, y `scale` se encarga del deletreo:
-
-<StrudelRef name="add" summary="Suma un valor a cada nota o número del patrón." />
-
-<Example client:visible code='n("<0 1 2 3 4 5 6>".add("[0,2,4]")).scale("D:major").s("piano")' />
 
 <details>
   <summary>¿Por qué el vii es disminuido?</summary>

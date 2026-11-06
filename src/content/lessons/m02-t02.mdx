@@ -3,7 +3,6 @@ topic: M02-T02
 title: Armaduras y círculo de quintas
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
 import Staff from '../../components/music/Staff.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -37,12 +36,6 @@ Si subes una quinta justa desde Do, la nueva tonalidad suma un sostenido; si baj
 Las tonalidades **vecinas** en el círculo comparten seis de sus siete notas: por eso pasar de Do a Sol suena tan natural.
 
 <Listen client:visible code='n("0 2 4 7").scale("<C G D A E>:major").s("piano")' label="Escuchar el arpegio subiendo por quintas: Do, Sol, Re, La, Mi" />
-
-## Strudel: una tonalidad por ciclo
-
-`< >` también funciona dentro de `scale`: cada ciclo usa la siguiente tonalidad de la lista.
-
-<Example client:visible code='n("0 1 2 3 4 5 6 7").scale("<F Bb Eb Ab>:major").s("piano")' />
 
 <details>
   <summary>¿Y la armadura de una menor?</summary>

@@ -3,8 +3,6 @@ topic: M09-T03
 title: Simétricas
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -42,21 +40,6 @@ Con siete letras no hay "una letra por grado": a la de tonos enteros le sobra un
 La **cromática** (*chromatic*) usa las doce notas: es simétrica en cada semitono y sirve para notas de paso.
 
 <Listen client:visible code='n("0 1 2 3 4 5 6 7 8 9 10 11 12").scale("C4:chromatic").s("piano")' label="Escuchar la escala cromática desde Do" />
-
-## Strudel: patrones simétricos
-
-Una escala simétrica pide patrones que también se repitan. `ply` repite cada nota las veces que le pidas, dentro de su espacio. `iter` divide el patrón en partes y en cada ciclo empieza por la siguiente: el motivo rota.
-
-<StrudelRef name="ply" summary="Repite cada evento n veces dentro de su espacio." />
-<StrudelRef name="iter" summary="Divide el ciclo en n partes y en cada vuelta empieza por la siguiente." />
-
-<Example client:visible code='n("0 2 4 6").ply(2).scale("C4:diminished").s("piano")' />
-
-<Example client:visible code='n("0 1 2 3").iter(4).scale("C4:whole:tone").s("piano")' />
-
-<Callout tone="hint" title="Para el oído">
-  Tonos enteros: flota, sin dirección. Disminuida: tensa, como música de suspenso. Si al escuchar no encuentras dónde "descansa" la escala, piensa en una simétrica.
-</Callout>
 
 <Callout tone="info" title="Para la prueba necesitas…">
   Escribir la escala de tonos enteros y las dos disminuidas desde las tónicas de la prueba, repasar pentatónicas, deletrear tríadas disminuidas y aumentadas, e identificar intervalos.

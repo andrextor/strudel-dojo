@@ -1,0 +1,372 @@
+{
+  "id": "S07",
+  "order": 7,
+  "title": "Transporte y modulación",
+  "summary": "Mover melodías y secciones entre tonalidades.",
+  "prerequisite": "S06",
+  "units": [
+    {
+      "id": "S07-U01",
+      "title": "transpose",
+      "goal": "Transportar por intervalo con transpose y add.",
+      "lesson": "s07-u01",
+      "requires": ["M05-T01"],
+      "katas": [
+        {
+          "id": "M05-T01-K1",
+          "title": "Una quinta arriba",
+          "brief": "Transporta la melodía `c4 d4 e4 c4` una quinta justa arriba con `transpose`, sin reescribir las notas.",
+          "starter": "note(\"c4 d4 e4 c4\").s(\"piano\")",
+          "solution": "note(\"c4 d4 e4 c4\").transpose(\"5P\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["transpose"]
+            },
+            {
+              "type": "matchesReference",
+              "code": "note(\"c4 d4 e4 c4\").s(\"piano\")",
+              "transposeBy": "5P"
+            }
+          ],
+          "hints": [
+            "`transpose(\"5P\")` sube una quinta justa; también vale `transpose(7)`, en semitonos."
+          ]
+        },
+        {
+          "id": "M05-T01-K2",
+          "title": "Una tercera mayor con add",
+          "brief": "Sube el arpegio `c4 e4 g4 c5` una tercera mayor sumándole una nota con `add`.",
+          "starter": "note(\"c4 e4 g4 c5\").s(\"piano\")",
+          "solution": "note(\"c4 e4 g4 c5\").add(note(4)).s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["add"]
+            },
+            {
+              "type": "matchesReference",
+              "code": "note(\"c4 e4 g4 c5\").s(\"piano\")",
+              "transposeBy": "3M"
+            }
+          ],
+          "hints": ["Una tercera mayor son 4 semitonos: `.add(note(4))`."]
+        },
+        {
+          "id": "M05-T01-K3",
+          "title": "Pregunta y respuesta",
+          "brief": "Toca la frase `c4 e4 g4 e4` en el ciclo 1 y la misma frase una cuarta justa arriba en el ciclo 2, con un solo `transpose`.",
+          "starter": "note(\"c4 e4 g4 e4\").s(\"piano\")",
+          "solution": "note(\"c4 e4 g4 e4\").transpose(\"<0 5>\").s(\"piano\")",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["transpose"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "E", "G", "E"],
+              "voice": "all",
+              "cycle": 0
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["F", "A", "C", "A"],
+              "voice": "all",
+              "cycle": 1
+            }
+          ],
+          "hints": [
+            "Con `< >` el transporte cambia cada ciclo: `transpose(\"<0 5>\")`. Una cuarta justa son 5 semitonos."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S07-U02",
+      "title": "Mismos grados, otra escala",
+      "goal": "Cambiar de tonalidad conservando los grados.",
+      "lesson": "s07-u02",
+      "requires": ["M05-T02"],
+      "katas": [
+        {
+          "id": "M05-T02-K1",
+          "title": "Mismos grados, otra tonalidad",
+          "brief": "La melodía usa los grados `0 2 4 2 1 0` de Do mayor. Llévala a Re mayor cambiando solo la escala.",
+          "starter": "n(\"0 2 4 2 1 0\").scale(\"C4:major\").s(\"piano\")",
+          "solution": "n(\"0 2 4 2 1 0\").scale(\"D4:major\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["scale"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["D", "F#", "A", "F#", "E", "D"],
+              "voice": "all",
+              "cycle": 0
+            }
+          ],
+          "hints": [
+            "Los números son grados: cambia `C4:major` por `D4:major` y la armadura se encarga del Fa♯."
+          ]
+        },
+        {
+          "id": "M05-T02-K2",
+          "title": "Secuencia por grados",
+          "brief": "Toca la tríada `0 2 4` de Do mayor y súbela un grado por ciclo con `scaleTranspose`, sin salir de la tonalidad: Do, Re menor, Mi menor y Fa.",
+          "starter": "n(\"0 2 4\").scale(\"C4:major\").s(\"piano\")",
+          "solution": "n(\"0 2 4\").scale(\"C4:major\").scaleTranspose(\"<0 1 2 3>\").s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["scaleTranspose"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "Dm", "Em", "F"]
+            }
+          ],
+          "hints": [
+            "`scaleTranspose(\"<0 1 2 3>\")` mueve por grados de la escala: uno más en cada ciclo."
+          ]
+        },
+        {
+          "id": "M05-T02-K3",
+          "title": "Parte para clarinete en Si♭",
+          "brief": "La melodía de concierto es `c4 d4 e4 f4`. Escribe la parte del clarinete en Si♭: lo que tiene que leer para que suene esa melodía.",
+          "starter": "note(\"c4 d4 e4 f4\").s(\"piano\")",
+          "solution": "note(\"c4 d4 e4 f4\").transpose(\"2M\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "matchesReference",
+              "code": "note(\"c4 d4 e4 f4\").s(\"piano\")",
+              "transposeBy": "2M"
+            }
+          ],
+          "hints": [
+            "El clarinete en Si♭ suena una segunda mayor más grave de lo que lee: su parte se escribe una segunda mayor arriba (`transpose(\"2M\")`)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S07-U03",
+      "title": "Secciones en dos tonalidades",
+      "goal": "Modular entre secciones con arrange.",
+      "lesson": "s07-u03",
+      "requires": ["M05-T03"],
+      "katas": [
+        {
+          "id": "M05-T03-K1",
+          "title": "De Do a Sol con pivote",
+          "brief": "Modula de Do mayor a Sol mayor, un acorde por ciclo: C, Am (el pivote, vi en Do y ii en Sol), D (la dominante de Sol) y G.",
+          "starter": "chord(\"<C Am>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<C Am D G>\").voicing().s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "Am", "D", "G"]
+            }
+          ],
+          "hints": [
+            "Después del pivote va la dominante de Sol: Re mayor, `D`, con el Fa♯ que Do no tiene."
+          ]
+        },
+        {
+          "id": "M05-T03-K2",
+          "title": "Dos secciones, dos tonalidades",
+          "brief": "Con `arrange`, toca los grados `0 2 4 2` dos ciclos en Do mayor y dos ciclos en Sol mayor.",
+          "starter": "n(\"0 2 4 2\").scale(\"C4:major\").s(\"piano\")",
+          "solution": "arrange([2, n(\"0 2 4 2\").scale(\"C4:major\")], [2, n(\"0 2 4 2\").scale(\"G4:major\")]).s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["arrange"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "E", "G", "E"],
+              "voice": "all",
+              "cycle": 1
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["G", "B", "D", "B"],
+              "voice": "all",
+              "cycle": 2
+            }
+          ],
+          "hints": [
+            "Cada sección es `[ciclos, patrón]`: `arrange([2, …C4:major…], [2, …G4:major…])`."
+          ]
+        },
+        {
+          "id": "M05-T03-K3",
+          "title": "Modulación en secciones",
+          "brief": "Con `arrange` y acordes: una sección de tres ciclos en Do que termina en el pivote (C F Am) y otra de tres que confirma Sol (D G G).",
+          "starter": "arrange([3, chord(\"<C F Am>\")]).voicing().s(\"piano\")",
+          "solution": "arrange([3, chord(\"<C F Am>\")], [3, chord(\"<D G G>\")]).voicing().s(\"piano\")",
+          "cycles": 6,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["arrange", "voicing"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "F", "Am", "D", "G", "G"]
+            }
+          ],
+          "hints": ["Agrega una segunda sección `[3, chord(\"<D G G>\")]` dentro de `arrange`."]
+        }
+      ]
+    },
+    {
+      "id": "S07-U04",
+      "title": "Ciclos con add",
+      "goal": "Recorrer el círculo de quintas con add.",
+      "lesson": "s07-u04",
+      "requires": ["M05-T04"],
+      "katas": [
+        {
+          "id": "M05-T04-K1",
+          "title": "Hacia la izquierda",
+          "brief": "Recorre el círculo hacia la izquierda desde Do, un acorde mayor por ciclo: C, F, B♭ y E♭.",
+          "starter": "chord(\"<C F>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<C F Bb Eb>\").voicing().s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "F", "Bb", "Eb"]
+            }
+          ],
+          "hints": [
+            "Cada paso a la izquierda baja una quinta: después de Fa viene Si♭ (`Bb`) y luego Mi♭ (`Eb`)."
+          ]
+        },
+        {
+          "id": "M05-T04-K2",
+          "title": "Quintas con add",
+          "brief": "Sin escribir cada acorde: toma la tríada `[c3,e3,g3]` y súmale semitonos con `add` para recorrer el círculo hacia la derecha: C, G, D y A.",
+          "starter": "note(\"[c3,e3,g3]\").s(\"piano\")",
+          "solution": "note(\"[c3,e3,g3]\".add(\"<0 7 2 9>\")).s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["add"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "G", "D", "A"]
+            }
+          ],
+          "hints": [
+            "Una quinta son 7 semitonos; dos quintas, 14, que es 2 una octava más abajo. Suma `\"<0 7 2 9>\"` a la cadena de notas."
+          ]
+        },
+        {
+          "id": "M05-T04-K3",
+          "title": "ii–V encadenados",
+          "brief": "Escribe una vez el ii–V de Do (Dm y G) y, con `add`, repítelo un tono más abajo: Dm, G, Cm, F.",
+          "starter": "note(\"<[d3,f3,a3] [g3,b3,d4]>\").s(\"piano\")",
+          "solution": "note(\"<[d3,f3,a3] [g3,b3,d4]>\".add(\"<0 0 -2 -2>\")).s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["add"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["Dm", "G", "Cm", "F"]
+            }
+          ],
+          "hints": ["Un tono abajo son -2 semitonos, y el par dura dos ciclos: `\"<0 0 -2 -2>\"`."]
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "id": "M05-BOSS",
+    "title": "Viaje a la dominante",
+    "brief": "La melodía `c4 e4 g4 e4 | f4 d4 b3 c4` está en Do mayor. Preséntala en Do (ciclos 1–2), transpórtala a la dominante, Sol mayor (ciclos 3–4), y vuelve a Do (ciclos 5–6). Usa `transpose` y acompaña con un bajo o acordes por debajo de la melodía, que debe ser siempre la voz más aguda.",
+    "starter": "note(\"<[c4 e4 g4 e4] [f4 d4 b3 c4]>\").s(\"piano\")",
+    "cycles": 6,
+    "assertions": [
+      {
+        "type": "usesFunction",
+        "names": ["transpose"]
+      },
+      {
+        "type": "noteSequence",
+        "pitchClasses": ["C", "E", "G", "E"],
+        "voice": "highest",
+        "cycle": 0
+      },
+      {
+        "type": "noteSequence",
+        "pitchClasses": ["F", "D", "B", "C"],
+        "voice": "highest",
+        "cycle": 1
+      },
+      {
+        "type": "noteSequence",
+        "pitchClasses": ["G", "B", "D", "B"],
+        "voice": "highest",
+        "cycle": 2
+      },
+      {
+        "type": "noteSequence",
+        "pitchClasses": ["C", "A", "F#", "G"],
+        "voice": "highest",
+        "cycle": 3
+      },
+      {
+        "type": "noteSequence",
+        "pitchClasses": ["C", "E", "G", "E"],
+        "voice": "highest",
+        "cycle": 4
+      },
+      {
+        "type": "noteSequence",
+        "pitchClasses": ["F", "D", "B", "C"],
+        "voice": "highest",
+        "cycle": 5
+      }
+    ],
+    "rubric": [
+      {
+        "id": "transposition",
+        "label": "La melodía suena completa en Do, en Sol y de vuelta en Do, con el Fa♯ en su lugar",
+        "weight": 3
+      },
+      {
+        "id": "harmony",
+        "label": "El acompañamiento cambia con la tonalidad y confirma cada llegada",
+        "weight": 3
+      },
+      {
+        "id": "code",
+        "label": "Código claro: la melodía se escribe una vez y se transporta",
+        "weight": 2
+      },
+      {
+        "id": "music",
+        "label": "El viaje se siente: salida, tensión en la dominante y regreso a casa",
+        "weight": 2
+      }
+    ],
+    "passScore": 7
+  }
+}

@@ -1,0 +1,14 @@
+---
+unit: S08-U02
+title: Acentuar la nota característica
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Acentuar con `gain`
+
+`gain` controla el volumen de cada evento. Con una secuencia de valores, acentúas justo la nota característica:
+
+<StrudelRef name="gain" summary="Volumen de cada nota (1 es normal; menos, más suave)." />
+
+<Example client:visible code='n("0 3 4 3 0 3 4 3").scale("F:lydian").gain("0.6 1 0.6 1 0.6 1 0.6 1").s("piano")' />
