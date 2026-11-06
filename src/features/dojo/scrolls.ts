@@ -40,9 +40,10 @@ export function saveScroll(
   return { ok: true, scroll, progress: { ...p, scrolls: [...others, scroll] } }
 }
 
-export const deleteScroll = (p: ProgressState, id: string): ProgressState => ({
+export const deleteScroll = (p: ProgressState, id: string, now = new Date()): ProgressState => ({
   ...p,
   scrolls: p.scrolls.filter((s) => s.id !== id),
+  deletedScrolls: { ...p.deletedScrolls, [id]: now.toISOString() },
 })
 
 // strudel.cc reads the code from the hash as URI-encoded base64 of the UTF-8 text.

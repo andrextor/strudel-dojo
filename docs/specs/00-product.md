@@ -32,7 +32,7 @@ Copy en español neutro latinoamericano con "tú", en oraciones simples, sin asu
 3. Curso Strudel de 12 etapas: lección y katas validadas por unidad, y un combate creativo por etapa revisado por el Sensei (o autoevaluado con rúbrica si no hay clave de API).
 4. Motor Strudel propio: editor CodeMirror con resaltado de eventos, visuales (pianoroll, scope, punchcard, Hydra opcional), validación automática de katas consultando los eventos del patrón.
 5. Entrenamiento auditivo (intervalos, calidades de acorde, modos, dictado melódico corto).
-6. Perfiles, progreso en `localStorage`, respaldo JSON.
+6. Perfiles, progreso en `localStorage`, respaldo JSON y sincronización entre dispositivos con Supabase (ver `10-cloud-sync.md`).
 7. Repaso espaciado de habilidades débiles.
 8. Dojo libre: un REPL completo para jugar fuera del currículo.
 9. Despliegue en Vercel.
@@ -41,7 +41,6 @@ Copy en español neutro latinoamericano con "tú", en oraciones simples, sin asu
 
 | No se hace | Por qué / cuándo |
 |------------|------------------|
-| Cuentas, login, sincronización en la nube | Dos personas, cada uno con su dispositivo; el respaldo JSON cubre el caso. Añadir si aparece una tercera persona o un segundo dispositivo diario. |
 | Ranking o competencia entre perfiles | Distrae del aprendizaje; la comparación padre/hijo puede desmotivar. |
 | Compartir patrones por URL que se ejecutan solos | Ejecutar código ajeno es un riesgo; si se añade, el código se muestra y solo corre al pulsar "Reproducir". |
 | Anti-trampa | Es autoaprendizaje; las claves pueden vivir en el cliente. |

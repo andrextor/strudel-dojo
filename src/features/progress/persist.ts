@@ -271,6 +271,9 @@ export function parseProgress(raw: unknown): ProgressState {
     skillStats: record(raw.skillStats, readSkill),
     practiceDays: days,
     scrolls: list(raw.scrolls, readScroll),
+    ...(isObject(raw.deletedScrolls)
+      ? { deletedScrolls: record(raw.deletedScrolls, (v) => (isString(v) ? v : null)) }
+      : {}),
     prefs: readPrefs(raw.prefs),
     backedUpAt: isString(raw.backedUpAt) ? raw.backedUpAt : null,
     ...(raw.guitar === undefined ? {} : { guitar: readGuitar(raw.guitar) }),
@@ -365,7 +368,7 @@ function mergeBy<T>(
   return out
 }
 
-// Never deletes: everything is matched by id and the "more complete" copy wins (spec 05).
+// Matched by id and the "more complete" copy wins (spec 05). Only a recorded scroll deletion removes.
 export function mergeProgress(current: ProgressState, incoming: ProgressState): ProgressState {
   const attempts = new Map(current.attempts.map((a) => [a.id, a]))
   for (const attempt of incoming.attempts) {
@@ -387,6 +390,15 @@ export function mergeProgress(current: ProgressState, incoming: ProgressState): 
     const existing = scrolls.get(scroll.id)
     if (!existing || scroll.updatedAt > existing.updatedAt) scrolls.set(scroll.id, scroll)
   }
+  const deletedScrolls = mergeBy(
+    current.deletedScrolls ?? {},
+    incoming.deletedScrolls ?? {},
+    (a, b) => (a.localeCompare(b) < 0 ? b : a),
+  )
+  for (const [id, deletedAt] of Object.entries(deletedScrolls)) {
+    const scroll = scrolls.get(id)
+    if (scroll && scroll.updatedAt <= deletedAt) scrolls.delete(id)
+  }
 
   return {
     ...current,
@@ -401,6 +413,7 @@ export function mergeProgress(current: ProgressState, incoming: ProgressState): 
       correct: Math.max(a.correct, b.correct),
     })),
     scrolls: [...scrolls.values()],
+    ...(Object.keys(deletedScrolls).length > 0 ? { deletedScrolls } : {}),
     ...mergeGuitar(current.guitar, incoming.guitar),
   }
 }

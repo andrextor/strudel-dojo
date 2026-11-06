@@ -18,6 +18,7 @@ El copy visible está en español; código, identificadores, nombres de archivo 
 | Strudel, editor, katas, audio | `docs/specs/04-strudel-engine.md` |
 | Progreso, perfiles, respaldo | `docs/specs/05-progression.md` |
 | Separación Teoría / Strudel | `docs/specs/09-two-courses.md` |
+| Sincronización, Supabase | `docs/specs/10-cloud-sync.md` |
 | Rutas API / Claude | `docs/specs/06-ai-sensei.md` (y carga la skill `claude-api`) |
 | UI | `DESIGN.md` |
 
@@ -37,6 +38,8 @@ pnpm typecheck           # astro check
 pnpm test                # node --test sobre src/**/*.test.ts (strip-types, sin framework)
 pnpm build               # salida Vercel en .vercel/output
 pnpm ci:check            # lint + typecheck + test + build — debe quedar verde en cada PR
+pnpm db:start / db:stop  # Supabase local (Docker), puertos 544xx
+pnpm test:db             # pgTAP; exige Docker, no está en ci:check
 ```
 
 Solo pnpm. Los tests importan `.ts` con extensión explícita y no importan módulos virtuales de Astro (`astro:*`) ni componentes; leen el contenido desde disco.
@@ -50,6 +53,10 @@ Solo pnpm. Los tests importan `.ts` con extensión explícita y no importan mód
 - Las páginas en `src/pages/` son solo rutas: cada una monta una isla Preact (`client:only="preact"` cuando depende de `localStorage`, `client:visible` en lecciones).
 - Strudel se carga de forma perezosa (import dinámico) y nunca en la carga inicial de `/`.
 - Atajos deliberados con techo conocido llevan un comentario `ponytail:` que nombra el techo y la mejora.
+
+## Supabase
+
+El proyecto remoto es `strudel-dojo`. `landak-apiario` está en la misma organización y **en producción**: nunca se toca desde este repo. Antes de `link`, `db push` o `config push`, comprueba `supabase/.temp/project-ref`.
 
 ## Proyecto de referencia
 

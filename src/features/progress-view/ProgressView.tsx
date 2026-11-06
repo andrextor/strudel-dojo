@@ -16,6 +16,8 @@ import { loadProgress } from '../progress/store.ts'
 import { streak } from '../progress/streak.ts'
 import type { Prefs } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
+import { syncConfigured } from '../sync/client.ts'
+import SyncPanel from '../sync/SyncPanel.tsx'
 import BackupPanel, { downloadBackup } from './BackupPanel.tsx'
 
 function Choice<T extends string>(props: {
@@ -207,6 +209,8 @@ export default function ProgressView({ curriculum }: { curriculum: Module[] }) {
       </section>
 
       <BackupPanel />
+
+      {syncConfigured && <SyncPanel />}
 
       <section class="space-y-4 rounded-card bg-dojo-surface p-5 md:p-6">
         <h2 class="font-display text-xl font-bold">Perfiles</h2>

@@ -88,6 +88,7 @@ export interface ProgressState {
   skillStats: Record<string, SkillStat>
   practiceDays: Record<LocalDate, { answered: number; correct: number }>
   scrolls: Scroll[]
+  deletedScrolls?: Record<string, string> // id → deleted at, so sync cannot bring one back
   prefs: Prefs
   backedUpAt: string | null // last backup download, for the 14-day reminder
   guitar?: GuitarState // fretboard gym (spec 08); absent until first used

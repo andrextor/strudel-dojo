@@ -8,6 +8,8 @@ import { beltFor, totalXp } from '../progress/points.ts'
 import { streak } from '../progress/streak.ts'
 import { useProgress } from '../progress/use-progress.ts'
 import { hushAll } from '../strudel/engine.ts'
+import { syncConfigured } from '../sync/client.ts'
+import SyncBadge from '../sync/SyncBadge.tsx'
 
 // Same height as the static fallback in BaseLayout, so nothing jumps when it hydrates.
 export default function AppHeader({ curriculum }: { curriculum: Module[] }) {
@@ -26,7 +28,12 @@ export default function AppHeader({ curriculum }: { curriculum: Module[] }) {
   )
 
   if (active === null || progress === null) {
-    return <div class="flex h-11 items-center gap-2">{stop}</div>
+    return (
+      <div class="flex h-11 items-center gap-2">
+        {syncConfigured && <SyncBadge />}
+        {stop}
+      </div>
+    )
   }
   const rank = beltFor(progress, curriculum)
   const days = streak(progress, new Date())
@@ -51,6 +58,7 @@ export default function AppHeader({ curriculum }: { curriculum: Module[] }) {
       <span class="hidden sm:inline-flex">
         <StreakBadge days={days} short />
       </span>
+      {syncConfigured && <SyncBadge />}
       <a
         href="/progreso"
         class="max-w-28 truncate font-semibold text-dojo-text hover:text-dojo-neon"

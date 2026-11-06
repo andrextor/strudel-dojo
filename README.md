@@ -33,6 +33,8 @@ pnpm ci:check          # lint + typecheck + tests + contraste + build
 
 Sin `ANTHROPIC_API_KEY` todo funciona igual: no aparecen los botones del Sensei y los combates se autoevalúan con la rúbrica.
 
+La sincronización entre dispositivos también es opcional: sin `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY`, el progreso se queda en el navegador. Para probarla en local: `pnpm db:start` (necesita Docker) y `pnpm test:db`.
+
 ## Desplegar en Vercel
 
 1. Importa el repositorio en Vercel. El preset de Astro y el adaptador `@astrojs/vercel` ya están configurados; no hace falta tocar el comando de build ni la carpeta de salida.
@@ -40,7 +42,7 @@ Sin `ANTHROPIC_API_KEY` todo funciona igual: no aparecen los botones del Sensei 
 3. Para activar al Sensei, agrega `ANTHROPIC_API_KEY` en *Settings → Environment Variables* (entorno Production y, si quieres, Preview) y vuelve a desplegar. La clave solo se lee en el servidor (`astro:env`, `access: 'secret'`) y nunca llega al navegador.
 4. Las rutas `/api/sensei/*` corren como función de servidor; el resto del sitio es estático. El límite de pedidos por hora vive en la memoria de cada instancia (ver la nota `ponytail:` en `src/lib/rate-limit.ts`).
 
-El progreso de cada perfil vive en el `localStorage` del navegador: no hay base de datos ni cuentas. Para pasarlo a otro dispositivo se usa el respaldo (archivo o código) en `/progreso`.
+El progreso de cada perfil vive en el `localStorage` del navegador y, con sesión iniciada, se sincroniza con Supabase. Para pasarlo a otro dispositivo se usa el respaldo (archivo o código) en `/progreso`.
 
 ## Licencia
 
