@@ -1,11 +1,13 @@
 ---
 import { getCurriculum, getStages } from '../../../features/curriculum/index.ts'
 import { segment } from '../../../features/curriculum/paths.ts'
+import { stageOutline } from '../../../features/curriculum/schema.ts'
 import StageView from '../../../features/strudel-course/StageView.tsx'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 
 export async function getStaticPaths() {
-  const [curriculum, stages] = await Promise.all([getCurriculum(), getStages()])
+  const [curriculum, all] = await Promise.all([getCurriculum(), getStages()])
+  const stages = all.map(stageOutline)
   return stages.map((stage) => ({
     params: { stage: segment(stage.id, 0) },
     props: { stage, stages, curriculum },

@@ -2,7 +2,7 @@ import { Dumbbell, Lock, Target } from 'lucide-preact'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
 import { kataHref, stageHref } from '../curriculum/paths.ts'
-import type { Module, Stage, Unit } from '../curriculum/schema.ts'
+import type { Kata, Module, StageOutline, UnitOutline } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import { kataStatus, missingTheory, unitStatus } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
@@ -11,9 +11,9 @@ import { UNIT_STATUS } from './labels.ts'
 import TheoryGate from './TheoryGate.tsx'
 
 interface Props {
-  unit: Unit
-  stage: Stage
-  stages: Stage[]
+  unit: Omit<UnitOutline, 'katas'> & { katas: Pick<Kata, 'id' | 'title' | 'brief'>[] }
+  stage: StageOutline
+  stages: StageOutline[]
   curriculum: Module[]
 }
 

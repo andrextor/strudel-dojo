@@ -3,17 +3,23 @@ import { getEntry, render } from 'astro:content'
 import { ArrowLeft, ArrowRight } from 'lucide-preact'
 import { getCurriculum, getStages } from '../../../features/curriculum/index.ts'
 import { segment, stageHref, topicHref, unitHref } from '../../../features/curriculum/paths.ts'
+import { stageOutline, unitOutline } from '../../../features/curriculum/schema.ts'
 import UnitPanel from '../../../features/strudel-course/UnitPanel.tsx'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 
 export async function getStaticPaths() {
-  const [curriculum, stages] = await Promise.all([getCurriculum(), getStages()])
-  const flat = stages.flatMap((stage) => stage.units.map((unit) => ({ stage, unit })))
+  const [curriculum, all] = await Promise.all([getCurriculum(), getStages()])
+  const stages = all.map(stageOutline)
+  const flat = all.flatMap((stage) => stage.units.map((unit) => ({ stage, unit })))
   return flat.map(({ stage, unit }, i) => ({
     params: { stage: segment(stage.id, 0), unit: segment(unit.id, 1) },
     props: {
-      stage,
-      unit,
+      stage: stageOutline(stage),
+      lessonId: unit.lesson,
+      unit: {
+        ...unitOutline(unit),
+        katas: unit.katas.map(({ id, title, brief }) => ({ id, title, brief })),
+      },
       stages,
       curriculum,
       prev: flat[i - 1]?.unit ?? null,
@@ -22,9 +28,9 @@ export async function getStaticPaths() {
   }))
 }
 
-const { stage, unit, stages, curriculum, prev, next } = Astro.props
-const lesson = await getEntry('strudelLessons', unit.lesson)
-if (lesson === undefined) throw new Error(`missing lesson ${unit.lesson}`)
+const { stage, unit, lessonId, stages, curriculum, prev, next } = Astro.props
+const lesson = await getEntry('strudelLessons', lessonId)
+if (lesson === undefined) throw new Error(`missing lesson ${lessonId}`)
 const { Content } = await render(lesson)
 const theory = curriculum.flatMap((m) => m.topics).filter((t) => unit.requires.includes(t.id))
 ---

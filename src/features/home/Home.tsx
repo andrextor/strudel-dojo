@@ -15,7 +15,7 @@ import BeltBadge from '../../components/ui/BeltBadge.tsx'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge, { type Status } from '../../components/ui/StatusBadge.tsx'
 import { bossHref, moduleHref, nextStepHref, topicHref, unitHref } from '../curriculum/paths.ts'
-import type { Module, Stage } from '../curriculum/schema.ts'
+import type { Module, StageOutline } from '../curriculum/schema.ts'
 import ProfilePicker from '../profiles/ProfilePicker.tsx'
 import { needsBackupReminder } from '../progress/persist.ts'
 import {
@@ -45,7 +45,13 @@ const SHORTCUTS = [
   { href: '/progreso', label: 'Progreso', Icon: TrendingUp },
 ]
 
-export default function Home({ curriculum, stages }: { curriculum: Module[]; stages: Stage[] }) {
+export default function Home({
+  curriculum,
+  stages,
+}: {
+  curriculum: Module[]
+  stages: StageOutline[]
+}) {
   const { active, progress } = useProgress()
   if (active === null || progress === null) return <ProfilePicker />
 

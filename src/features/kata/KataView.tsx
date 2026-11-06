@@ -4,7 +4,7 @@ import { buttonClass } from '../../components/ui/button.ts'
 import Callout from '../../components/ui/Callout.tsx'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
 import { stageHref, unitHref } from '../curriculum/paths.ts'
-import type { Kata, Module, Stage, Unit } from '../curriculum/schema.ts'
+import type { Kata, Module, StageOutline, UnitOutline } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import {
   canSeeSolution,
@@ -24,9 +24,9 @@ import { AssertionList, useAssertions } from './challenge.tsx'
 
 interface Props {
   kata: Kata
-  unit: Unit
-  stage: Stage
-  stages: Stage[]
+  unit: UnitOutline
+  stage: StageOutline
+  stages: StageOutline[]
   curriculum: Module[]
 }
 
