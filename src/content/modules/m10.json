@@ -2,8 +2,8 @@
   "id": "M10",
   "order": 10,
   "belt": "dan",
-  "title": "Composición y live coding",
-  "summary": "Forma y motivo, arreglo por capas, diseño de sonido y performance en vivo: el cinturón final.",
+  "title": "Composición",
+  "summary": "Forma y motivo, arreglo por capas, timbre y tensión: el cinturón final.",
   "status": "ready",
   "prerequisite": "M09",
   "topics": [

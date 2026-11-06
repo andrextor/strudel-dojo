@@ -2,12 +2,12 @@
   "id": "S04",
   "order": 4,
   "title": "Escalas y tonalidades",
-  "summary": "De notas sueltas a grados: `n`, `scale` y transformaciones de patrones.",
+  "summary": "De notas sueltas a grados: n, scale y transformaciones de patrones.",
   "prerequisite": "S03",
   "units": [
     {
       "id": "S04-U01",
-      "title": "Grados con `n` y `scale`",
+      "title": "Grados con n y scale",
       "goal": "Tocar cualquier escala mayor por grados.",
       "lesson": "s04-u01",
       "requires": ["M02-T01"],
@@ -87,7 +87,7 @@
     {
       "id": "S04-U02",
       "title": "Una tonalidad por ciclo",
-      "goal": "Cambiar de tonalidad en cada ciclo con `< >`.",
+      "goal": "Cambiar de tonalidad en cada ciclo con < >.",
       "lesson": "s04-u02",
       "requires": ["M02-T02"],
       "katas": [
@@ -190,7 +190,7 @@
     {
       "id": "S04-U03",
       "title": "Transformar patrones",
-      "goal": "Usar `slow`, `fast`, `rev` y `palindrome` sobre los grados.",
+      "goal": "Usar slow, fast, rev y palindrome sobre los grados.",
       "lesson": "s04-u03",
       "requires": ["M02-T03"],
       "katas": [

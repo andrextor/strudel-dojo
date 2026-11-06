@@ -84,7 +84,7 @@
     {
       "id": "S11-U02",
       "title": "Solos al azar",
-      "goal": "Generar solos con `irand` y `perlin`.",
+      "goal": "Generar solos con irand y perlin.",
       "lesson": "s11-u02",
       "requires": ["M09-T02"],
       "katas": [
@@ -167,7 +167,7 @@
     {
       "id": "S11-U03",
       "title": "Patrones simétricos",
-      "goal": "Rotar patrones con `iter` y `ply`.",
+      "goal": "Rotar patrones con iter y ply.",
       "lesson": "s11-u03",
       "requires": ["M09-T03"],
       "katas": [

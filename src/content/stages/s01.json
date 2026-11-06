@@ -145,7 +145,7 @@
     {
       "id": "S01-U03",
       "title": "Ciclos y euclidianos",
-      "goal": "Repartir golpes dentro del ciclo con `@`, `!` y ritmos euclidianos.",
+      "goal": "Repartir golpes dentro del ciclo con @, ! y ritmos euclidianos.",
       "lesson": "s01-u03",
       "requires": [],
       "katas": [
@@ -211,7 +211,7 @@
     {
       "id": "S01-U04",
       "title": "Capas de batería",
-      "goal": "Armar un beat con varias capas en `stack`.",
+      "goal": "Armar un beat con varias capas en stack.",
       "lesson": "s01-u04",
       "requires": [],
       "katas": [

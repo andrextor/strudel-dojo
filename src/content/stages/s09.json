@@ -7,7 +7,7 @@
   "units": [
     {
       "id": "S09-U01",
-      "title": "Séptimas con `chord`",
+      "title": "Séptimas con chord",
       "goal": "Escribir las seis séptimas.",
       "lesson": "s09-u01",
       "requires": ["M07-T01"],
@@ -74,7 +74,7 @@
     },
     {
       "id": "S09-U02",
-      "title": "Progresiones y `mode`",
+      "title": "Progresiones y mode",
       "goal": "Encadenar séptimas diatónicas.",
       "lesson": "s09-u02",
       "requires": ["M07-T02"],
@@ -142,7 +142,7 @@
     {
       "id": "S09-U03",
       "title": "Tensiones y diccionarios",
-      "goal": "Sumar novenas y usar `dictionary`.",
+      "goal": "Sumar novenas y usar dictionary.",
       "lesson": "s09-u03",
       "requires": ["M07-T03"],
       "katas": [

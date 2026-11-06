@@ -104,7 +104,7 @@
     {
       "id": "S10-U02",
       "title": "Comparar versiones",
-      "goal": "Alternar armonías con `< >` y `sometimes`.",
+      "goal": "Alternar armonías con < > y sometimes.",
       "lesson": "s10-u02",
       "requires": ["M08-T02"],
       "katas": [
@@ -284,7 +284,7 @@
     {
       "id": "S10-U04",
       "title": "Bajo cromático",
-      "goal": "Escribir bajos cromáticos con `add` y `segment`.",
+      "goal": "Escribir bajos cromáticos con add y segment.",
       "lesson": "s10-u04",
       "requires": ["M08-T04"],
       "katas": [

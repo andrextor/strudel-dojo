@@ -2,12 +2,12 @@
   "id": "S05",
   "order": 5,
   "title": "Acordes",
-  "summary": "Acordes con `note` y `chord`, voicings y acompañamientos.",
+  "summary": "Acordes con note y chord, voicings y acompañamientos.",
   "prerequisite": "S04",
   "units": [
     {
       "id": "S05-U01",
-      "title": "`note` y `chord`",
+      "title": "note y chord",
       "goal": "Escribir tríadas nota por nota y por cifrado.",
       "lesson": "s05-u01",
       "requires": ["M03-T01"],
@@ -69,7 +69,7 @@
     },
     {
       "id": "S05-U02",
-      "title": "`voicing` y `anchor`",
+      "title": "voicing y anchor",
       "goal": "Controlar inversiones y registro de un acorde.",
       "lesson": "s05-u02",
       "requires": ["M03-T02"],
@@ -151,7 +151,7 @@
     {
       "id": "S05-U03",
       "title": "Apilar terceras",
-      "goal": "Construir el campo armónico con grados y `add`.",
+      "goal": "Construir el campo armónico con grados y add.",
       "lesson": "s05-u03",
       "requires": ["M03-T03"],
       "katas": [
@@ -215,7 +215,7 @@
     {
       "id": "S05-U04",
       "title": "Arpegios y acompañamiento",
-      "goal": "Dar ritmo a los acordes con `arp` y `struct`.",
+      "goal": "Dar ritmo a los acordes con arp y struct.",
       "lesson": "s05-u04",
       "requires": ["M03-T04"],
       "katas": [

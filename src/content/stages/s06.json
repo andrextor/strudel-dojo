@@ -2,7 +2,7 @@
   "id": "S06",
   "order": 6,
   "title": "Capas y progresiones",
-  "summary": "Bandas en `stack`, frases y secciones con `arrange`.",
+  "summary": "Bandas en stack, frases y secciones con arrange.",
   "prerequisite": "S05",
   "units": [
     {
@@ -198,7 +198,7 @@
     {
       "id": "S06-U03",
       "title": "Ordenar secciones",
-      "goal": "Armar formas con `cat`, `seq` y `arrange`.",
+      "goal": "Armar formas con cat, seq y arrange.",
       "lesson": "s06-u03",
       "requires": ["M04-T03"],
       "katas": [
@@ -270,7 +270,7 @@
     {
       "id": "S06-U04",
       "title": "Comping",
-      "goal": "Acompañar una melodía con `euclid` y `mask`.",
+      "goal": "Acompañar una melodía con euclid y mask.",
       "lesson": "s06-u04",
       "requires": ["M04-T04"],
       "katas": [

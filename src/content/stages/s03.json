@@ -2,12 +2,12 @@
   "id": "S03",
   "order": 3,
   "title": "Notas e intervalos",
-  "summary": "Melodías con `note`, octavas e intervalos en código.",
+  "summary": "Melodías con note, octavas e intervalos en código.",
   "prerequisite": "S02",
   "units": [
     {
       "id": "S03-U01",
-      "title": "`note` y octavas",
+      "title": "note y octavas",
       "goal": "Tocar notas por nombre, octava y número MIDI.",
       "lesson": "s03-u01",
       "requires": ["M01-T01", "M01-T02"],

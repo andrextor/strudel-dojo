@@ -2,12 +2,12 @@
   "id": "S08",
   "order": 8,
   "title": "Modos",
-  "summary": "Colores modales en `scale`, vamps y drones.",
+  "summary": "Colores modales en scale, vamps y drones.",
   "prerequisite": "S07",
   "units": [
     {
       "id": "S08-U01",
-      "title": "El modo dentro de `scale`",
+      "title": "El modo dentro de scale",
       "goal": "Tocar los modos como rotaciones.",
       "lesson": "s08-u01",
       "requires": ["M06-T01"],

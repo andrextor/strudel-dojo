@@ -7,8 +7,8 @@
   "units": [
     {
       "id": "S07-U01",
-      "title": "`transpose`",
-      "goal": "Transportar por intervalo con `transpose` y `add`.",
+      "title": "transpose",
+      "goal": "Transportar por intervalo con transpose y add.",
       "lesson": "s07-u01",
       "requires": ["M05-T01"],
       "katas": [
@@ -159,7 +159,7 @@
     {
       "id": "S07-U03",
       "title": "Secciones en dos tonalidades",
-      "goal": "Modular entre secciones con `arrange`.",
+      "goal": "Modular entre secciones con arrange.",
       "lesson": "s07-u03",
       "requires": ["M05-T03"],
       "katas": [
@@ -232,8 +232,8 @@
     },
     {
       "id": "S07-U04",
-      "title": "Ciclos con `add`",
-      "goal": "Recorrer el círculo de quintas con `add`.",
+      "title": "Ciclos con add",
+      "goal": "Recorrer el círculo de quintas con add.",
       "lesson": "s07-u04",
       "requires": ["M05-T04"],
       "katas": [

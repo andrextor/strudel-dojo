@@ -8,7 +8,7 @@
     {
       "id": "S02-U01",
       "title": "Sintes y samples",
-      "goal": "Elegir entre grabaciones y sintes, y tocar notas con `note`.",
+      "goal": "Elegir entre grabaciones y sintes, y tocar notas con note.",
       "lesson": "s02-u01",
       "requires": [],
       "katas": [
@@ -55,7 +55,7 @@
     {
       "id": "S02-U02",
       "title": "Envolvente",
-      "goal": "Dar forma a una nota con `attack` y `release`.",
+      "goal": "Dar forma a una nota con attack y release.",
       "lesson": "s02-u02",
       "requires": [],
       "katas": [
@@ -109,7 +109,7 @@
     {
       "id": "S02-U03",
       "title": "Filtros",
-      "goal": "Oscurecer y aclarar un sonido con `lpf` y `hpf`.",
+      "goal": "Oscurecer y aclarar un sonido con lpf y hpf.",
       "lesson": "s02-u03",
       "requires": [],
       "katas": [
@@ -156,7 +156,7 @@
     {
       "id": "S02-U04",
       "title": "Efectos y mezcla",
-      "goal": "Dar espacio y equilibrio con `room`, `delay`, `gain` y `pan`.",
+      "goal": "Dar espacio y equilibrio con room, delay, gain y pan.",
       "lesson": "s02-u04",
       "requires": [],
       "katas": [

@@ -8,7 +8,7 @@
     {
       "id": "S12-U01",
       "title": "Forma y variaciones",
-      "goal": "Construir secciones y variar un motivo con `arrange`, `off` y `jux`.",
+      "goal": "Construir secciones y variar un motivo con arrange, off y jux.",
       "lesson": "s12-u01",
       "requires": ["M10-T01"],
       "katas": [
@@ -113,7 +113,7 @@
     {
       "id": "S12-U02",
       "title": "La mezcla",
-      "goal": "Equilibrar capas con `gain`, `pan` y `orbit`.",
+      "goal": "Equilibrar capas con gain, pan y orbit.",
       "lesson": "s12-u02",
       "requires": ["M10-T02"],
       "katas": [
@@ -197,7 +197,7 @@
     {
       "id": "S12-U03",
       "title": "Señales y azar",
-      "goal": "Mover parámetros con señales y `sometimesBy`.",
+      "goal": "Mover parámetros con señales y sometimesBy.",
       "lesson": "s12-u03",
       "requires": ["M10-T04"],
       "katas": [
