@@ -1,0 +1,20 @@
+---
+unit: S11-U04
+title: Un improvisador que sigue los acordes
+---
+import Callout from '../../components/ui/Callout.tsx'
+import Listen from '../../features/strudel/Listen.tsx'
+
+## Un improvisador que sigue los acordes
+
+Pon los acordes con `<>` y, en el mismo orden, sus escalas dentro de `scale`. Los grados al azar de `irand` caen siempre en la escala del acorde que suena.
+
+<Listen showCode client:visible code={`stack(
+  chord("<Bm7b5 E7 Am6 Am6>").voicing().s("piano"),
+  chord("<Bm7b5 E7 Am6 Am6>").rootNotes(2).s("piano"),
+  n(irand(8).segment(8)).scale("<B3:locrian E3:phrygian:dominant A3:melodic:minor A3:melodic:minor>").s("piano")
+)`} label="Escuchar un solo al azar sobre el ii–V–i de La menor" />
+
+<Callout tone="warning" title="Cifrado en Strudel">
+  En `chord`, el maj7 se escribe `^7` (`C^7`), el menor con séptima mayor `m^7` (`Cm^7`) y el semidisminuido `m7b5` (`Bm7b5`).
+</Callout>

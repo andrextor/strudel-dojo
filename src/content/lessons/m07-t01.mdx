@@ -3,8 +3,6 @@ topic: M07-T01
 title: Acordes de séptima
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Fretboard from '../../components/lesson/LessonFretboard.tsx'
 import Staff from '../../components/music/Staff.tsx'
@@ -40,7 +38,7 @@ Sobre Do mayor (Do, Mi, Sol), salta otra letra: **Si**. Do–Si es una séptima 
 <details>
   <summary>¿Por qué Si𝄫 y no La?</summary>
 
-La séptima de Do se escribe siempre con la letra Si. La séptima disminuida está un semitono por debajo de la séptima menor (Si♭), así que es **Si𝄫**: suena igual que La, pero el deletreo mantiene las letras alternas Do–Mi–Sol–Si. En Strudel escribes `a3` porque solo cuenta el sonido.
+La séptima de Do se escribe siempre con la letra Si. La séptima disminuida está un semitono por debajo de la séptima menor (Si♭), así que es **Si𝄫**: suena igual que La, pero el deletreo mantiene las letras alternas Do–Mi–Sol–Si.
 </details>
 
 ## En la guitarra
@@ -48,27 +46,6 @@ La séptima de Do se escribe siempre con la letra Si. La séptima disminuida est
 En la cuerda de La, la forma de C7 con cejilla en el traste 3 junta Do, Mi, Sol y Si♭:
 
 <Fretboard highlight={["C", "E", "G", "Bb"]} frets={5} label="Do, Mi, Sol y Si♭: las notas de C7 en las primeras posiciones" />
-
-## Strudel: séptimas con `chord`
-
-`chord` y `voicing` ya los conoces. El diccionario de voicings de Strudel tiene su propio cifrado para las séptimas:
-
-| Acorde | En `chord` |
-|--------|------------|
-| Cmaj7 | `C^7` |
-| C7 | `C7` |
-| Cm7 | `Cm7` |
-| Cø7 | `Cm7b5` |
-| C°7 | `Co7` |
-| CmMaj7 | `Cm^7` |
-
-<Example client:visible code='chord("<G^7 G7 Gm7 Gm7b5 Go7 Gm^7>").voicing().s("piano")' />
-
-<Callout tone="warning" title="Cifrado en Strudel">
-  `voicing` no reconoce `Cmaj7` ni `CmMaj7`: escribe `C^7` y `Cm^7`. Igual que en las tríadas, el disminuido va con `o`.
-</Callout>
-
-<Listen client:visible code='chord("<C^7 Dm7 G7 C^7>").voicing().s("piano")' label="Escuchar séptimas encadenadas con voicing" />
 
 <Callout tone="info" title="Para la prueba necesitas…">
   Escribir las cuatro notas de cualquier acorde maj7, 7, m7, m7♭5, dim7 o mMaj7 con el deletreo correcto (con 𝄫 si hace falta), y repasar tríadas e intervalos de módulos anteriores.

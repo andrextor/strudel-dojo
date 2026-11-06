@@ -3,8 +3,6 @@ topic: M01-T01
 title: Notas y alteraciones
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Fretboard from '../../components/lesson/LessonFretboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
@@ -50,21 +48,6 @@ Con la afinación estándar, las cuerdas al aire son, de la 6.ª (la más grave)
 <Callout tone="hint" title="Truco">
   En el traste 12 se repiten las cuerdas al aire, una octava más arriba. Lo que aprendas del 0 al 11 vale igual del 12 al 23.
 </Callout>
-
-## Strudel: tus primeros sonidos
-
-Strudel toca **patrones**. `s` elige un sonido por su nombre: `bd` es el bombo, `sd` la caja y `hh` el hi-hat. Todo lo que va entre comillas dobles es **mini-notation**: cada palabra separada por un espacio es un paso del ciclo.
-
-<StrudelRef name="s" summary="Toca muestras (samples) por su nombre: bd, sd, hh, piano…" />
-
-<Example client:visible code='s("bd hh sd hh")' />
-
-Con `bank` cambias de caja de ritmos sin tocar el patrón, y con `cpm` cambias cuántos ciclos suenan por minuto (más alto, más rápido):
-
-<StrudelRef name="bank" summary="Elige la caja de ritmos de donde salen los sonidos, por ejemplo RolandTR909." />
-<StrudelRef name="cpm" summary="Ciclos por minuto: el tempo del patrón." />
-
-<Listen client:visible code='s("bd hh sd hh").bank("RolandTR909").cpm(45)' label="Escuchar con una TR-909, más rápido" />
 
 <Callout tone="info" title="Para la prueba necesitas…">
   Nombrar la nota marcada en el teclado o el diapasón, con su alteración, y dar el enarmónico de cualquier nota, incluidas las dobles (Fa𝄪, Si𝄫). Puedes responder en latino o americano.

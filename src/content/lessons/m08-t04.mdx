@@ -3,8 +3,6 @@ topic: M08-T04
 title: Disminuidos de paso y cromatismo
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -21,23 +19,6 @@ El °7 (séptima disminuida) apila tres terceras menores: C♯°7 = Do♯, Mi, S
 <Listen client:visible code='chord("<C Dm G7 C>").voicing().s("piano")' label="Escuchar C Dm G7 C, sin acorde de paso" />
 
 <Listen client:visible code='chord("<C C#o7 Dm G7>").voicing().s("piano")' label="Escuchar C C♯°7 Dm G7, con el disminuido de paso" />
-
-En `chord`, el °7 se escribe `o7`: `C#o7`.
-
-## Strudel: bajo cromático con `add` y `segment`
-
-Un bajo cromático sube o baja de semitono en semitono. En vez de escribir cada nota, suma números a una nota de partida: dentro de `note`, `"c2".add("<0 1 2 3>")` da Do, Do♯, Re y Re♯, una por ciclo. Luego `segment` reparte cada ciclo en golpes iguales:
-
-<StrudelRef name="segment" summary="Muestrea el patrón en n golpes iguales por ciclo." />
-
-<Example client:visible code='note("c2".add("<0 1 2 3>")).segment(4).s("piano")' />
-
-Junta las dos ideas: disminuidos de paso arriba y un bajo que sube por semitonos de Do a Mi.
-
-<Example client:visible code={`stack(
-  chord("<C C#o7 Dm D#o7 Em>").voicing(),
-  note("c2".add("<0 1 2 3 4>")).segment(2)
-).s("piano")`} />
 
 <details>
   <summary>¿Por qué el °7 se parece a una dominante?</summary>

@@ -1,0 +1,28 @@
+---
+unit: S11-U02
+title: Solos al azar
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Callout from '../../components/ui/Callout.tsx'
+
+## Solos al azar
+
+`irand(n)` da un número entero al azar entre 0 y n − 1. Es una señal continua: `segment` la corta en notas, tantas por ciclo como le pidas. Usado dentro de `n`, cada número es un grado de la escala, así que el azar nunca se sale de ella.
+
+<StrudelRef name="irand" summary="Un entero al azar entre 0 y n − 1; dentro de n, un grado al azar de la escala." />
+<StrudelRef name="segment" summary="Corta una señal continua en n eventos por ciclo." />
+
+<Example client:visible code='n(irand(5).segment(8)).scale("A4:minor:pentatonic").s("piano")' />
+
+`perlin` es ruido suave: sube y baja sin saltos bruscos, entre 0 y 1. Con `range` lo llevas a los grados que quieras. Suena más a frase que `irand`.
+
+<StrudelRef name="perlin" summary="Ruido suave entre 0 y 1: una curva que sube y baja sin saltos." />
+<StrudelRef name="range" summary="Lleva una señal de 0..1 al rango que indiques, por ejemplo range(0, 10)." />
+
+<Listen showCode client:visible code='n(perlin.range(0, 10).segment(8)).scale("E3:blues").s("piano")' label="Escuchar una línea con perlin sobre Mi blues" />
+
+<Callout tone="hint" title="El azar es repetible">
+  El azar de Strudel depende del ciclo: el ciclo 1 suena igual cada vez que lo reproduces. Por eso el Dojo puede comprobar tus katas aunque usen `irand`.
+</Callout>

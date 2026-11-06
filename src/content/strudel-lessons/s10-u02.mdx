@@ -1,0 +1,18 @@
+---
+unit: S10-U02
+title: Comparar versiones
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Comparar versiones con `< >` y `sometimes`
+
+Un `< >` dentro de otro avanza una vez por cada vuelta del de fuera. Así `<C <F Fm> G C>` toca la progresión con F la primera vez y con Fm la segunda: escuchas las dos versiones seguidas.
+
+<Example client:visible code='chord("<C <F Fm> G C>").voicing().s("piano")' />
+
+`sometimes` aplica un cambio solo a veces, más o menos la mitad de los eventos. Aquí, algunos acordes suben una octava:
+
+<StrudelRef name="sometimes" summary="Aplica una función a algunos eventos al azar, más o menos la mitad." />
+
+<Example client:visible code='chord("<C <F Fm> G C>").voicing().sometimes(x => x.add(note(12))).s("piano")' />

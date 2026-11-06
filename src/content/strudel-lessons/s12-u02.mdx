@@ -1,0 +1,25 @@
+---
+unit: S12-U02
+title: La mezcla
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## La mezcla
+
+<StrudelRef name="gain" summary="El volumen de la capa: 1 es normal, menos baja el volumen." />
+<StrudelRef name="pan" summary="La posición en el estéreo: 0 izquierda, 0.5 centro, 1 derecha." />
+<StrudelRef name="orbit" summary="Manda la capa a un bus de efectos propio: su reverb y su delay no se mezclan con los de otras." />
+
+<Example client:visible code={`stack(
+  s("bd*4, hh*8").gain(0.8),
+  chord("<C Am F G>").rootNotes(2).s("sawtooth").gain(0.7),
+  chord("<C Am F G>").voicing().s("piano").pan(0.3).room(0.6).orbit(2),
+  n("0 2 4 2").scale("C5:major").s("piano").pan(0.7)
+)`} />
+
+<details>
+  <summary>¿Para qué sirve `orbit`?</summary>
+
+Los efectos de espacio (`room`, `delay`, que verás en el próximo tema) se calculan por órbita. Si el piano tiene mucha reverb y la batería poca, ponlos en órbitas distintas; si no, la batería hereda la reverb del piano.
+</details>

@@ -1,0 +1,20 @@
+---
+unit: S07-U02
+title: Mismos grados, otra escala
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Cambiar la escala y mantener los grados
+
+Con `n` y `scale`, los números son grados. Si cambias solo la escala, la melodía se transporta con el deletreo correcto:
+
+<Example client:visible code='n("0 2 4 2 3 1 -1 0").scale("D4:major").s("piano")' />
+
+`scaleTranspose` es otra cosa: mueve la melodía por grados **dentro** de la misma escala. No cambia de tonalidad; hace una **secuencia** (*sequence*), el mismo dibujo sobre otro grado.
+
+<StrudelRef name="scaleTranspose" summary="Mueve las notas por grados dentro de la escala actual, sin salir de la tonalidad." />
+
+<Example client:visible code='n("0 2 4").scale("C4:major").scaleTranspose("<0 1 2 3>").s("piano")' />
+
+Fíjate en que el segundo ciclo suena Re–Fa–La (menor) y no Re–Fa♯–La: se queda en Do mayor.

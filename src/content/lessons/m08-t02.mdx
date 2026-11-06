@@ -3,8 +3,6 @@ topic: M08-T02
 title: Intercambio modal
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -32,18 +30,6 @@ El iv menor después del IV mayor es uno de los sonidos más reconocibles del po
 <Listen client:visible code='chord("<C F Fm C>").voicing().s("piano")' label="Escuchar C F Fm C: el iv menor prestado" />
 
 <Listen client:visible code='chord("<C Ab Bb C>").voicing().s("piano")' label="Escuchar C A♭ B♭ C: la cadencia ♭VI–♭VII–I" />
-
-## Strudel: comparar versiones con `< >` y `sometimes`
-
-Un `< >` dentro de otro avanza una vez por cada vuelta del de fuera. Así `<C <F Fm> G C>` toca la progresión con F la primera vez y con Fm la segunda: escuchas las dos versiones seguidas.
-
-<Example client:visible code='chord("<C <F Fm> G C>").voicing().s("piano")' />
-
-`sometimes` aplica un cambio solo a veces, más o menos la mitad de los eventos. Aquí, algunos acordes suben una octava:
-
-<StrudelRef name="sometimes" summary="Aplica una función a algunos eventos al azar, más o menos la mitad." />
-
-<Example client:visible code='chord("<C <F Fm> G C>").voicing().sometimes(x => x.add(note(12))).s("piano")' />
 
 <details>
   <summary>¿Y si el préstamo va al revés?</summary>

@@ -1,0 +1,22 @@
+---
+unit: S03-U02
+title: Intervalos en código
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+
+## Mini-notation para intervalos
+
+Dentro de las comillas tienes un pequeño lenguaje de ritmo y armonía:
+
+- `~` es un silencio.
+- `[ ]` mete varios pasos en el espacio de uno.
+- `,` hace sonar notas a la vez: `[c4,e4]` es un intervalo **armónico**.
+- `*` repite un paso más rápido: `c4*2`.
+- `< >` toma un elemento distinto en cada ciclo.
+
+<Listen showCode client:visible code='note("[c4,e4] ~ [c4,g4] ~").s("piano")' label="Escuchar 3M y 5J armónicas" />
+
+<Example client:visible code='note("c3 <e3 g3 c4>").s("piano")' />
+
+<Listen showCode client:visible code='note("[c3,g3] [d3,a3] [e3,b3]*2 ~").s("piano")' label="Escuchar quintas en paralelo" />

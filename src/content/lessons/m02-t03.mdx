@@ -3,8 +3,6 @@ topic: M02-T03
 title: Grados y funciones
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -26,23 +24,6 @@ La **sensible** está a un semitono de la tónica y por eso "pide" resolver haci
 <Listen client:visible code='n("0 3 4 0").scale("G:major").s("piano")' label="Escuchar I, IV, V y de vuelta a I en Sol mayor" />
 
 <Listen client:visible code='n("5 6 7").scale("G:major").s("piano")' label="Escuchar la sensible resolviendo a la tónica" />
-
-<Callout tone="hint" title="Cuidado al contar">
-  En Strudel, `n` cuenta desde 0: el grado I es `0`, el IV es `3` y el V es `4`.
-</Callout>
-
-## Strudel: transformar patrones
-
-Estas cuatro funciones cambian un patrón entero sin reescribirlo:
-
-<StrudelRef name="slow" summary="Estira el patrón: slow(2) dura el doble." />
-<StrudelRef name="fast" summary="Comprime el patrón: fast(2) suena el doble de rápido." />
-<StrudelRef name="rev" summary="Toca el patrón al revés." />
-<StrudelRef name="palindrome" summary="Alterna: un ciclo al derecho, el siguiente al revés." />
-
-<Example client:visible code='n("0 1 2 3 4").scale("C:major").rev().s("piano")' />
-
-<Listen client:visible code='n("0 2 4 6").scale("D:major").fast(2).s("piano")' label="Escuchar un arpegio el doble de rápido" />
 
 <details>
   <summary>¿Por qué importa la función y no solo la nota?</summary>

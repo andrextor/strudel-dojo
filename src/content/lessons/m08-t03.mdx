@@ -3,7 +3,6 @@ topic: M08-T03
 title: Sustitución tritonal
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -31,18 +30,12 @@ El ii–V–I de Do mayor es Dm7 G7 Cmaj7. Con el sustituto, Dm7 D♭7 Cmaj7, el
 
 <Listen client:visible code='note("<[d3,f3,a3,c4] [db3,f3,ab3,cb4] [c3,e3,g3,b3]>").s("piano")' label="Escuchar Dm7 D♭7 Cmaj7, con el sustituto tritonal" />
 
-Separa el bajo con `stack` para que se oiga el cromatismo, y aplica el truco a una cadena de dominantes: cambiando A7 por E♭7 y G7 por D♭7, el bajo baja de Mi a Do sin saltos.
+Aplica el truco a una cadena de dominantes: cambiando A7 por E♭7 y G7 por D♭7, el bajo baja de Mi a Do sin saltos.
 
-<Example client:visible code={`stack(
+<Listen client:visible code={`stack(
   note("<[d3,g3,b3] [db3,g3,bb3] [c3,f3,a3] [cb3,f3,ab3] [b2,e3,g3]>"),
   note("<e2 eb2 d2 db2 c2>")
-).s("piano")`} />
-
-<details>
-  <summary>¿Por qué escribo cb4 y no b3?</summary>
-
-Suenan igual, pero el acorde es D♭7 y su séptima es Do♭. Strudel acepta `cb4`, y así el código dice la verdad sobre el acorde. Las comprobaciones comparan el sonido, así que `b3` también pasaría.
-</details>
+).s("piano")`} label="Escuchar la cadena con el bajo por semitonos" />
 
 <Callout tone="info" title="Para la prueba necesitas…">
   Encontrar el sustituto tritonal del V7 de cualquier tonalidad, decir qué dos notas comparte con él y usarlo en un ii–V–I. También repasas dominantes secundarias, préstamos e inversiones.

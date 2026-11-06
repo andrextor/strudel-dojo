@@ -4,7 +4,16 @@ import { buttonClass } from '../../components/ui/button.ts'
 import { type Engine, getEngine, paintRoll, unlockAudio } from './engine.ts'
 
 // Plays a snippet with no editor, plus a mini pianoroll (lessons, spec 02).
-export default function Listen({ code, label = 'Escuchar' }: { code: string; label?: string }) {
+// Theory lessons keep the code hidden: there Strudel is the audio engine, not the subject.
+export default function Listen({
+  code,
+  label = 'Escuchar',
+  showCode = false,
+}: {
+  code: string
+  label?: string
+  showCode?: boolean
+}) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const engine = useRef<Engine | null>(null)
   const [playing, setPlaying] = useState(false)
@@ -57,9 +66,11 @@ export default function Listen({ code, label = 'Escuchar' }: { code: string; lab
         role="img"
         aria-label="Notas del fragmento"
       />
-      <code class="hidden max-w-[40%] truncate font-mono text-sm text-dojo-muted md:block">
-        {code}
-      </code>
+      {showCode && (
+        <code class="hidden max-w-[40%] truncate font-mono text-sm text-dojo-muted md:block">
+          {code}
+        </code>
+      )}
       {error && (
         <p role="alert" class="text-sm text-dojo-danger">
           {error}

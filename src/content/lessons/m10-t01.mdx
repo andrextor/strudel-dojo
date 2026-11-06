@@ -3,13 +3,11 @@ topic: M10-T01
 title: Forma y motivo
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Staff from '../../components/music/Staff.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
 <Callout tone="info" title="En 30 segundos">
-  Una pieza se construye con una idea corta, el **motivo** (*motif*), que se repite y se transforma. Los motivos forman **frases**, dos frases que se responden forman un **período**, y las secciones (A, B…) dan la **forma** (*form*): AABA, verso–coro–puente. En Strudel, `arrange` encadena secciones y `off`, `jux` y `superimpose` crean variaciones.
+  Una pieza se construye con una idea corta, el **motivo** (*motif*), que se repite y se transforma. Los motivos forman **frases**, dos frases que se responden forman un **período**, y las secciones (A, B…) dan la **forma** (*form*): AABA, verso–coro–puente.
 </Callout>
 
 ## Motivo, frase y período
@@ -47,30 +45,6 @@ La repetición exacta da unidad, pero cansa pronto. La transformación da **unid
 - **AABA** (forma de canción de 32 compases): una idea, su repetición, un contraste (el puente) y la vuelta.
 - **Verso–coro–puente**: el verso cuenta, el coro es lo que se canta; el puente aparece una vez, antes del último coro.
 - **Rondó** (ABACA): una sección que vuelve entre contrastes.
-
-## Strudel: secciones con `arrange`
-
-`arrange` recibe pares `[ciclos, patrón]` y los toca en orden. Cada patrón es una sección.
-
-<StrudelRef name="arrange" summary="Encadena secciones: cada par [ciclos, patrón] suena esa cantidad de ciclos, en orden." />
-
-<Example client:visible code={`arrange(
-  [2, n("0 2 4 2").scale("C4:major")],
-  [1, n("3 5 4 3").scale("C4:major")],
-  [1, n("0 2 4 2").scale("C4:major")]
-).s("piano")`} />
-
-## Strudel: variaciones
-
-<StrudelRef name="off" summary="Superpone una copia retrasada del patrón, transformada: un canon o un eco con otra nota." />
-<StrudelRef name="superimpose" summary="Superpone una copia transformada del patrón, al mismo tiempo." />
-<StrudelRef name="jux" summary="Toca el patrón original en un lado del estéreo y una versión transformada en el otro." />
-
-<Example client:visible code='note("c4 e4 g4 e4").off(1/8, (x) => x.add(note(12))).s("piano")' />
-
-<Listen client:visible code='n("0 2 4 2").scale("C4:major").superimpose((x) => x.add(note(4))).s("piano")' label="Escuchar el motivo con una copia superpuesta" />
-
-<Listen client:visible code='n("0 2 1 4").scale("C4:major").jux(rev).s("piano")' label="Escuchar el motivo y su retrogradación, uno en cada oído" />
 
 <Callout tone="info" title="Para la prueba necesitas…">
   Reconocer si una variación es transposición, inversión, retrogradación, aumentación o disminución de un motivo, y repasar intervalos y el campo armónico mayor.

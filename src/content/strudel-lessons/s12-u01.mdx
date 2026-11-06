@@ -1,0 +1,31 @@
+---
+unit: S12-U01
+title: Forma y variaciones
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Secciones con `arrange`
+
+`arrange` recibe pares `[ciclos, patrón]` y los toca en orden. Cada patrón es una sección.
+
+<StrudelRef name="arrange" summary="Encadena secciones: cada par [ciclos, patrón] suena esa cantidad de ciclos, en orden." />
+
+<Example client:visible code={`arrange(
+  [2, n("0 2 4 2").scale("C4:major")],
+  [1, n("3 5 4 3").scale("C4:major")],
+  [1, n("0 2 4 2").scale("C4:major")]
+).s("piano")`} />
+
+## Variaciones
+
+<StrudelRef name="off" summary="Superpone una copia retrasada del patrón, transformada: un canon o un eco con otra nota." />
+<StrudelRef name="superimpose" summary="Superpone una copia transformada del patrón, al mismo tiempo." />
+<StrudelRef name="jux" summary="Toca el patrón original en un lado del estéreo y una versión transformada en el otro." />
+
+<Example client:visible code='note("c4 e4 g4 e4").off(1/8, (x) => x.add(note(12))).s("piano")' />
+
+<Listen showCode client:visible code='n("0 2 4 2").scale("C4:major").superimpose((x) => x.add(note(4))).s("piano")' label="Escuchar el motivo con una copia superpuesta" />
+
+<Listen showCode client:visible code='n("0 2 1 4").scale("C4:major").jux(rev).s("piano")' label="Escuchar el motivo y su retrogradación, uno en cada oído" />

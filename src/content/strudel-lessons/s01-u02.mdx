@@ -1,0 +1,27 @@
+---
+unit: S01-U02
+title: Mini-notation
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  Dentro de las comillas hay un pequeño lenguaje de ritmo, la **mini-notation**: unos pocos símbolos bastan para escribir casi cualquier patrón.
+</Callout>
+
+## Los símbolos básicos
+
+- `~` es un silencio.
+- `*` repite un paso más rápido: `hh*8` son ocho hi-hats en el espacio de uno.
+- `[ ]` mete varios pasos en el espacio de uno.
+- `< >` toma un elemento distinto en cada ciclo.
+- `,` hace sonar dos patrones a la vez.
+
+<Listen showCode client:visible code='s("bd ~ sd ~")' label="Escuchar bombo, silencio, caja, silencio" />
+
+<Listen showCode client:visible code='s("bd [sd sd] bd sd")' label="Escuchar dos cajas en el espacio de una" />
+
+<Listen showCode client:visible code='s("bd <sd cp>, hh*4")' label="Escuchar caja y palmas que se alternan, con hi-hat" />
+
+<Example client:visible code='s("bd [~ bd] <sd cp> ~, hh*8")' />

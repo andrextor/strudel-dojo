@@ -1,0 +1,25 @@
+---
+unit: S04-U03
+title: Transformar patrones
+---
+import Callout from '../../components/ui/Callout.tsx'
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Transformar patrones
+
+Estas cuatro funciones cambian un patrón entero sin reescribirlo:
+
+<StrudelRef name="slow" summary="Estira el patrón: slow(2) dura el doble." />
+<StrudelRef name="fast" summary="Comprime el patrón: fast(2) suena el doble de rápido." />
+<StrudelRef name="rev" summary="Toca el patrón al revés." />
+<StrudelRef name="palindrome" summary="Alterna: un ciclo al derecho, el siguiente al revés." />
+
+<Example client:visible code='n("0 1 2 3 4").scale("C:major").rev().s("piano")' />
+
+<Listen showCode client:visible code='n("0 2 4 6").scale("D:major").fast(2).s("piano")' label="Escuchar un arpegio el doble de rápido" />
+
+<Callout tone="hint" title="Cuidado al contar">
+  `n` cuenta desde 0: el grado I es `0`, el IV es `3` y el V es `4`.
+</Callout>

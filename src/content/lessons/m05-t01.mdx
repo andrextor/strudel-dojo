@@ -3,8 +3,6 @@ topic: M05-T01
 title: Transportar por intervalo
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Staff from '../../components/music/Staff.tsx'
 import Callout from '../../components/ui/Callout.tsx'
@@ -35,26 +33,10 @@ Así, Re–Sol–Do♯–La subido una tercera mayor queda **Fa♯–Si–Mi♯�
 
 Los acordes se transportan igual: Do mayor (C E G) subido una cuarta justa es Fa mayor (F A C).
 
-## Strudel: `transpose`
-
-`transpose` sube (o baja, con números negativos) todas las notas. Acepta semitonos (`7`) o un intervalo con su nombre en inglés (`"5P"` es quinta justa, `"3M"` tercera mayor, `"2m"` segunda menor).
-
-<StrudelRef name="transpose" summary="Transporta todas las notas: en semitonos (7) o por intervalo (5P, 3M)." />
-
-<Example client:visible code='note("c4 e4 g4 e4").transpose("5P").s("piano")' />
-
-Con `< >` puedes transportar un poco cada ciclo: aquí la frase suena en Do y después una cuarta arriba, en Fa.
-
-<Listen client:visible code='note("c4 e4 g4 e4").transpose("<0 5>").s("piano")' label="Escuchar la frase en Do y luego una cuarta justa arriba" />
-
-Otra forma: sumar notas con `add`. `add(note(4))` sube todo 4 semitonos, una tercera mayor.
-
-<Example client:visible code='note("c4 e4 g4 c5").add(note(4)).s("piano")' />
-
 <details>
   <summary>¿Y si transporto hacia abajo?</summary>
 
-Bajar una cuarta justa da las mismas notas que subir una quinta justa, una octava más abajo: Do→Sol en los dos casos. En Strudel, `transpose(-5)` baja 5 semitonos y `transpose("-4P")` baja una cuarta justa. Elige la dirección que deje la melodía en un registro cómodo.
+Bajar una cuarta justa da las mismas notas que subir una quinta justa, una octava más abajo: Do→Sol en los dos casos. Elige la dirección que deje la melodía en un registro cómodo.
 </details>
 
 <Callout tone="info" title="Para la prueba necesitas…">

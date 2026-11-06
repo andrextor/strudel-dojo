@@ -1,0 +1,14 @@
+---
+unit: S05-U03
+title: Apilar terceras
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Apilar terceras con `add`
+
+`add` suma un número a cada valor. Si sumas `[0,2,4]` a un grado dentro de `n`, obtienes la tríada de ese grado, y `scale` se encarga del deletreo:
+
+<StrudelRef name="add" summary="Suma un valor a cada nota o número del patrón." />
+
+<Example client:visible code='n("<0 1 2 3 4 5 6>".add("[0,2,4]")).scale("D:major").s("piano")' />

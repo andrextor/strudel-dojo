@@ -1,0 +1,24 @@
+---
+unit: S07-U03
+title: Secciones en dos tonalidades
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Secciones con `arrange`
+
+`arrange` encadena secciones. Cada una dice cuántos ciclos dura y qué patrón suena:
+
+<StrudelRef name="arrange" summary="Encadena secciones: cada una es [ciclos, patrón] y suena durante esos ciclos." />
+
+<Example client:visible code={`arrange(
+  [2, n("0 2 4 2").scale("C4:major")],
+  [2, n("0 2 4 2").scale("G4:major")]
+).s("piano")`} />
+
+La misma idea con acordes: tres ciclos en Do que terminan en el pivote, y tres que confirman Sol.
+
+<Example client:visible code={`arrange(
+  [3, chord("<C F Am>")],
+  [3, chord("<D G G>")]
+).voicing().s("piano")`} />

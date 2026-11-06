@@ -3,8 +3,6 @@ topic: M03-T01
 title: Tríadas
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Fretboard from '../../components/lesson/LessonFretboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
@@ -45,19 +43,6 @@ Las tres notas son letras alternas: si la fundamental es Fa♯, las letras son F
 La forma de "Mi mayor" al aire contiene solo tres notas distintas, repetidas en varias octavas:
 
 <Fretboard highlight={["E", "G#", "B"]} frets={4} label="Mi, Sol♯ y Si: Mi mayor en las primeras posiciones" />
-
-## Strudel: acordes con `note` y con `chord`
-
-Con `note`, la coma dentro de `[ ]` hace sonar las notas juntas. Con `chord` escribes el cifrado y `voicing` lo convierte en notas, eligiendo una buena distribución.
-
-<StrudelRef name="chord" summary="Escribe acordes por su cifrado: C, Am, Bo (disminuido), Caug." />
-<StrudelRef name="voicing" summary="Convierte el cifrado de chord en notas reales, bien repartidas." />
-
-<Example client:visible code='chord("<C Am F G>").voicing().s("piano")' />
-
-<Callout tone="warning" title="Cifrado en Strudel">
-  Dentro de `chord`, la disminuida se escribe con `o` (`Bo`) y la aumentada con `aug` (`Caug`): el `+` tiene otro significado en la mini-notation.
-</Callout>
 
 <Callout tone="info" title="Para la prueba necesitas…">
   Escribir las tres notas de cualquier tríada mayor, menor, disminuida o aumentada con el deletreo correcto, reconocer su calidad de oído y nombrar intervalos de módulos anteriores.

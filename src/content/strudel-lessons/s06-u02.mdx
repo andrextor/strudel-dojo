@@ -1,0 +1,21 @@
+---
+unit: S06-U02
+title: Frases de dos ciclos
+---
+import Example from '../../features/strudel/Example.tsx'
+
+## Frases de dos ciclos
+
+Una frase corta cabe en dos ciclos: dos acordes por ciclo con `[ ]` dentro de `< >`. El primer ciclo prepara y el segundo hace la cadencia.
+
+<Example client:visible code={`stack(
+  chord("<[C F] [G C]>").voicing().s("piano"),
+  chord("<[C F] [G C]>").rootNotes(2).s("piano")
+)`} />
+
+Si pones otro `< >` **dentro**, ese acorde cambia en cada vuelta de la frase. Aquí la primera vez la frase engaña (G → Am) y la segunda cierra (G → C):
+
+<Example client:visible code={`stack(
+  chord("<[C F] [G <Am C>]>").voicing().s("piano"),
+  chord("<[C F] [G <Am C>]>").rootNotes(2).s("piano")
+)`} />

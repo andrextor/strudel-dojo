@@ -3,8 +3,6 @@ topic: M09-T04
 title: Escala-acorde
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -28,10 +26,6 @@ Es la misma colección de notas; lo que cambia es qué nota sientes como centro.
   n("0 2 4 6 7 6 4 2").scale("<D4:dorian G3:mixolydian C4:major C4:major>").s("piano")
 )`} label="Escuchar un ii–V–I en Do con su modo en cada acorde" />
 
-<Callout tone="warning" title="Cifrado en Strudel">
-  En `chord`, el maj7 se escribe `^7` (`C^7`), el menor con séptima mayor `m^7` (`Cm^7`) y el semidisminuido `m7b5` (`Bm7b5`).
-</Callout>
-
 ## Fuera de la tonalidad: el tipo de acorde manda
 
 Mismo acorde, otra escala según lo que suene en él. Sobre una sola raíz, Do:
@@ -46,10 +40,10 @@ Mismo acorde, otra escala según lo que suene en él. Sobre una sola raíz, Do:
 | Cm(maj7), Cm6 | menor melódica | 3 menor, 6 y 7 mayores |
 | Cø7 | locrio | 3, 5 y 7 bajadas |
 
-<Example client:visible code={`stack(
+<Listen client:visible code={`stack(
   chord("<C^7 C7 Cm7 Cm^7>").voicing().s("piano"),
   n("0 1 2 3 4 5 6 7").scale("<C4:major C4:mixolydian C4:dorian C4:melodic:minor>").s("piano")
-)`} />
+)`} label="Escuchar cuatro acordes sobre Do, cada uno con su escala" />
 
 ## El ii–V–i menor
 
@@ -61,16 +55,6 @@ En una tonalidad menor, la escala cambia en cada acorde porque el V7 necesita la
 | Notas | Si Do Re Mi Fa Sol La | Mi Fa Sol♯ La Si Do Re | La Si Do Re Mi Fa♯ Sol♯ |
 
 <Keyboard low="E4" high="E5" highlight={["E4", "F4", "G#4", "A4", "B4", "C5", "D5", "E5"]} labels="name" label="Mi frigio dominante sobre E7: la ♭9 (Fa) y la sensible Sol♯" />
-
-## Strudel: un improvisador que sigue los acordes
-
-Pon los acordes con `<>` y, en el mismo orden, sus escalas dentro de `scale`. Los grados al azar de `irand` caen siempre en la escala del acorde que suena.
-
-<Listen client:visible code={`stack(
-  chord("<Bm7b5 E7 Am6 Am6>").voicing().s("piano"),
-  chord("<Bm7b5 E7 Am6 Am6>").rootNotes(2).s("piano"),
-  n(irand(8).segment(8)).scale("<B3:locrian E3:phrygian:dominant A3:melodic:minor A3:melodic:minor>").s("piano")
-)`} label="Escuchar un solo al azar sobre el ii–V–i de La menor" />
 
 <details>
   <summary>¿Por qué Am6 y no Am7?</summary>

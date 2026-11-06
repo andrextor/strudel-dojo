@@ -1,0 +1,23 @@
+---
+unit: S10-U04
+title: Bajo cromático
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Bajo cromático con `add` y `segment`
+
+Un bajo cromático sube o baja de semitono en semitono. En vez de escribir cada nota, suma números a una nota de partida: dentro de `note`, `"c2".add("<0 1 2 3>")` da Do, Do♯, Re y Re♯, una por ciclo. Luego `segment` reparte cada ciclo en golpes iguales:
+
+<StrudelRef name="segment" summary="Muestrea el patrón en n golpes iguales por ciclo." />
+
+<Example client:visible code='note("c2".add("<0 1 2 3>")).segment(4).s("piano")' />
+
+Junta las dos ideas: disminuidos de paso arriba y un bajo que sube por semitonos de Do a Mi.
+
+<Example client:visible code={`stack(
+  chord("<C C#o7 Dm D#o7 Em>").voicing(),
+  note("c2".add("<0 1 2 3 4>")).segment(2)
+).s("piano")`} />
+
+En `chord`, el °7 se escribe `o7`: `C#o7`.

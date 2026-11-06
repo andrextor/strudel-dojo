@@ -1,0 +1,14 @@
+---
+unit: S04-U04
+title: Mayor y menor
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+
+## La misma melodía en mayor y en menor
+
+En Strudel, la menor natural es `minor`. Mismos grados con otra escala: la melodía cambia de carácter.
+
+<Example client:visible code='n("0 2 4 2 0 ~ 4 ~").scale("<C:major A:minor>").s("piano")' />
+
+<Listen showCode client:visible code='n("0 1 2 3 4 5 6 7").scale("C:minor").s("piano")' label="Escuchar Do menor, la relativa de Mi♭ mayor" />

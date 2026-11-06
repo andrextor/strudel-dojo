@@ -1,0 +1,21 @@
+---
+unit: S01-U03
+title: Ciclos y euclidianos
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Dividir el ciclo
+
+Un ciclo es un compás, y todo lo que pongas entre comillas se reparte en él: cuatro pasos duran lo mismo que ocho, solo que más separados.
+
+- `@` le da más peso a un paso: en `bd@3 sd` el bombo dura tres pasos y la caja, uno.
+- `!` repite un paso **sin** acelerar: `bd!3 sd` son cuatro pasos.
+- `/` estira un paso a varios ciclos: `bd/2` suena un ciclo sí y otro no.
+- `?` deja sonar el paso solo la mitad de las veces, al azar.
+- `bd(3,8)` reparte 3 golpes en 8 pasos, lo más parejo posible: es un ritmo **euclidiano**. Este en particular es el tresillo cubano.
+
+<Listen showCode client:visible code='s("bd@3 sd")' label="Escuchar bd@3 sd" />
+<Listen showCode client:visible code='s("bd(3,8), hh*8?")' label="Escuchar el tresillo euclidiano con hi-hat al azar" />
+
+<StrudelRef name="euclid" summary="La forma larga de bd(3,8): reparte golpes en pasos de manera pareja." />

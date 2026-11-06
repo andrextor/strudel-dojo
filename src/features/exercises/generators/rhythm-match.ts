@@ -6,10 +6,9 @@ interface Params {
   subdivision: number // number of slots in the bar
 }
 
-// onsets[i] true = hit, false = rest. Rendered as Strudel mini-notation.
-function render(onsets: boolean[]): string {
-  return onsets.map((on) => (on ? 'bd' : '~')).join(' ')
-}
+// onsets[i] true = hit, false = rest.
+const render = (onsets: boolean[]) => onsets.map((on) => (on ? '●' : '·')).join(' ')
+const pattern = (onsets: boolean[]) => onsets.map((on) => (on ? 'bd' : '~')).join(' ')
 
 function randomPattern(rng: Rng, slots: number): boolean[] {
   const onsets = Array.from({ length: slots }, (_, i) => (i === 0 ? true : rng.next() < 0.5))
@@ -54,11 +53,11 @@ export const rhythmMatch: Generator<Params> = {
       key: `rhythm-match:${target.map((o) => (o ? '1' : '0')).join('')}`,
       generator: 'rhythm-match',
       skill: 'rhythm-reading',
-      prompt: 'Escucha el patrón y elige la mini-notación que suena igual.',
+      prompt: 'Escucha el ritmo y elige el dibujo que suena igual.',
       input: { kind: 'rhythm', options },
-      audio: `s("${correct}")`,
+      audio: `s("${pattern(target)}")`,
       answer: { kind: 'choice', index: options.indexOf(correct) },
-      explanation: `El patrón suena como ${correct} (bd = golpe, ~ = silencio).`,
+      explanation: `El ritmo es ${correct} (● = golpe, · = silencio).`,
     }
   },
 }

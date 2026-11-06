@@ -1,0 +1,14 @@
+---
+unit: S05-U02
+title: voicing y anchor
+---
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## `voicing` y `anchor`
+
+`voicing` elige posiciones que se mueven poco de un acorde al siguiente. Con `anchor` decides hasta qué nota llega arriba (por defecto c5): así subes o bajas el registro sin cambiar los acordes.
+
+<StrudelRef name="anchor" summary="Fija la nota más aguda hasta la que llega el voicing (por defecto c5)." />
+
+<Example client:visible code='chord("<C Am F G>").anchor("c4").voicing().s("piano")' />

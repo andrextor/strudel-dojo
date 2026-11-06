@@ -1,0 +1,21 @@
+---
+unit: S09-U04
+title: Dos voces independientes
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+
+## Dos voces independientes en `stack`
+
+Cada voz es su propio patrón; `stack` las hace sonar juntas. Así ves y escuchas cada línea por separado:
+
+<Listen showCode client:visible code='stack(note("<c4 b3 b3 b3>"), note("<f3 f3 e3 e3>"), note("<d2 g2 c2 c2>")).s("piano")' label="Escuchar las notas guía de ii–V–I con el bajo" />
+
+<StrudelRef name="pianoroll" summary="Dibuja las notas como un rollo de pianola; en el Dojo aparece debajo de cada ejemplo." />
+
+En el pianoroll de este ejemplo, las dos voces de arriba casi no se mueven, mientras que el bajo salta. Para que eso sea fácil de leer, el Dojo ya dibuja el pianoroll debajo del editor y de cada ejemplo: no necesitas llamarlo.
+
+El diccionario `guidetones` hace lo mismo a partir del cifrado: toca solo la 3.ª y la 7.ª, eligiendo la posición más cercana.
+
+<Example client:visible code='stack(chord("<Dm7 G7 C^7 C^7>").dictionary("guidetones").voicing(), note("<d2 g2 c2 c2>")).s("piano")' />

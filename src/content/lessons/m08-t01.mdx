@@ -3,7 +3,6 @@ topic: M08-T01
 title: Dominantes secundarias
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -33,12 +32,12 @@ La receta: toma una progresión diatónica y, antes del acorde que quieras resal
 
 <Listen client:visible code='chord("<C E7 Am F>").voicing().s("piano")' label="Escuchar C E7 Am F: el Sol♯ de E7 empuja hacia La" />
 
-Con `stack` puedes sumar el bajo con `rootNotes`, como en el cinturón naranja, y encadenar dos dominantes secundarias seguidas:
+También se pueden encadenar dos dominantes secundarias seguidas:
 
-<Example client:visible code={`stack(
+<Listen client:visible code={`stack(
   chord("<C A7 Dm E7 Am G7>").voicing(),
   chord("<C A7 Dm E7 Am G7>").rootNotes(2)
-).s("piano")`} />
+).s("piano")`} label="Escuchar C A7 Dm E7 Am G7, con dos dominantes secundarias" />
 
 <details>
   <summary>¿Por qué no hay V/vii°?</summary>

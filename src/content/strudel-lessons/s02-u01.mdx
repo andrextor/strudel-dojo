@@ -1,0 +1,28 @@
+---
+unit: S02-U01
+title: Sintes y samples
+---
+import Listen from '../../features/strudel/Listen.tsx'
+import Example from '../../features/strudel/Example.tsx'
+import StrudelRef from '../../features/strudel/StrudelRef.astro'
+import Callout from '../../components/ui/Callout.tsx'
+
+<Callout tone="info" title="En 30 segundos">
+  El **diseño de sonido** (*sound design*) decide cómo suena cada nota. Todo empieza por la **fuente**: una grabación (*sample*) o un sinte que genera la onda en el momento.
+</Callout>
+
+## Notas con `note`
+
+Hasta ahora solo sonaba batería. `note` toca alturas: una letra y un número de octava, como `c3` o `g2`. Para esta etapa no hace falta saber más: la teoría llega después.
+
+<StrudelRef name="note" summary="Toca notas por nombre (c3, g2) o por número MIDI." />
+
+## Sintes y samples
+
+Un **sample** es una grabación: `piano`, `bd`, o los **soundfonts** General MIDI como `gm_epiano1` o `gm_acoustic_bass`. Un **sinte** genera la onda en el momento: `sawtooth` (brillante), `square` (hueco), `triangle` (suave), `sine` (puro).
+
+<Listen showCode client:visible code='note("<c3 e3 g3 c4>").s("<sawtooth square triangle sine>")' label="Escuchar cuatro ondas: sierra, cuadrada, triangular y senoidal" />
+
+<Listen showCode client:visible code='note("[c3,e3,g3] [a2,c3,e3]").s("gm_epiano1")' label="Escuchar un soundfont de piano eléctrico" />
+
+<Example client:visible code='note("c3 e3 g3 c4").s("triangle")' />

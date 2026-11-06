@@ -3,7 +3,6 @@ topic: M02-T04
 title: Relativa menor y menor natural
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Fretboard from '../../components/lesson/LessonFretboard.tsx'
 import Staff from '../../components/music/Staff.tsx'
@@ -32,14 +31,6 @@ Con la fórmula T-S-T-T-S-T-T, los semitonos caen entre los grados 2–3 y 5–6
 <Staff client:visible abc={'X:1\nL:1/4\nK:Em\nE F G A | B c d e |]'} label="Mi menor natural, con la misma armadura de Sol mayor (Fa♯)" />
 
 <Fretboard highlight={["A", "B", "C", "D", "E", "F", "G"]} frets={5} label="La menor natural del traste 0 al 5: las mismas notas que Do mayor" />
-
-## Strudel: la misma melodía en mayor y en menor
-
-En Strudel, la menor natural es `minor`. Mismos grados con otra escala: la melodía cambia de carácter.
-
-<Example client:visible code='n("0 2 4 2 0 ~ 4 ~").scale("<C:major A:minor>").s("piano")' />
-
-<Listen client:visible code='n("0 1 2 3 4 5 6 7").scale("C:minor").s("piano")' label="Escuchar Do menor, la relativa de Mi♭ mayor" />
 
 <details>
   <summary>¿Por qué "natural"?</summary>

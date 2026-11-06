@@ -3,8 +3,6 @@ topic: M06-T02
 title: Nota característica
 ---
 import Listen from '../../features/strudel/Listen.tsx'
-import Example from '../../features/strudel/Example.tsx'
-import StrudelRef from '../../features/strudel/StrudelRef.astro'
 import Keyboard from '../../components/lesson/LessonKeyboard.tsx'
 import Callout from '../../components/ui/Callout.tsx'
 
@@ -34,14 +32,6 @@ import Callout from '../../components/ui/Callout.tsx'
 Una **vamp** es un acorde o dos que se repiten mientras la melodía da vueltas. Sobre una vamp de un solo acorde, la nota característica es la que dice el modo: cae en tiempo fuerte, dura más o suena más fuerte.
 
 <Listen client:visible code='stack(note("d2").s("piano"), n("0 2 5 4 5 2 0 ~").scale("D3:dorian").s("piano"))' label="Escuchar una vamp en Re dórico que insiste en Si" />
-
-## Strudel: acentuar con `gain`
-
-`gain` controla el volumen de cada evento. Con una secuencia de valores, acentúas justo la nota característica:
-
-<StrudelRef name="gain" summary="Volumen de cada nota (1 es normal; menos, más suave)." />
-
-<Example client:visible code='n("0 3 4 3 0 3 4 3").scale("F:lydian").gain("0.6 1 0.6 1 0.6 1 0.6 1").s("piano")' />
 
 <details>
   <summary>¿Y el jónico?</summary>
