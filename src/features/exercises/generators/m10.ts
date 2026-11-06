@@ -441,18 +441,14 @@ const TIMBRE: readonly Concept[] = [
   { term: 'Onda de sierra', does: 'Un sonido brillante, lleno de armónicos' },
 ]
 
+// Each entry must rule out the others: distractors come from this same list.
 const TENSION: readonly Concept[] = [
-  { term: 'Build-up', does: 'Sube poco a poco la densidad y el brillo antes de un punto alto' },
-  { term: 'Corte', does: 'Todo calla un instante y vuelve el ritmo completo' },
-  { term: 'Pedal', does: 'El bajo se queda en una nota mientras arriba cambia la armonía' },
-  { term: 'Más densidad', does: 'Sube la tensión con más notas por compás' },
-  { term: 'Registro agudo', does: 'Sube la tensión llevando las voces hacia arriba' },
-  { term: 'Tónica', does: 'Libera la tensión con el acorde de reposo' },
-  {
-    term: 'Entrada por capas',
-    does: 'Los instrumentos aparecen uno a uno para hacer crecer la pieza',
-  },
-  { term: 'Respiro', does: 'Baja la densidad después de un punto alto para dar contraste' },
+  { term: 'Build-up', does: 'Crecimiento gradual que prepara un punto alto' },
+  { term: 'Clímax', does: 'El momento de mayor intensidad de la pieza' },
+  { term: 'Corte', does: 'Un silencio súbito antes de que todo vuelva a entrar' },
+  { term: 'Pedal', does: 'Una nota grave fija mientras la armonía cambia encima' },
+  { term: 'Resolución', does: 'La llegada al acorde de tónica, que suelta la tensión' },
+  { term: 'Respiro', does: 'Una bajada de densidad justo después de un punto alto' },
 ]
 
 function conceptGenerator(id: string, skill: string, catalog: readonly Concept[]) {

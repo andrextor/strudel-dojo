@@ -83,7 +83,7 @@ M10-T03 y M10-T04 hoy preguntan por funciones (`¿Qué hace \`lpf\` en Strudel?`
 | Tema | Pasa a ser | Generador nuevo | Skill nueva |
 |------|------------|-----------------|-------------|
 | M10-T03 Diseño de sonido | **Timbre y envolvente**: formas de onda, ADSR, filtros y efectos como conceptos, sin código. | `timbre-concept` | `timbre` |
-| M10-T04 Performance | **Tensión y liberación**: build-up, corte, pedal, densidad y registro. | `tension-device` | `tension-release` |
+| M10-T04 Performance | **Tensión y liberación**: build-up, clímax, corte, pedal, resolución y respiro. | `tension-device` | `tension-release` |
 
 `sound-design` y `performance-signal` se conservan como `practice` de las unidades S02 y S12. Salen de las pruebas y del examen de M10.
 
