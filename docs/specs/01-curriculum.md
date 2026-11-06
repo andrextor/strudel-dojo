@@ -1,5 +1,7 @@
 # 01 · Currículo
 
+> **Actualizado por `09-two-courses.md`.** Este documento es el plan original por módulos: la columna Strudel de cada tabla y los combates pasaron al curso Strudel, donde las katas y los combates viven en `src/content/stages/`. La teoría se aprueba con pruebas y examen de cinturón. M10-T03 y M10-T04 son ahora *Timbre y envolvente* y *Tensión y liberación*.
+
 Diez cinturones. Cada uno tiene 4 temas, y cada tema une teoría (T) con una pista Strudel (S). Los ids son estables: módulo `M01`…`M10`, tema `M01-T01`, kata `M01-T01-K1`, combate `M01-BOSS`.
 
 Leyenda de tipos de ejercicio (definidos en `03-exercise-engine.md`): `choice`, `note`, `note-set`, `interval`, `chord`, `roman`, `transpose`, `staff-read`, `ear-interval`, `ear-chord`, `ear-scale`, `ear-melody`, `rhythm`. Las katas usan las aserciones de `04-strudel-engine.md`.

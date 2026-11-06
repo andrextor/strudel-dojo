@@ -27,17 +27,20 @@ Versiones: se fijan exactas en `package.json`. La base son las de la referencia 
 
 Este proyecto **no usa query strings para ids**, a diferencia de la referencia: el contenido es estático y conocido en build, así que cada tema tiene su página generada con `getStaticPaths`. Solo el estado (progreso) vive en el cliente.
 
-Los segmentos son los ids en minúsculas y sin prefijo repetido: `M01-T03-K1` → `/m/m01/t03/kata/k1`. `combate` y `examen` son rutas estáticas y ganan sobre `[topic]`. Los módulos `draft` no generan páginas de tema.
+Los segmentos son los ids en minúsculas y sin prefijo repetido: `M01-T03` → `/m/m01/t03`. Las katas usan el id entero, `/strudel/kata/m01-t03-k1`, para no depender de su posición. `examen` y `combate` son rutas estáticas y ganan sobre `[topic]` y `[unit]`. Los módulos `draft` no generan páginas de tema.
 
 | Ruta | Isla principal | Contenido |
 |------|----------------|-----------|
-| `/` | `Home` | Selector de perfil la primera vez; luego, el camino de cinturones, "Continuar" y la racha. |
+| `/` | `Home` | Selector de perfil la primera vez; luego, un "Continuar" por curso, el camino de cinturones y la racha. |
 | `/m/[module]` | `ModuleView` | Temas con su estado y examen de cinturón. |
-| `/m/[module]/[topic]` | lección MDX (estática) + `TopicPanel` | Lección arriba; abajo, pestañas Práctica · Prueba · Katas. |
+| `/m/[module]/[topic]` | lección MDX (estática) + `TopicPanel` | Lección arriba; abajo, pestañas Práctica · Prueba y enlaces a Strudel. |
 | `/m/[module]/[topic]/prueba` | `TestView` | Prueba calificada. |
-| `/m/[module]/[topic]/kata/[kata]` | `KataView` | Editor, brief, aserciones en vivo, pista. |
-| `/m/[module]/combate` | `BossView` | Editor, rúbrica, envío al Sensei. |
 | `/m/[module]/examen` | `TestView` (placement) | Examen de cinturón. |
+| `/strudel` | `StrudelHome` | Las 12 etapas y "Continuar". |
+| `/strudel/[stage]` | `StageView` | Unidades con estado y combate. |
+| `/strudel/[stage]/[unit]` | lección MDX + `UnitPanel` | Lección arriba; abajo, katas y práctica opcional. |
+| `/strudel/[stage]/combate` | `BossView` | Editor, rúbrica, envío al Sensei. |
+| `/strudel/kata/[kata]` | `KataView` | Editor, brief, aserciones en vivo, pista. |
 | `/resultado?intento=` | `ResultView` | El intento es dinámico (cliente), por eso usa query. |
 | `/repaso` | `ReviewSession` | Repaso espaciado. |
 | `/oido` | `EarGym` | Entrenamiento auditivo libre por tipo. |
@@ -51,7 +54,7 @@ Los segmentos son los ids en minúsculas y sin prefijo repetido: `M01-T03-K1` �
 src/
   pages/                    # solo rutas
   layouts/BaseLayout.astro
-  content/                  # modules/*.json, lessons/*.mdx
+  content/                  # modules/*.json, lessons/*.mdx, stages/*.json, strudel-lessons/*.mdx
   content.config.ts         # esquemas zod
   components/
     ui/                     # Button (buttonClass), BeltBadge, ProgressBar, StatusBadge, Tabs, Callout…
@@ -60,6 +63,7 @@ src/
     theory/                 # parseNoteInput, deletreo, intervalos, helpers sobre tonal (puro)
     exercises/              # generators/*, grade.ts, registry.ts, Question UI (QuestionCard.tsx)
     strudel/                # engine, evaluate, query, assertions, errors, editor e islas de lección
+    strudel-course/         # vistas del curso Strudel: etapas, unidades, requisito de teoría
     curriculum/             # acceso tipado a las colecciones + curriculum.test.ts
     progress/               # rules, persist, store, use-progress, points, streak
     profiles/               # perfiles, selector

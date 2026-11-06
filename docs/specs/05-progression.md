@@ -15,12 +15,18 @@ Todas las reglas viven en `src/features/progress/rules.ts` como funciones puras 
 9. Una prueba abierta se guarda pregunta por pregunta: si se cierra la pestaña, se retoma.
 10. **Kata con ayuda**: "Ver solución" se habilita tras 3 intentos fallidos. Ver la solución no aprueba nada: la kata se aprueba igual que siempre, al pasar las aserciones con tu código, pero queda `helped: true` y no da XP de kata. Cuenta como aprobada para el tema.
 
+## Curso Strudel
+
+Las reglas S1–S6 de `09-two-courses.md` también viven en `rules.ts`: etapas en cadena, unidades que pueden pedir temas de teoría, y un combate que cierra cada etapa.
+
 ## Estados
 
 ```ts
 type TopicStatus = 'locked' | 'not_started' | 'in_progress' | 'passed' | 'passed_by_placement'
 type ModuleStatus = 'locked' | 'available' | 'exam_ready' | 'passed' | 'draft'
 type KataStatus = 'not_started' | 'attempted' | 'passed'
+type StageStatus = 'locked' | 'available' | 'boss_ready' | 'passed'
+type UnitStatus = 'locked' | 'needs_theory' | 'not_started' | 'in_progress' | 'passed'
 ```
 
 ## Datos guardados (por perfil)
@@ -62,6 +68,7 @@ interface BossRecord {
 Los puntos (XP) y la racha **se derivan** de lo guardado y nunca se almacenan, así no pueden desincronizarse:
 - XP: 10 por pregunta correcta en prueba (5 si se pidió pista), contando solo el **mejor intento entregado** de cada prueba, para que repetirla no infle el XP; 2 por correcta en práctica, con tope de 100 por día de `practiceDays`; 30 por kata aprobada sin ayuda; 100 por tema; 300 por combate.
 - Racha: días consecutivos con al menos una actividad calificada (`submittedAt`, `passedAt` de kata, o un día de `practiceDays` con `answered >= 10`).
+- Cualquier combate con un registro aprobado suma sus 300, sin importar a qué etapa pertenece.
 - El rango visible es el cinturón del último módulo aprobado. Las "rayas" (stripes, 0–4) del cinturón siguiente cuentan los temas aprobados de ese módulo.
 
 ## Perfiles

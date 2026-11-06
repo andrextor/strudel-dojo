@@ -1,6 +1,6 @@
 # 09 · Dos cursos: Teoría y Strudel
 
-Este spec define la separación de la app en dos cursos. Mientras P13–P16 no estén terminadas, **manda sobre** los specs 00, 01, 02, 03, 05, 06 y 07 y sobre `DESIGN.md` en lo que los contradiga. Cada fase corrige esos specs en su propio PR (la lista está en cada plan). Al cerrar P16, este documento queda como registro de la decisión y de la clasificación.
+Este spec define la separación de la app en dos cursos. **Aplicado** en P13–P16 (rama `feat/two-courses`): los specs 00–07 y `DESIGN.md` ya reflejan el cambio, y este documento queda como fuente de las reglas de etapas, registro de la decisión y clasificación de katas.
 
 ## Por qué
 
@@ -224,7 +224,7 @@ Sin requisitos de teoría.
 |--------|----------|---------------|-------|
 | S01-U01 Primeros sonidos | — | m01-t01 `## Strudel` | Mover M01-T01-K1, M01-T01-K2 |
 | S01-U02 Mini-notation | — | m01-t03 `## Strudel`, reescrita con batería | Nuevas S01-U02-K1, K2, K3 (`~`, `*`, `[ ]`, `< >`, `,`) |
-| S01-U03 Ciclos y euclidianos | — | m01-t04 `## Strudel` | Mover M01-T04-K1 · Adaptar M01-T04-K2 (sin "corcheas") · Nueva S01-U03-K1 (`/`, `!`, `?`) |
+| S01-U03 Ciclos y euclidianos | — | m01-t04 `## Strudel` | Mover M01-T04-K1 · Adaptar M01-T04-K2 (sin "corcheas") · Nueva S01-U03-K1 (`!`) |
 | S01-U04 Capas de batería | — | m01-t04 (bloque `stack`) | Nuevas S01-U04-K1, K2 |
 
 Combate **S01-BOSS** (nuevo): beat de 4 compases solo con batería, con variación entre compases. `usesFunction: stack`, `soundsInclude: bd, sd, hh`, `sectionsDistinct: 2`.
