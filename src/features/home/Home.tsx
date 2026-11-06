@@ -1,22 +1,30 @@
 import {
   ArrowRight,
   Award,
+  Code,
   Download,
   Ear,
   Guitar,
   Lock,
   Repeat,
+  Swords,
   Terminal,
   TrendingUp,
 } from 'lucide-preact'
 import BeltBadge from '../../components/ui/BeltBadge.tsx'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge, { type Status } from '../../components/ui/StatusBadge.tsx'
-import { examHref, moduleHref, topicHref } from '../curriculum/paths.ts'
-import type { Module } from '../curriculum/schema.ts'
+import { bossHref, examHref, moduleHref, topicHref, unitHref } from '../curriculum/paths.ts'
+import type { Module, Stage } from '../curriculum/schema.ts'
 import ProfilePicker from '../profiles/ProfilePicker.tsx'
 import { needsBackupReminder } from '../progress/persist.ts'
-import { isTopicPassed, moduleStatus, recommendedNext } from '../progress/rules.ts'
+import {
+  isStagePassed,
+  isTopicPassed,
+  moduleStatus,
+  recommendedNext,
+  recommendedStrudel,
+} from '../progress/rules.ts'
 import type { ModuleStatus } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
 import { dueSkills, reviewMixes } from '../review/schedule.ts'
@@ -30,6 +38,7 @@ const MODULE_STATUS: Record<ModuleStatus, { status: Status; label: string }> = {
 }
 
 const SHORTCUTS = [
+  { href: '/strudel', label: 'Strudel', Icon: Code },
   { href: '/repaso', label: 'Repaso', Icon: Repeat },
   { href: '/oido', label: 'Oído', Icon: Ear },
   { href: '/diapason', label: 'Diapasón', Icon: Guitar },
@@ -37,7 +46,7 @@ const SHORTCUTS = [
   { href: '/progreso', label: 'Progreso', Icon: TrendingUp },
 ]
 
-export default function Home({ curriculum }: { curriculum: Module[] }) {
+export default function Home({ curriculum, stages }: { curriculum: Module[]; stages: Stage[] }) {
   const { active, progress } = useProgress()
   if (active === null || progress === null) return <ProfilePicker />
 
@@ -48,42 +57,90 @@ export default function Home({ curriculum }: { curriculum: Module[] }) {
   const nextModule = next && curriculum.find((m) => m.id === next.moduleId)
   const nextTopic =
     next?.kind === 'topic' ? nextModule?.topics.find((t) => t.id === next.topicId) : undefined
+  const strudel = recommendedStrudel(progress, curriculum, stages)
+  const strudelStage = strudel && stages.find((s) => s.id === strudel.stageId)
+  const strudelUnit =
+    strudel && strudel.kind !== 'boss'
+      ? strudelStage?.units.find((u) => u.id === strudel.unitId)
+      : undefined
+  const stagesPassed = stages.filter((s) => isStagePassed(progress, s)).length
 
   return (
     <div class="space-y-10">
       <section class="enter space-y-2">
         <h1 class="font-display text-3xl font-bold md:text-4xl">Hola, {active.name}</h1>
-        <p class="text-dojo-muted">Un cinturón por módulo; cada tema aprobado suma una raya.</p>
+        <p class="text-dojo-muted">
+          Dos cursos: teoría para ganar cinturones y Strudel para hacer música con código.
+        </p>
       </section>
 
-      {next && nextModule && (
-        <section class="enter rounded-card bg-dojo-surface p-5 md:p-6" style="--i: 1">
-          <p class="text-sm text-dojo-muted">Continuar · {nextModule.title}</p>
-          <p class="mt-1 font-display text-2xl font-bold">
-            {next.kind === 'exam' ? 'Examen de cinturón' : nextTopic?.title}
+      <div class="enter grid gap-4 md:grid-cols-2" style="--i: 1">
+        <section class="flex flex-col items-start rounded-card bg-dojo-surface p-5 md:p-6">
+          <p class="text-sm text-dojo-muted">
+            Teoría{next && nextModule ? ` · ${nextModule.title}` : ''}
           </p>
-          {nextTopic && <p class="mt-1 text-dojo-muted">{nextTopic.goal}</p>}
-          <a
-            href={next.kind === 'exam' ? examHref(next.moduleId) : topicHref(next.topicId)}
-            class={buttonClass('primary', 'mt-4')}
-          >
-            {next.kind === 'exam' ? (
-              <Award size={18} aria-hidden="true" />
-            ) : (
-              <ArrowRight size={18} aria-hidden="true" />
-            )}
-            {next.kind === 'exam' ? 'Ir al examen' : 'Continuar'}
-          </a>
+          {next && nextModule ? (
+            <>
+              <p class="mt-1 font-display text-2xl font-bold">
+                {next.kind === 'exam' ? 'Examen de cinturón' : nextTopic?.title}
+              </p>
+              {nextTopic && <p class="mt-1 text-dojo-muted">{nextTopic.goal}</p>}
+              <a
+                href={next.kind === 'exam' ? examHref(next.moduleId) : topicHref(next.topicId)}
+                class={buttonClass('primary', 'mt-4')}
+              >
+                {next.kind === 'exam' ? (
+                  <Award size={18} aria-hidden="true" />
+                ) : (
+                  <ArrowRight size={18} aria-hidden="true" />
+                )}
+                {next.kind === 'exam' ? 'Ir al examen' : 'Continuar'}
+              </a>
+            </>
+          ) : (
+            <p class="mt-1 font-display text-2xl font-bold">Curso completo</p>
+          )}
         </section>
-      )}
-      {next === null && (
-        <section class="rounded-card bg-dojo-surface p-5 md:p-6">
-          <p class="font-display text-2xl font-bold">Aprobaste todo lo disponible.</p>
-          <p class="text-dojo-muted">
-            Los próximos cinturones llegan pronto. Mientras, al Dojo libre.
+
+        <section class="flex flex-col items-start rounded-card bg-dojo-surface p-5 md:p-6">
+          <p class="text-sm text-dojo-muted">
+            Strudel · Etapa {Math.min(stagesPassed + 1, stages.length)} de {stages.length}
           </p>
+          {strudel && strudelStage ? (
+            <>
+              <p class="mt-1 font-display text-2xl font-bold">
+                {strudel.kind === 'boss'
+                  ? `Combate: ${strudelStage.boss.title}`
+                  : strudelUnit?.title}
+              </p>
+              <p class="mt-1 text-dojo-muted">
+                {strudel.kind === 'theory'
+                  ? 'Esta unidad espera teoría que todavía no apruebas.'
+                  : strudelUnit?.goal}
+              </p>
+              <a
+                href={
+                  strudel.kind === 'boss' ? bossHref(strudel.stageId) : unitHref(strudel.unitId)
+                }
+                class={buttonClass(strudel.kind === 'theory' ? 'secondary' : 'primary', 'mt-4')}
+              >
+                {strudel.kind === 'boss' ? (
+                  <Swords size={18} aria-hidden="true" />
+                ) : (
+                  <ArrowRight size={18} aria-hidden="true" />
+                )}
+                {strudel.kind === 'boss'
+                  ? 'Ir al combate'
+                  : strudel.kind === 'theory'
+                    ? 'Ver qué falta'
+                    : 'Continuar'}
+              </a>
+            </>
+          ) : (
+            <p class="mt-1 font-display text-2xl font-bold">Curso completo</p>
+          )}
         </section>
-      )}
+      </div>
 
       {(due.length > 0 || remindBackup) && (
         <div class="enter grid gap-3 md:grid-cols-2" style="--i: 2">

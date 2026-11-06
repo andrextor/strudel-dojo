@@ -1,0 +1,420 @@
+{
+  "id": "S10",
+  "order": 10,
+  "title": "Armonía avanzada",
+  "summary": "Dominantes secundarias, préstamos y cromatismo en código.",
+  "prerequisite": "S09",
+  "units": [
+    {
+      "id": "S10-U01",
+      "title": "Dominantes secundarias",
+      "goal": "Insertar dominantes en una progresión.",
+      "lesson": "s10-u01",
+      "requires": ["M08-T01"],
+      "katas": [
+        {
+          "id": "M08-T01-K1",
+          "title": "La dominante de la dominante",
+          "brief": "En Do mayor, cambia el Re menor del segundo ciclo por D7, el V/V: Re, Fa♯, La y Do. Así el Sol del ciclo 3 suena como una llegada.",
+          "starter": "note(\"<[c3,e3,g3] [d3,f3,a3] [g2,b2,d3] [c3,e3,g3]>\").s(\"piano\")",
+          "solution": "note(\"<[c3,e3,g3] [d3,f#3,a3,c4] [g2,b2,d3] [c3,e3,g3]>\").s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "D7", "G", "C"]
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 1,
+              "function": "secondary-dominant"
+            }
+          ],
+          "hints": [
+            "Un V7 es mayor con séptima menor: sube la tercera (`f3` → `f#3`) y agrega `c4`.",
+            "Fa♯ es la sensible de Sol: está medio tono abajo y lo empuja hacia arriba."
+          ]
+        },
+        {
+          "id": "M08-T01-K2",
+          "title": "Hacia el sexto grado",
+          "brief": "En la progresión C Em Am F, cambia el Em por E7, el V/vi, para que el La menor llegue con fuerza. Usa `chord` y `voicing`.",
+          "starter": "chord(\"<C Em Am F>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<C E7 Am F>\").voicing().s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["chord", "voicing"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "E7", "Am", "F"]
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 1,
+              "function": "secondary-dominant"
+            }
+          ],
+          "hints": ["El V de La es Mi: con séptima de dominante, `E7`. Su Sol♯ sube a La."]
+        },
+        {
+          "id": "M08-T01-K3",
+          "title": "Dos dominantes y un bajo",
+          "brief": "Toca C A7 Dm E7 Am G7 en Do mayor (dos dominantes secundarias: V/ii y V/vi) con `voicing` arriba y la fundamental en el bajo con `rootNotes`, en `stack`.",
+          "starter": "stack(\n  chord(\"<C Am Dm Em Am G7>\").voicing(),\n  chord(\"<C Am Dm Em Am G7>\").rootNotes(2)\n).s(\"piano\")",
+          "solution": "stack(\n  chord(\"<C A7 Dm E7 Am G7>\").voicing(),\n  chord(\"<C A7 Dm E7 Am G7>\").rootNotes(2)\n).s(\"piano\")",
+          "cycles": 6,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack", "rootNotes"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "A7", "Dm", "E7", "Am", "G7"]
+            },
+            {
+              "type": "rootsPerBar",
+              "roots": ["C", "A", "D", "E", "A", "G"]
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 1,
+              "function": "secondary-dominant"
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 3,
+              "function": "secondary-dominant"
+            }
+          ],
+          "hints": [
+            "Cada dominante va justo antes de su acorde: A7 antes de Dm y E7 antes de Am.",
+            "Cambia los acordes en las dos líneas del `stack` para que el bajo los siga."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S10-U02",
+      "title": "Comparar versiones",
+      "goal": "Alternar armonías con `< >` y `sometimes`.",
+      "lesson": "s10-u02",
+      "requires": ["M08-T02"],
+      "katas": [
+        {
+          "id": "M08-T02-K1",
+          "title": "El iv menor",
+          "brief": "Toca C F Fm C: el Fa mayor y, justo después, el Fa menor prestado de Do menor.",
+          "starter": "chord(\"<C F F C>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<C F Fm C>\").voicing().s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "F", "Fm", "C"]
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 2,
+              "function": "borrowed"
+            }
+          ],
+          "hints": ["Solo cambia la tercera: La pasa a La♭. En `chord`, `Fm`."]
+        },
+        {
+          "id": "M08-T02-K2",
+          "title": "♭VI–♭VII–I",
+          "brief": "La cadencia épica de las bandas sonoras: en Do mayor toca C, A♭, B♭ y de vuelta a C, con los dos acordes del medio prestados de Do menor.",
+          "starter": "chord(\"<C Am G C>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<C Ab Bb C>\").voicing().s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "Ab", "Bb", "C"]
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 1,
+              "function": "borrowed"
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 2,
+              "function": "borrowed"
+            }
+          ],
+          "hints": ["El ♭VI de Do es La♭ mayor (`Ab`) y el ♭VII es Si♭ mayor (`Bb`)."]
+        },
+        {
+          "id": "M08-T02-K3",
+          "title": "Dos versiones en una",
+          "brief": "Haz que C F G C suene dos veces: la primera con el IV mayor y la segunda con el iv menor, anidando `<F Fm>` dentro de la progresión. Añade `sometimes` para que algunos ciclos suban una octava.",
+          "starter": "chord(\"<C F G C>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<C <F Fm> G C>\").voicing().sometimes(x => x.add(note(12))).s(\"piano\")",
+          "cycles": 8,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["sometimes"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "F", "G", "C", "C", "Fm", "G", "C"]
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 5,
+              "function": "borrowed"
+            }
+          ],
+          "hints": [
+            "Un `< >` dentro de otro avanza una vez por vuelta: `<C <F Fm> G C>` toca F en la primera y Fm en la segunda.",
+            "`sometimes(x => x.add(note(12)))` sube una octava más o menos la mitad de las veces."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S10-U03",
+      "title": "Sustitución tritonal",
+      "goal": "Reharmonizar un ii–V–I.",
+      "lesson": "s10-u03",
+      "requires": ["M08-T03"],
+      "katas": [
+        {
+          "id": "M08-T03-K1",
+          "title": "ii–♭II7–I",
+          "brief": "Reharmoniza Dm7 G7 Cmaj7: cambia el G7 por su sustituto tritonal, D♭7 (Re♭, Fa, La♭, Do♭).",
+          "starter": "note(\"<[d3,f3,a3,c4] [g2,b2,d3,f3] [c3,e3,g3,b3]>\").s(\"piano\")",
+          "solution": "note(\"<[d3,f3,a3,c4] [db3,f3,ab3,cb4] [c3,e3,g3,b3]>\").s(\"piano\")",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["Dm7", "Db7", "Cmaj7"]
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 1,
+              "function": "tritone-sub"
+            }
+          ],
+          "hints": [
+            "D♭7 está a un tritono de G7. Sus notas: `db3`, `f3`, `ab3` y `cb4` (Do♭ suena como Si).",
+            "Fíjate en que Fa y Do♭/Si ya estaban en G7: es el tritono que comparten."
+          ]
+        },
+        {
+          "id": "M08-T03-K2",
+          "title": "El bajo baja por semitonos",
+          "brief": "En Fa mayor, cambia el C7 de Gm7 C7 Fmaj7 por su sustituto tritonal, G♭7. El bajo debe hacer Sol → Sol♭ → Fa.",
+          "starter": "stack(\n  note(\"<[f3,bb3,d4] [e3,g3,bb3] [e3,a3,c4]>\"),\n  note(\"<g2 c2 f2>\")\n).s(\"piano\")",
+          "solution": "stack(\n  note(\"<[f3,bb3,d4] [e3,bb3,db4] [e3,a3,c4]>\"),\n  note(\"<g2 gb2 f2>\")\n).s(\"piano\")",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["Gm7", "Gb7", "Fmaj7"]
+            },
+            {
+              "type": "rootsPerBar",
+              "roots": ["G", "Gb", "F"]
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "F",
+              "cycle": 1,
+              "function": "tritone-sub"
+            }
+          ],
+          "hints": [
+            "G♭7 es Sol♭, Si♭, Re♭ y Fa♭; Fa♭ suena como Mi, así que arriba puedes dejar `e3`.",
+            "Del C7 conservas Mi y Si♭; solo cambian el bajo (`gb2`) y una voz (`db4`)."
+          ]
+        },
+        {
+          "id": "M08-T03-K3",
+          "title": "Cadena cromática",
+          "brief": "En Do mayor, Em7 A7 Dm7 G7 Cmaj7 es una cadena de dominantes. Cambia A7 y G7 por sus sustitutos tritonales (E♭7 y D♭7): el bajo bajará de Mi a Do por semitonos.",
+          "starter": "stack(\n  note(\"<[d3,g3,b3] [c#3,e3,g3] [c3,f3,a3] [b2,d3,f3] [b2,e3,g3]>\"),\n  note(\"<e2 a2 d2 g2 c2>\")\n).s(\"piano\")",
+          "solution": "stack(\n  note(\"<[d3,g3,b3] [db3,g3,bb3] [c3,f3,a3] [cb3,f3,ab3] [b2,e3,g3]>\"),\n  note(\"<e2 eb2 d2 db2 c2>\")\n).s(\"piano\")",
+          "cycles": 5,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["Em7", "Eb7", "Dm7", "Db7", "Cmaj7"]
+            },
+            {
+              "type": "rootsPerBar",
+              "roots": ["E", "Eb", "D", "Db", "C"]
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 1,
+              "function": "tritone-sub"
+            },
+            {
+              "type": "chordFunctionAt",
+              "key": "C",
+              "cycle": 3,
+              "function": "tritone-sub"
+            }
+          ],
+          "hints": [
+            "El sustituto de A7 es E♭7 (Mi♭, Sol, Si♭, Re♭) y el de G7 es D♭7 (Re♭, Fa, La♭, Do♭).",
+            "Arriba, mueve cada voz lo menos posible; abajo, el bajo es Mi, Mi♭, Re, Re♭, Do."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S10-U04",
+      "title": "Bajo cromático",
+      "goal": "Escribir bajos cromáticos con `add` y `segment`.",
+      "lesson": "s10-u04",
+      "requires": ["M08-T04"],
+      "katas": [
+        {
+          "id": "M08-T04-K1",
+          "title": "Do, Do♯°7, Re menor",
+          "brief": "Entre C y Dm pon el disminuido de paso C♯°7, para que la progresión C C♯°7 Dm G7 suba por semitonos en el bajo. En `chord`, el °7 se escribe `o7`.",
+          "starter": "chord(\"<C A7 Dm G7>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<C C#o7 Dm G7>\").voicing().s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "C#dim7", "Dm", "G7"]
+            }
+          ],
+          "hints": ["C♯°7 son Do♯, Mi, Sol y Si♭: en `chord`, `C#o7`."]
+        },
+        {
+          "id": "M08-T04-K2",
+          "title": "Bajo cromático",
+          "brief": "Escribe un bajo que suba por semitonos de Do a Re♯, una nota por ciclo y en negras (cuatro golpes por ciclo): suma `<0 1 2 3>` a `c2` con `add` y repite con `segment`.",
+          "starter": "note(\"c2\").s(\"piano\")",
+          "solution": "note(\"c2\".add(\"<0 1 2 3>\")).segment(4).s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["add", "segment"]
+            },
+            {
+              "type": "rootsPerBar",
+              "roots": ["C", "C#", "D", "D#"]
+            },
+            {
+              "type": "eventsPerCycle",
+              "min": 4,
+              "max": 4
+            }
+          ],
+          "hints": [
+            "`add` va sobre la cadena, dentro de `note`: `note(\"c2\".add(\"<0 1 2 3>\"))`.",
+            "`segment(4)` parte cada ciclo en cuatro golpes iguales."
+          ]
+        },
+        {
+          "id": "M08-T04-K3",
+          "title": "Escalera de disminuidos",
+          "brief": "Toca C C♯°7 Dm D♯°7 Em con `voicing` y debajo un bajo cromático de Do a Mi hecho con `add` y `segment(2)`, todo en un `stack`.",
+          "starter": "stack(\n  chord(\"<C A7 Dm B7 Em>\").voicing(),\n  note(\"<c2 a2 d2 b2 e2>\")\n).s(\"piano\")",
+          "solution": "stack(\n  chord(\"<C C#o7 Dm D#o7 Em>\").voicing(),\n  note(\"c2\".add(\"<0 1 2 3 4>\")).segment(2)\n).s(\"piano\")",
+          "cycles": 5,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack", "add", "segment"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "C#dim7", "Dm", "D#dim7", "Em"]
+            },
+            {
+              "type": "rootsPerBar",
+              "roots": ["C", "C#", "D", "D#", "E"]
+            }
+          ],
+          "hints": [
+            "Cada disminuido se apoya en el semitono entre dos acordes: C♯°7 entre C y Dm, D♯°7 entre Dm y Em.",
+            "El bajo sube un semitono por ciclo: `\"c2\".add(\"<0 1 2 3 4>\")`."
+          ]
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "id": "M08-BOSS",
+    "title": "Reharmonización",
+    "brief": "Reharmoniza esta melodía de ocho compases en Do mayor sin cambiar sus notas. Pon una dominante secundaria en el compás 2, un acorde prestado de Do menor en el compás 5 y un sustituto tritonal en el compás 7. Explica tus elecciones en un comentario al principio del código: el Sensei lo lee.",
+    "starter": "// Explica aquí, en dos o tres líneas, qué acorde es la dominante secundaria (compás 2),\n// cuál el préstamo (compás 5) y cuál el sustituto tritonal (compás 7), y por qué los elegiste.\nstack(\n  note(\"<[e4 g4 c5 ~] [a4 ~ e4 ~] [f4 e4 d4 ~] [d4 f4 g4 ~] [c5 ~ f4 ~] [e4 g4 c5 ~] [b4 g4 f4 ~] c5>\").s(\"piano\"),\n  chord(\"<C Am Dm G7 F C G7 C>\").voicing().s(\"piano\")\n)",
+    "cycles": 8,
+    "assertions": [
+      {
+        "type": "usesFunction",
+        "names": ["stack"]
+      },
+      {
+        "type": "pitchClassesInclude",
+        "pitchClasses": ["C", "D", "E", "F", "G", "A", "B"]
+      },
+      {
+        "type": "chordFunctionAt",
+        "key": "C",
+        "cycle": 1,
+        "function": "secondary-dominant"
+      },
+      {
+        "type": "chordFunctionAt",
+        "key": "C",
+        "cycle": 4,
+        "function": "borrowed"
+      },
+      {
+        "type": "chordFunctionAt",
+        "key": "C",
+        "cycle": 6,
+        "function": "tritone-sub"
+      }
+    ],
+    "rubric": [
+      {
+        "id": "harmony",
+        "label": "Los tres recursos están en su compás y resuelven bien",
+        "weight": 3
+      },
+      {
+        "id": "melody",
+        "label": "La melodía queda intacta y cada acorde la acompaña sin choques",
+        "weight": 3
+      },
+      {
+        "id": "explanation",
+        "label": "El comentario explica con claridad qué es cada acorde y por qué",
+        "weight": 2
+      },
+      {
+        "id": "music",
+        "label": "Suena musical: voces que se mueven poco y un final que llega",
+        "weight": 2
+      }
+    ],
+    "passScore": 7
+  }
+}

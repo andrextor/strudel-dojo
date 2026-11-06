@@ -3,48 +3,62 @@ import { useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import Callout from '../../components/ui/Callout.tsx'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
-import { moduleHref, topicHref } from '../curriculum/paths.ts'
-import type { Kata, Module } from '../curriculum/schema.ts'
+import { stageHref, unitHref } from '../curriculum/paths.ts'
+import type { Kata, Module, Stage, Unit } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import {
   canSeeSolution,
   markSolutionSeen,
+  missingTheory,
   recordKata,
   SOLUTION_AFTER_FAILS,
-  topicStatus,
+  unitStatus,
 } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
 import { useSenseiEnabled } from '../sensei/client.ts'
 import SenseiHint from '../sensei/SenseiHint.tsx'
 import { runKata } from '../strudel/assertions.ts'
 import StrudelEditor, { type EditorApi } from '../strudel/StrudelEditor.tsx'
+import TheoryGate from '../strudel-course/TheoryGate.tsx'
 import { AssertionList, useAssertions } from './challenge.tsx'
 
 interface Props {
   kata: Kata
-  topicId: string
-  module: Module
+  unit: Unit
+  stage: Stage
+  stages: Stage[]
   curriculum: Module[]
 }
 
-export default function KataView({ kata, topicId, module, curriculum }: Props) {
+export default function KataView({ kata, unit, stage, stages, curriculum }: Props) {
   const { active, progress, updateProgress } = useProgress()
   const { check, test } = useAssertions(kata.assertions, kata.cycles)
   const [hints, setHints] = useState(0)
   const lastCode = useRef('')
   const editor = useRef<EditorApi | null>(null)
   const sensei = useSenseiEnabled()
-  const topic = module.topics.find((t) => t.id === topicId)
   if (active === null || progress === null) return <NeedProfile />
-  if (topic === undefined || topicStatus(progress, curriculum, module, topic) === 'locked') {
+  const status = unitStatus(progress, curriculum, stages, stage, unit)
+  if (status === 'needs_theory') {
+    return (
+      <section class="rounded-card bg-dojo-surface p-5 md:p-6">
+        <TheoryGate
+          topicIds={missingTheory(progress, curriculum, unit)}
+          curriculum={curriculum}
+          progress={progress}
+        />
+      </section>
+    )
+  }
+  if (status === 'locked') {
     return (
       <section class="space-y-3 rounded-card bg-dojo-surface p-5 md:p-6">
         <p class="flex items-center gap-2">
           <Lock size={18} aria-hidden="true" />
           Esta kata está bloqueada.
         </p>
-        <a href={moduleHref(module.id)} class={buttonClass('secondary')}>
-          Ver el módulo
+        <a href={stageHref(stage.id)} class={buttonClass('secondary')}>
+          Ver la etapa
         </a>
       </section>
     )
@@ -66,11 +80,11 @@ export default function KataView({ kata, topicId, module, curriculum }: Props) {
   return (
     <div class="space-y-6">
       <a
-        href={`${topicHref(topicId)}#katas`}
+        href={unitHref(unit.id)}
         class="inline-flex items-center gap-2 text-sm text-dojo-muted hover:text-dojo-neon"
       >
         <ArrowLeft size={16} aria-hidden="true" />
-        {topic.title}
+        {unit.title}
       </a>
       <header class="space-y-2">
         <h1 class="font-display text-2xl font-bold md:text-3xl">{kata.title}</h1>
@@ -166,8 +180,8 @@ export default function KataView({ kata, topicId, module, curriculum }: Props) {
           )}
 
           {passed && (
-            <a href={`${topicHref(topicId)}#katas`} class={buttonClass('primary')}>
-              Volver al tema
+            <a href={unitHref(unit.id)} class={buttonClass('primary')}>
+              Volver a la unidad
             </a>
           )}
         </aside>

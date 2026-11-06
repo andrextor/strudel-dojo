@@ -1,0 +1,269 @@
+{
+  "id": "S02",
+  "order": 2,
+  "title": "Sonido",
+  "summary": "Sintes, envolventes, filtros y efectos: cómo suena cada nota.",
+  "prerequisite": "S01",
+  "units": [
+    {
+      "id": "S02-U01",
+      "title": "Sintes y samples",
+      "goal": "Elegir entre grabaciones y sintes, y tocar notas con `note`.",
+      "lesson": "s02-u01",
+      "requires": [],
+      "katas": [
+        {
+          "id": "S02-U01-K1",
+          "title": "De sample a sinte",
+          "brief": "Cambia el piano por el sinte `sawtooth`.",
+          "starter": "note(\"c3 e3 g3 c4\").s(\"piano\")",
+          "solution": "note(\"c3 e3 g3 c4\").s(\"sawtooth\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["sawtooth"]
+            }
+          ],
+          "hints": ["`s` elige el sonido: una grabación o un sinte."]
+        },
+        {
+          "id": "S02-U01-K2",
+          "title": "Cuatro ondas",
+          "brief": "Con `< >`, haz que cada ciclo suene con una onda distinta: `sawtooth`, `square`, `triangle` y `sine`.",
+          "starter": "note(\"c3 e3 g3 c4\").s(\"sawtooth\")",
+          "solution": "note(\"c3 e3 g3 c4\").s(\"<sawtooth square triangle sine>\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["sawtooth", "square", "triangle", "sine"]
+            }
+          ],
+          "hints": ["`< >` también funciona dentro de `s`."]
+        }
+      ]
+    },
+    {
+      "id": "S02-U02",
+      "title": "Envolvente",
+      "goal": "Dar forma a una nota con `attack` y `release`.",
+      "lesson": "s02-u02",
+      "requires": [],
+      "katas": [
+        {
+          "id": "M10-T03-K2",
+          "title": "Pad que respira",
+          "brief": "Convierte estas notas en un pad: sinte `sawtooth`, ataque lento con `attack` y una cola larga con `release`.",
+          "starter": "note(\"<[a3,c4,e4] [f3,a3,c4] [c3,e3,g3] [g3,b3,d4]>\").s(\"piano\")",
+          "solution": "note(\"<[a3,c4,e4] [f3,a3,c4] [c3,e3,g3] [g3,b3,d4]>\").s(\"sawtooth\").attack(0.5).release(1)",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["attack", "release"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["sawtooth"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["Am", "F", "C", "G"]
+            }
+          ],
+          "hints": [
+            "El piano es un sample y no sostiene: cambia `s(\"piano\")` por `s(\"sawtooth\")`.",
+            "`attack` y `release` se miden en segundos."
+          ]
+        },
+        {
+          "id": "S02-U02-K1",
+          "title": "Golpe corto",
+          "brief": "Haz un sonido percusivo: ataque casi nulo con `attack` y una cola muy corta con `release`.",
+          "starter": "note(\"c3*4\").s(\"triangle\")",
+          "solution": "note(\"c3*4\").s(\"triangle\").attack(0.01).release(0.1)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["attack", "release"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["triangle"]
+            }
+          ],
+          "hints": ["Prueba `attack(0.01)` y `release(0.1)`: se miden en segundos."]
+        }
+      ]
+    },
+    {
+      "id": "S02-U03",
+      "title": "Filtros",
+      "goal": "Oscurecer y aclarar un sonido con `lpf` y `hpf`.",
+      "lesson": "s02-u03",
+      "requires": [],
+      "katas": [
+        {
+          "id": "M10-T03-K1",
+          "title": "Bajo oscuro",
+          "brief": "Este bajo `sawtooth` es muy brillante: ponle un filtro pasa bajos con `lpf` para oscurecerlo (prueba 600).",
+          "starter": "note(\"c2 c2 eb2 g1\").s(\"sawtooth\")",
+          "solution": "note(\"c2 c2 eb2 g1\").s(\"sawtooth\").lpf(600)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["lpf"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["sawtooth"]
+            }
+          ],
+          "hints": ["`.lpf(600)` corta lo que está por encima de 600 Hz."]
+        },
+        {
+          "id": "S02-U03-K1",
+          "title": "Sin graves",
+          "brief": "Quita los graves de este sinte con `hpf`, el filtro pasa altos (prueba 800).",
+          "starter": "note(\"c2 c3 c2 g2\").s(\"sawtooth\")",
+          "solution": "note(\"c2 c3 c2 g2\").s(\"sawtooth\").hpf(800)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["hpf"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["sawtooth"]
+            }
+          ],
+          "hints": ["El número de `hpf` es la frecuencia de corte en Hz."]
+        }
+      ]
+    },
+    {
+      "id": "S02-U04",
+      "title": "Efectos y mezcla",
+      "goal": "Dar espacio y equilibrio con `room`, `delay`, `gain` y `pan`.",
+      "lesson": "s02-u04",
+      "requires": [],
+      "katas": [
+        {
+          "id": "M10-T03-K3",
+          "title": "Sala y eco",
+          "brief": "Cambia el piano por el soundfont `gm_epiano1` y dale espacio con `room` y un eco con `delay`.",
+          "starter": "note(\"c4 eb4 g4 c5\").s(\"piano\")",
+          "solution": "note(\"c4 eb4 g4 c5\").s(\"gm_epiano1\").room(0.6).delay(0.4)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "soundsInclude",
+              "names": ["gm_epiano1"]
+            },
+            {
+              "type": "usesFunction",
+              "names": ["room", "delay"]
+            },
+            {
+              "type": "notesWithinScale",
+              "scale": "C:minor"
+            }
+          ],
+          "hints": ["Los soundfonts se eligen con `s`, como cualquier sonido: `s(\"gm_epiano1\")`."]
+        },
+        {
+          "id": "S02-U04-K1",
+          "title": "Mezcla mínima",
+          "brief": "Baja el hi-hat con `gain` y llévalo a un lado con `pan`, para que el bombo mande.",
+          "starter": "stack(\n  s(\"bd*4\"),\n  s(\"hh*8\")\n)",
+          "solution": "stack(\n  s(\"bd*4\"),\n  s(\"hh*8\").gain(0.4).pan(0.8)\n)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack", "gain", "pan"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "hh"]
+            }
+          ],
+          "hints": ["`pan` va de 0 (izquierda) a 1 (derecha)."]
+        }
+      ],
+      "practice": {
+        "mix": [
+          {
+            "generator": "sound-design",
+            "params": {
+              "functions": [
+                "lpf",
+                "hpf",
+                "lpq",
+                "room",
+                "delay",
+                "shape",
+                "vowel",
+                "attack",
+                "release"
+              ]
+            },
+            "weight": 1
+          }
+        ]
+      }
+    }
+  ],
+  "boss": {
+    "id": "S02-BOSS",
+    "title": "Bajo y pad",
+    "brief": "Crea un bajo y un pad con sonidos distintos. Usa un filtro `lpf` y reverberación con `room`.",
+    "starter": "stack(\n  note(\"c2 ~ c2 g1\").s(\"sawtooth\"),\n  note(\"[c3,e3,g3]\").s(\"triangle\")\n)",
+    "cycles": 2,
+    "assertions": [
+      {
+        "type": "usesFunction",
+        "names": ["lpf", "room"]
+      },
+      {
+        "type": "layerCount",
+        "min": 2
+      }
+    ],
+    "rubric": [
+      {
+        "id": "rhythm",
+        "label": "El bajo marca un pulso claro",
+        "weight": 3
+      },
+      {
+        "id": "sound",
+        "label": "Cada sonido tiene carácter propio",
+        "weight": 3
+      },
+      {
+        "id": "code",
+        "label": "Código claro y fácil de cambiar",
+        "weight": 2
+      },
+      {
+        "id": "music",
+        "label": "Las dos capas suenan bien juntas",
+        "weight": 2
+      }
+    ],
+    "passScore": 7
+  }
+}

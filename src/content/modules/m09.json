@@ -72,76 +72,7 @@
             "weight": 1
           }
         ]
-      },
-      "katas": [
-        {
-          "id": "M09-T01-K1",
-          "title": "La sensible",
-          "brief": "Toca la escala de La menor armónica hacia arriba, de La a La: la natural con el séptimo grado subido.",
-          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"A:minor\").s(\"piano\")",
-          "solution": "n(\"0 1 2 3 4 5 6 7\").scale(\"A:harmonic:minor\").s(\"piano\")",
-          "cycles": 1,
-          "assertions": [
-            {
-              "type": "notesWithinScale",
-              "scale": "A:harmonic minor"
-            },
-            {
-              "type": "pitchClassesInclude",
-              "pitchClasses": ["G#"]
-            }
-          ],
-          "hints": [
-            "El séptimo grado sube de Sol a Sol♯.",
-            "Los nombres con espacio llevan dos puntos en Strudel: `\"A:harmonic:minor\"`."
-          ]
-        },
-        {
-          "id": "M09-T01-K2",
-          "title": "Menor melódica",
-          "brief": "Toca la escala de Do menor melódica hacia arriba: la sexta y la séptima suben respecto de la natural.",
-          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"C:minor\").s(\"piano\")",
-          "solution": "n(\"0 1 2 3 4 5 6 7\").scale(\"C:melodic:minor\").s(\"piano\")",
-          "cycles": 1,
-          "assertions": [
-            {
-              "type": "notesWithinScale",
-              "scale": "C:melodic minor"
-            },
-            {
-              "type": "pitchClassesInclude",
-              "pitchClasses": ["A", "B"]
-            }
-          ],
-          "hints": ["La♭ pasa a La y Si♭ pasa a Si.", "En Strudel: `\"C:melodic:minor\"`."]
-        },
-        {
-          "id": "M09-T01-K3",
-          "title": "Frigio dominante sobre E7",
-          "brief": "Sobre el acorde E7, toca la escala de Mi frigio dominante (La menor armónica desde Mi) en los dos ciclos.",
-          "starter": "stack(\n  chord(\"<E7>\").voicing().s(\"piano\"),\n  n(\"0 1 2 3 4 5 6 7\").scale(\"E4:phrygian\").s(\"piano\")\n)",
-          "solution": "stack(\n  chord(\"<E7>\").voicing().s(\"piano\"),\n  n(\"0 1 2 3 4 5 6 7\").scale(\"E4:phrygian:dominant\").s(\"piano\")\n)",
-          "cycles": 2,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["chord", "scale"]
-            },
-            {
-              "type": "scalePerCycle",
-              "scales": ["E:phrygian dominant"]
-            },
-            {
-              "type": "pitchClassesInclude",
-              "pitchClasses": ["F", "G#"]
-            }
-          ],
-          "hints": [
-            "El frigio tiene Sol; el acorde E7 pide Sol♯.",
-            "La escala se llama `\"E4:phrygian:dominant\"`."
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "M09-T02",
@@ -196,83 +127,7 @@
             "weight": 1
           }
         ]
-      },
-      "katas": [
-        {
-          "id": "M09-T02-K1",
-          "title": "Cinco notas",
-          "brief": "Toca La pentatónica menor hacia arriba, de La a La (seis notas).",
-          "starter": "n(\"0 1 2 3 4 5\").scale(\"A:minor\").s(\"piano\")",
-          "solution": "n(\"0 1 2 3 4 5\").scale(\"A:minor:pentatonic\").s(\"piano\")",
-          "cycles": 1,
-          "assertions": [
-            {
-              "type": "notesWithinScale",
-              "scale": "A:minor pentatonic"
-            },
-            {
-              "type": "eventsPerCycle",
-              "min": 6
-            }
-          ],
-          "hints": [
-            "La pentatónica menor quita el 2.º y el 6.º grado de la menor natural: sin Si ni Fa.",
-            "En Strudel: `\"A:minor:pentatonic\"`."
-          ]
-        },
-        {
-          "id": "M09-T02-K2",
-          "title": "Solo al azar",
-          "brief": "Improvisa sobre La pentatónica menor: ocho notas por ciclo elegidas con `irand` y `segment`, durante cuatro ciclos.",
-          "starter": "n(\"0 2 4 2\").scale(\"A:minor:pentatonic\").s(\"piano\")",
-          "solution": "n(irand(5).segment(8)).scale(\"A4:minor:pentatonic\").s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["irand", "segment"]
-            },
-            {
-              "type": "notesWithinScale",
-              "scale": "A:minor pentatonic"
-            },
-            {
-              "type": "eventsPerCycle",
-              "min": 8
-            }
-          ],
-          "hints": [
-            "`irand(5)` da un grado al azar entre 0 y 4.",
-            "`segment(8)` lo corta en ocho notas por ciclo: `n(irand(5).segment(8))`."
-          ]
-        },
-        {
-          "id": "M09-T02-K3",
-          "title": "La blue note",
-          "brief": "Haz una línea que suba y baje suave con `perlin` sobre Mi blues, y que suene la blue note (Si♭).",
-          "starter": "n(perlin.range(0, 10).segment(8)).scale(\"E3:minor:pentatonic\").s(\"piano\")",
-          "solution": "n(perlin.range(0, 10).segment(8)).scale(\"E3:blues\").s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["range", "segment"]
-            },
-            {
-              "type": "notesWithinScale",
-              "scale": "E:blues"
-            },
-            {
-              "type": "pitchClassesInclude",
-              "pitchClasses": ["Bb"]
-            }
-          ],
-          "hints": [
-            "El blues es la pentatónica menor más la quinta disminuida.",
-            "Cambia la escala a `\"E3:blues\"`."
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "M09-T03",
@@ -332,84 +187,7 @@
             "weight": 2
           }
         ]
-      },
-      "katas": [
-        {
-          "id": "M09-T03-K1",
-          "title": "Todo tonos",
-          "brief": "Toca la escala de tonos enteros desde Do, siete notas hacia arriba (hasta el Do de arriba).",
-          "starter": "n(\"0 1 2 3 4 5 6\").scale(\"C4:major\").s(\"piano\")",
-          "solution": "n(\"0 1 2 3 4 5 6\").scale(\"C4:whole:tone\").s(\"piano\")",
-          "cycles": 1,
-          "assertions": [
-            {
-              "type": "notesWithinScale",
-              "scale": "C:whole tone"
-            },
-            {
-              "type": "pitchClassesInclude",
-              "pitchClasses": ["F#", "G#", "A#"]
-            }
-          ],
-          "hints": [
-            "Solo seis notas distintas, todas a un tono: Do, Re, Mi, Fa♯, Sol♯, La♯.",
-            "En Strudel: `\"C4:whole:tone\"`."
-          ]
-        },
-        {
-          "id": "M09-T03-K2",
-          "title": "Disminuida doble",
-          "brief": "Sobre Do disminuida (tono-semitono), toca los grados 0 2 4 6 y repite cada nota dos veces con `ply`.",
-          "starter": "n(\"0 2 4 6\").scale(\"C4:diminished\").s(\"piano\")",
-          "solution": "n(\"0 2 4 6\").ply(2).scale(\"C4:diminished\").s(\"piano\")",
-          "cycles": 1,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["ply"]
-            },
-            {
-              "type": "notesWithinScale",
-              "scale": "C:diminished"
-            },
-            {
-              "type": "eventsPerCycle",
-              "min": 8
-            }
-          ],
-          "hints": [
-            "`ply(2)` duplica cada evento dentro de su espacio.",
-            "Va sobre `n`: `n(\"0 2 4 6\").ply(2)`."
-          ]
-        },
-        {
-          "id": "M09-T03-K3",
-          "title": "Patrón que rota",
-          "brief": "Con `iter`, haz que el motivo 0 1 2 3 sobre tonos enteros de Do empiece un grado más arriba en cada ciclo.",
-          "starter": "n(\"0 1 2 3\").scale(\"C4:whole:tone\").s(\"piano\")",
-          "solution": "n(\"0 1 2 3\").iter(4).scale(\"C4:whole:tone\").s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["iter"]
-            },
-            {
-              "type": "notesWithinScale",
-              "scale": "C:whole tone"
-            },
-            {
-              "type": "noteSequence",
-              "pitchClasses": ["D", "E", "F#", "C"],
-              "voice": "all",
-              "cycle": 1
-            }
-          ],
-          "hints": [
-            "`iter(4)` divide el ciclo en cuatro y en cada vuelta empieza por la parte siguiente."
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "M09-T04",
@@ -456,71 +234,7 @@
             "weight": 1
           }
         ]
-      },
-      "katas": [
-        {
-          "id": "M09-T04-K1",
-          "title": "Cuatro acordes, una raíz",
-          "brief": "Sobre C^7, C7, Cm7 y Cm^7 (un acorde por ciclo), toca la escala que encaja con cada uno: jónico, mixolidio, dórico y menor melódica.",
-          "starter": "stack(\n  chord(\"<C^7 C7 Cm7 Cm^7>\").voicing().s(\"piano\"),\n  n(\"0 1 2 3 4 5 6 7\").scale(\"C4:major\").s(\"piano\")\n)",
-          "solution": "stack(\n  chord(\"<C^7 C7 Cm7 Cm^7>\").voicing().s(\"piano\"),\n  n(\"0 1 2 3 4 5 6 7\").scale(\"<C4:major C4:mixolydian C4:dorian C4:melodic:minor>\").s(\"piano\")\n)",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "scalePerCycle",
-              "scales": ["C:major", "C:mixolydian", "C:dorian", "C:melodic minor"]
-            }
-          ],
-          "hints": [
-            "Usa `<>` dentro de `scale` para cambiar de escala en cada ciclo.",
-            "C7 tiene Si♭ (mixolidio); Cm7 tiene Mi♭ y Si♭ (dórico); Cm^7 tiene Mi♭ y Si (menor melódica)."
-          ]
-        },
-        {
-          "id": "M09-T04-K2",
-          "title": "ii–V–I con dominante alterado",
-          "brief": "Sobre Dm7, G7alt y C^7 (dos ciclos), improvisa con `irand`: Re dórico, Sol alterada y Do mayor. El bajo toca las fundamentales con `rootNotes`.",
-          "starter": "stack(\n  chord(\"<Dm7 G7 C^7 C^7>\").rootNotes(2).s(\"piano\"),\n  n(irand(8).segment(8)).scale(\"C4:major\").s(\"piano\")\n)",
-          "solution": "stack(\n  chord(\"<Dm7 G7 C^7 C^7>\").rootNotes(2).s(\"piano\"),\n  n(irand(8).segment(8)).scale(\"<D4:dorian G4:altered C4:major C4:major>\").s(\"piano\")\n)",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["irand", "rootNotes"]
-            },
-            {
-              "type": "scalePerCycle",
-              "scales": ["D:dorian", "G:altered", "C:major", "C:major"]
-            }
-          ],
-          "hints": [
-            "Solo cambia el segundo ciclo: Sol alterada en vez de Do mayor.",
-            "En Strudel: `\"<D4:dorian G4:altered C4:major C4:major>\"`."
-          ]
-        },
-        {
-          "id": "M09-T04-K3",
-          "title": "Lidio en cada maj7",
-          "brief": "Sobre C^7, E♭^7, A♭^7 y D♭^7, improvisa con `irand` usando el lidio de cada acorde: la ♯4 da el color.",
-          "starter": "stack(\n  chord(\"<C^7 Eb^7 Ab^7 Db^7>\").voicing().s(\"piano\"),\n  n(irand(8).segment(8)).scale(\"<C4:major Eb4:major Ab4:major Db4:major>\").s(\"piano\")\n)",
-          "solution": "stack(\n  chord(\"<C^7 Eb^7 Ab^7 Db^7>\").voicing().s(\"piano\"),\n  n(irand(8).segment(8)).scale(\"<C4:lydian Eb4:lydian Ab4:lydian Db4:lydian>\").s(\"piano\")\n)",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["irand", "voicing"]
-            },
-            {
-              "type": "scalePerCycle",
-              "scales": ["C:lydian", "Eb:lydian", "Ab:lydian", "Db:lydian"]
-            }
-          ],
-          "hints": [
-            "El lidio es el mayor con la cuarta subida: en Do, Fa♯.",
-            "Cambia `major` por `lydian` en las cuatro escalas."
-          ]
-        }
-      ]
+      }
     }
   ],
   "exam": {
@@ -564,49 +278,5 @@
         "weight": 4
       }
     ]
-  },
-  "boss": {
-    "id": "M09-BOSS",
-    "title": "Solo sobre un ii–V–i menor",
-    "brief": "Improvisa un solo generativo sobre el ii–V–i de La menor, un acorde por ciclo: Bm7♭5, E7, Am6 y Am6. Cada acorde usa su escala: Si locrio sobre Bm7♭5, Mi frigio dominante (La menor armónica desde Mi) sobre E7 y La menor melódica sobre Am6. Usa `scale` con `<>` para cambiar de escala en cada ciclo y `segment` para que el solo tenga al menos ocho notas por ciclo; todo lo que suene (acordes, bajo y solo) debe caber en la escala del ciclo.",
-    "starter": "stack(\n  chord(\"<Bm7b5 E7 Am6 Am6>\").voicing().s(\"piano\"),\n  n(irand(8).segment(8)).scale(\"A4:minor\").s(\"piano\")\n)",
-    "cycles": 4,
-    "assertions": [
-      {
-        "type": "usesFunction",
-        "names": ["scale", "segment"]
-      },
-      {
-        "type": "scalePerCycle",
-        "scales": ["B:locrian", "E:phrygian dominant", "A:melodic minor", "A:melodic minor"]
-      },
-      {
-        "type": "eventsPerCycle",
-        "min": 8
-      }
-    ],
-    "rubric": [
-      {
-        "id": "chord-scale",
-        "label": "Cada acorde suena con su escala y el cambio se oye: Sol♯ en E7, Fa♯ y Sol♯ en Am6",
-        "weight": 3
-      },
-      {
-        "id": "line",
-        "label": "El solo tiene forma: frases, contorno y algo de repetición, no solo azar",
-        "weight": 3
-      },
-      {
-        "id": "code",
-        "label": "Código claro: capas separadas y escalas fáciles de leer",
-        "weight": 2
-      },
-      {
-        "id": "music",
-        "label": "Suena musical y resuelve en La menor",
-        "weight": 2
-      }
-    ],
-    "passScore": 7
   }
 }

@@ -1,0 +1,13 @@
+---
+import { getCurriculum, getStages } from '../../features/curriculum/index.ts'
+import StrudelHome from '../../features/strudel-course/StrudelHome.tsx'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const [curriculum, stages] = await Promise.all([getCurriculum(), getStages()])
+---
+
+<BaseLayout title="Curso Strudel">
+  <StrudelHome client:only="preact" stages={stages} curriculum={curriculum}>
+    <div slot="fallback" class="min-h-96"></div>
+  </StrudelHome>
+</BaseLayout>

@@ -1,0 +1,399 @@
+{
+  "id": "S08",
+  "order": 8,
+  "title": "Modos",
+  "summary": "Colores modales en `scale`, vamps y drones.",
+  "prerequisite": "S07",
+  "units": [
+    {
+      "id": "S08-U01",
+      "title": "El modo dentro de `scale`",
+      "goal": "Tocar los modos como rotaciones.",
+      "lesson": "s08-u01",
+      "requires": ["M06-T01"],
+      "katas": [
+        {
+          "id": "M06-T01-K1",
+          "title": "Re dórico",
+          "brief": "Toca Re dórico de Re a Re, ocho notas, con `n` y `scale`.",
+          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"C:major\").s(\"piano\")",
+          "solution": "n(\"0 1 2 3 4 5 6 7\").scale(\"D:dorian\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["scale"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["D", "E", "F", "G", "A", "B", "C", "D"],
+              "voice": "all"
+            }
+          ],
+          "hints": [
+            "El modo va dentro de `scale`: tónica, dos puntos y el nombre en inglés, `D:dorian`."
+          ]
+        },
+        {
+          "id": "M06-T01-K2",
+          "title": "Mi frigio sin cambiar la escala",
+          "brief": "Deja `scale(\"C:major\")` y toca Mi frigio de Mi a Mi: solo cambian los números.",
+          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"C:major\").s(\"piano\")",
+          "solution": "n(\"2 3 4 5 6 7 8 9\").scale(\"C:major\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["scale"]
+            },
+            {
+              "type": "notesWithinScale",
+              "scale": "C:major"
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["E", "F", "G", "A", "B", "C", "D", "E"],
+              "voice": "all"
+            }
+          ],
+          "hints": [
+            "Mi es el 3.er grado de Do mayor; en `n` se cuenta desde 0, así que empieza en 2.",
+            "Ocho notas seguidas desde el 2: `2 3 4 5 6 7 8 9`."
+          ]
+        },
+        {
+          "id": "M06-T01-K3",
+          "title": "Los siete modos de Do mayor",
+          "brief": "Con una sola línea, toca los siete modos de Do mayor, uno por ciclo, cada uno desde su tónica: suma a los números con `add`.",
+          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"C:major\").s(\"piano\")",
+          "solution": "n(\"0 1 2 3 4 5 6 7\".add(\"<0 1 2 3 4 5 6>\")).scale(\"C:major\").s(\"piano\")",
+          "cycles": 7,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["add", "scale"]
+            },
+            {
+              "type": "notesWithinScale",
+              "scale": "C:major"
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "D", "E", "F", "G", "A", "B", "C"],
+              "voice": "all",
+              "cycle": 0
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["F", "G", "A", "B", "C", "D", "E", "F"],
+              "voice": "all",
+              "cycle": 3
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["B", "C", "D", "E", "F", "G", "A", "B"],
+              "voice": "all",
+              "cycle": 6
+            }
+          ],
+          "hints": [
+            "`add` va sobre la cadena de números, dentro de `n`: `\"0 1 2 …\".add(\"<0 1 2 3 4 5 6>\")`."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S08-U02",
+      "title": "Acentuar la nota característica",
+      "goal": "Destacar el color de cada modo.",
+      "lesson": "s08-u02",
+      "requires": ["M06-T02"],
+      "katas": [
+        {
+          "id": "M06-T02-K1",
+          "title": "El Si de Re dórico",
+          "brief": "Haz una frase en Re dórico donde se oiga su nota característica, Si, en al menos un cuarto de las notas.",
+          "starter": "n(\"0 2 4 2\").scale(\"D:dorian\").s(\"piano\")",
+          "solution": "n(\"0 2 5 4 5 2\").scale(\"D:dorian\").s(\"piano\")",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "notesWithinScale",
+              "scale": "D:dorian"
+            },
+            {
+              "type": "characteristicNoteRatio",
+              "mode": "D:dorian",
+              "minRatio": 0.25
+            }
+          ],
+          "hints": [
+            "Si es el 6.º grado de Re dórico: en `n` es el 5.",
+            "Repite el 5 un par de veces en la frase."
+          ]
+        },
+        {
+          "id": "M06-T02-K2",
+          "title": "Lidio sobre un pedal",
+          "brief": "Sobre un Fa grave que se repite, toca una línea en Fa lidio que insista en Si (la 4.ª aumentada). Usa `stack` para las dos capas.",
+          "starter": "stack(note(\"f2\").s(\"piano\"), n(\"0 2 4 2\").scale(\"F3:lydian\").s(\"piano\"))",
+          "solution": "stack(note(\"f2\").s(\"piano\"), n(\"0 3 4 3\").scale(\"F3:lydian\").s(\"piano\"))",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack"]
+            },
+            {
+              "type": "notesWithinScale",
+              "scale": "F:lydian"
+            },
+            {
+              "type": "characteristicNoteRatio",
+              "mode": "F:lydian",
+              "minRatio": 0.3
+            }
+          ],
+          "hints": ["La 4.ª de Fa lidio es Si: en `n`, el 3."]
+        },
+        {
+          "id": "M06-T02-K3",
+          "title": "Mixolidio con acento",
+          "brief": "Convierte la línea en Sol mixolidio y acentúa su Fa (la 7.ª menor) con `gain`: más fuerte en la característica, más suave en el resto.",
+          "starter": "n(\"0 2 4 6\").scale(\"G:major\").s(\"piano\")",
+          "solution": "n(\"0 2 4 6 4 6\").scale(\"G:mixolydian\").gain(\"0.6 0.6 0.6 1 0.6 1\").s(\"piano\")",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["gain"]
+            },
+            {
+              "type": "notesWithinScale",
+              "scale": "G:mixolydian"
+            },
+            {
+              "type": "characteristicNoteRatio",
+              "mode": "G:mixolydian",
+              "minRatio": 0.3
+            }
+          ],
+          "hints": [
+            "Sol mayor tiene Fa♯; Sol mixolidio, Fa: cambia la escala a `G:mixolydian`.",
+            "El Fa es el 6 en `n`; ponlo dos veces y dale `gain` 1 en esas posiciones."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S08-U03",
+      "title": "Un modo por ciclo",
+      "goal": "Comparar modos paralelos.",
+      "lesson": "s08-u03",
+      "requires": ["M06-T03"],
+      "katas": [
+        {
+          "id": "M06-T03-K1",
+          "title": "Mayor y lidio",
+          "brief": "Toca Do mayor en el ciclo 1 y Do lidio en el ciclo 2 con la misma línea: el modo cambia dentro de `scale`.",
+          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"C:major\").s(\"piano\")",
+          "solution": "n(\"0 1 2 3 4 5 6 7\").scale(\"<C:major C:lydian>\").s(\"piano\")",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["scale"]
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "D", "E", "F", "G", "A", "B", "C"],
+              "voice": "all",
+              "cycle": 0
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "D", "E", "F#", "G", "A", "B", "C"],
+              "voice": "all",
+              "cycle": 1
+            }
+          ],
+          "hints": ["Usa `<>` dentro de `scale`: `scale(\"<C:major C:lydian>\")`."]
+        },
+        {
+          "id": "M06-T03-K2",
+          "title": "La tríada de cada modo",
+          "brief": "Toca la tríada de la tónica (grados 0, 2 y 4) en Do jónico, Do dórico y Do locrio, un modo por ciclo.",
+          "starter": "n(\"[0,2,4]\").scale(\"C:major\").s(\"piano\")",
+          "solution": "n(\"[0,2,4]\").scale(\"<C:ionian C:dorian C:locrian>\").s(\"piano\")",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["scale"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["C", "Cm", "Cdim"]
+            }
+          ],
+          "hints": [
+            "Los grados no cambian: cambia el modo en cada ciclo con `<C:ionian C:dorian C:locrian>`."
+          ]
+        },
+        {
+          "id": "M06-T03-K3",
+          "title": "De brillante a oscuro",
+          "brief": "Toca los siete modos de Do ordenados de más brillante a más oscuro, uno por ciclo: lidio, jónico, mixolidio, dórico, eólico, frigio y locrio.",
+          "starter": "n(\"0 1 2 3 4 5 6 7\").scale(\"<C:lydian C:ionian C:mixolydian C:dorian>\").s(\"piano\")",
+          "solution": "n(\"0 1 2 3 4 5 6 7\").scale(\"<C:lydian C:ionian C:mixolydian C:dorian C:aeolian C:phrygian C:locrian>\").s(\"piano\")",
+          "cycles": 7,
+          "assertions": [
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "D", "E", "F#", "G", "A", "B", "C"],
+              "voice": "all",
+              "cycle": 0
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "D", "Eb", "F", "G", "A", "Bb", "C"],
+              "voice": "all",
+              "cycle": 3
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["C", "Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
+              "voice": "all",
+              "cycle": 6
+            }
+          ],
+          "hints": [
+            "Faltan tres modos: después del dórico baja la 6.ª (eólico), luego la 2.ª (frigio) y luego la 5.ª (locrio)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S08-U04",
+      "title": "Vamps y drones",
+      "goal": "Sostener un modo con vamps y pedales.",
+      "lesson": "s08-u04",
+      "requires": ["M06-T04"],
+      "katas": [
+        {
+          "id": "M06-T04-K1",
+          "title": "Vamp dórica",
+          "brief": "Convierte la vamp i–iv de Re menor en la vamp dórica i–IV: Dm y G, un acorde por ciclo.",
+          "starter": "chord(\"<Dm Gm>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<Dm G>\").voicing().s(\"piano\")",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["chord", "voicing"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["Dm", "G"]
+            }
+          ],
+          "hints": ["En Re dórico el IV es mayor: su tercera es Si, la nota característica."]
+        },
+        {
+          "id": "M06-T04-K2",
+          "title": "Dron mixolidio",
+          "brief": "Sobre un dron de Re con `sustain`, `lpf` y `room`, toca la vamp mixolidia I–♭VII: D y C.",
+          "starter": "stack(note(\"d2\").s(\"sawtooth\").sustain(1), chord(\"<D A>\").voicing().s(\"piano\"))",
+          "solution": "stack(note(\"d2\").s(\"sawtooth\").sustain(1).lpf(500).room(0.6), chord(\"<D C>\").voicing().s(\"piano\"))",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack", "sustain", "lpf", "room"]
+            },
+            {
+              "type": "notesWithinScale",
+              "scale": "D:mixolydian"
+            },
+            {
+              "type": "pitchClassesInclude",
+              "pitchClasses": ["C"]
+            }
+          ],
+          "hints": [
+            "A mayor trae Do♯ y suena a Re mayor; el ♭VII de Re es C.",
+            "Encadena los controles en el dron: `.sustain(1).lpf(500).room(0.6)`."
+          ]
+        },
+        {
+          "id": "M06-T04-K3",
+          "title": "Frigio con dron y color",
+          "brief": "Arma tres capas en Mi frigio: un dron de Mi, la vamp i–♭II (Em y F) y una melodía que insista en Fa, la 2.ª menor.",
+          "starter": "stack(note(\"e2\").s(\"sawtooth\").sustain(1).lpf(500), chord(\"<Em Am>\").voicing().s(\"piano\"))",
+          "solution": "stack(note(\"e2\").s(\"sawtooth\").sustain(1).lpf(500).room(0.5), chord(\"<Em F>\").voicing().s(\"piano\"), n(\"1 0 1 2\").scale(\"E4:phrygian\").s(\"piano\"))",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack", "room"]
+            },
+            {
+              "type": "notesWithinScale",
+              "scale": "E:phrygian"
+            },
+            {
+              "type": "characteristicNoteRatio",
+              "mode": "E:phrygian",
+              "minRatio": 0.2
+            }
+          ],
+          "hints": [
+            "El ♭II de Mi frigio es F mayor.",
+            "En `n` con `scale(\"E4:phrygian\")`, el Fa es el 1: repítelo en la melodía."
+          ]
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "id": "M06-BOSS",
+    "title": "Pieza en Re dórico",
+    "brief": "Compón una pieza de 16 compases en Re dórico que haga oír su color: todas las notas dentro del modo y la nota característica, Si, en al menos el 10 % de los eventos. Combina un dron o una vamp con una melodía.",
+    "starter": "stack(\n  note(\"d2\").s(\"sawtooth\").sustain(1).lpf(500),\n  n(\"0 2 4 2\").scale(\"D3:dorian\").s(\"piano\")\n)",
+    "cycles": 16,
+    "assertions": [
+      {
+        "type": "notesWithinScale",
+        "scale": "D:dorian"
+      },
+      {
+        "type": "characteristicNoteRatio",
+        "mode": "D:dorian",
+        "minRatio": 0.1
+      }
+    ],
+    "rubric": [
+      {
+        "id": "mode",
+        "label": "El color dórico se oye: el Si aparece en lugares importantes",
+        "weight": 3
+      },
+      {
+        "id": "form",
+        "label": "Los 16 compases tienen una forma, con repetición y variación",
+        "weight": 3
+      },
+      {
+        "id": "texture",
+        "label": "Dron o vamp y melodía funcionan juntos como capas",
+        "weight": 2
+      },
+      {
+        "id": "code",
+        "label": "Código claro y bien organizado en capas",
+        "weight": 2
+      }
+    ],
+    "passScore": 7
+  }
+}

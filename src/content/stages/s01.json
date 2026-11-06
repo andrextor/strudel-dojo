@@ -1,0 +1,312 @@
+{
+  "id": "S01",
+  "order": 1,
+  "title": "Ritmo",
+  "summary": "De un primer golpe a un beat completo, sin saber nada de teoría.",
+  "prerequisite": null,
+  "units": [
+    {
+      "id": "S01-U01",
+      "title": "Primeros sonidos",
+      "goal": "Tocar un compás de batería y cambiar de caja de ritmos.",
+      "lesson": "s01-u01",
+      "requires": [],
+      "katas": [
+        {
+          "id": "M01-T01-K1",
+          "title": "Primeros sonidos",
+          "brief": "Toca un compás de batería con bombo (bd), caja (sd) y hi-hat (hh).",
+          "starter": "s(\"bd hh ~ hh\")",
+          "solution": "s(\"bd hh sd hh\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["s"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "sd", "hh"]
+            }
+          ],
+          "hints": [
+            "Dentro de las comillas, cada palabra separada por un espacio es un paso del compás.",
+            "Al código inicial le falta la caja: cambia el silencio `~` por `sd`."
+          ]
+        },
+        {
+          "id": "M01-T01-K2",
+          "title": "Otra caja de ritmos",
+          "brief": "Toca el mismo compás de ocho pasos con el sonido de una Roland TR-909, usando `bank`.",
+          "starter": "s(\"bd hh sd hh bd hh sd hh\")",
+          "solution": "s(\"bd hh sd hh bd hh sd hh\").bank(\"RolandTR909\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["bank"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "sd", "hh"]
+            },
+            {
+              "type": "eventsPerCycle",
+              "min": 8,
+              "max": 8
+            }
+          ],
+          "hints": [
+            "`bank` va después del patrón, con un punto: `s(\"…\").bank(\"…\")`.",
+            "El nombre del banco es RolandTR909, todo junto."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S01-U02",
+      "title": "Mini-notation",
+      "goal": "Escribir silencios, repeticiones, grupos y alternancias.",
+      "lesson": "s01-u02",
+      "requires": [],
+      "katas": [
+        {
+          "id": "S01-U02-K1",
+          "title": "Más rápido con *",
+          "brief": "Toca ocho hi-hats en un compás con `*`, sin repetir la palabra ocho veces.",
+          "starter": "s(\"hh hh\")",
+          "solution": "s(\"hh*8\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["s"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["hh"]
+            },
+            {
+              "type": "eventsPerCycle",
+              "min": 8,
+              "max": 8
+            }
+          ],
+          "hints": ["`hh*8` divide el compás en ocho golpes iguales."]
+        },
+        {
+          "id": "S01-U02-K2",
+          "title": "Dos golpes en uno",
+          "brief": "Mete dos golpes de caja en el espacio del segundo paso con `[ ]`: bombo, dos cajas seguidas, bombo, caja.",
+          "starter": "s(\"bd sd bd sd\")",
+          "solution": "s(\"bd [sd sd] bd sd\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["s"]
+            },
+            {
+              "type": "rhythmEquals",
+              "reference": "bd [sd sd] bd sd"
+            }
+          ],
+          "hints": ["Lo que va dentro de `[ ]` comparte un solo paso."]
+        },
+        {
+          "id": "S01-U02-K3",
+          "title": "Alterna y apila",
+          "brief": "Haz que el segundo golpe alterne entre caja (`sd`) y palmas (`cp`) con `< >`, y suma cuatro hi-hats a la vez con una coma.",
+          "starter": "s(\"bd sd\")",
+          "solution": "s(\"bd <sd cp>, hh*4\")",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["s"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "sd", "cp", "hh"]
+            },
+            {
+              "type": "eventsPerCycle",
+              "min": 6,
+              "max": 6
+            }
+          ],
+          "hints": [
+            "`< >` toma un elemento distinto en cada ciclo.",
+            "La coma hace sonar dos patrones juntos: `s(\"bd sd, hh*4\")`."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S01-U03",
+      "title": "Ciclos y euclidianos",
+      "goal": "Repartir golpes dentro del ciclo con `@`, `!` y ritmos euclidianos.",
+      "lesson": "s01-u03",
+      "requires": [],
+      "katas": [
+        {
+          "id": "M01-T04-K1",
+          "title": "Tresillo euclidiano",
+          "brief": "Toca el tresillo cubano: 3 golpes repartidos en 8 pasos, con la notación euclidiana.",
+          "starter": "s(\"bd\")",
+          "solution": "s(\"bd(3,8)\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "rhythmEquals",
+              "reference": "bd ~ ~ bd ~ ~ bd ~"
+            }
+          ],
+          "hints": ["`bd(3,8)` reparte 3 golpes en 8 pasos lo más parejo posible."]
+        },
+        {
+          "id": "M01-T04-K2",
+          "title": "Negra con puntillo",
+          "brief": "Escribe con `@` un bombo que dura tres pasos y una caja de un paso, en un compás de cuatro pasos.",
+          "starter": "s(\"bd sd\")",
+          "solution": "s(\"bd@3 sd\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "rhythmEquals",
+              "reference": "bd ~ ~ sd"
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "sd"]
+            }
+          ],
+          "hints": ["`@3` le da a un paso el peso de tres."]
+        },
+        {
+          "id": "S01-U03-K1",
+          "title": "Repite con !",
+          "brief": "Con `!`, toca tres bombos seguidos y cierra el compás con una caja.",
+          "starter": "s(\"bd sd\")",
+          "solution": "s(\"bd!3 sd\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["s"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "sd"]
+            },
+            {
+              "type": "rhythmEquals",
+              "reference": "bd bd bd sd"
+            }
+          ],
+          "hints": ["`bd!3` es lo mismo que escribir `bd bd bd`."]
+        }
+      ]
+    },
+    {
+      "id": "S01-U04",
+      "title": "Capas de batería",
+      "goal": "Armar un beat con varias capas en `stack`.",
+      "lesson": "s01-u04",
+      "requires": [],
+      "katas": [
+        {
+          "id": "S01-U04-K1",
+          "title": "Dos capas",
+          "brief": "Con `stack`, junta un bombo de cuatro golpes y un hi-hat de ocho.",
+          "starter": "s(\"bd*4\")",
+          "solution": "stack(\n  s(\"bd*4\"),\n  s(\"hh*8\")\n)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "hh"]
+            },
+            {
+              "type": "eventsPerCycle",
+              "min": 12,
+              "max": 12
+            }
+          ],
+          "hints": ["`stack` recibe un patrón por capa, separados por comas."]
+        },
+        {
+          "id": "S01-U04-K2",
+          "title": "Tres capas",
+          "brief": "Agrega una caja en los pasos 2 y 4 para completar el beat.",
+          "starter": "stack(\n  s(\"bd(3,8)\"),\n  s(\"hh*8\")\n)",
+          "solution": "stack(\n  s(\"bd(3,8)\"),\n  s(\"~ sd ~ sd\"),\n  s(\"hh*8\")\n)",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack"]
+            },
+            {
+              "type": "soundsInclude",
+              "names": ["bd", "sd", "hh"]
+            },
+            {
+              "type": "layerCount",
+              "min": 3
+            }
+          ],
+          "hints": ["Una capa más: `s(\"~ sd ~ sd\")`."]
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "id": "S01-BOSS",
+    "title": "Tu primer beat",
+    "brief": "Arma un beat de 4 compases con bombo, caja y hi-hat, solo batería. Que algo cambie de un compás a otro.",
+    "starter": "stack(\n  s(\"bd ~ bd ~\"),\n  s(\"~ sd ~ sd\")\n)",
+    "cycles": 4,
+    "assertions": [
+      {
+        "type": "usesFunction",
+        "names": ["stack"]
+      },
+      {
+        "type": "soundsInclude",
+        "names": ["bd", "sd", "hh"]
+      },
+      {
+        "type": "sectionsDistinct",
+        "min": 2
+      }
+    ],
+    "rubric": [
+      {
+        "id": "rhythm",
+        "label": "El ritmo es coherente y tiene variación",
+        "weight": 3
+      },
+      {
+        "id": "sound",
+        "label": "Las capas se distinguen y no se pisan",
+        "weight": 3
+      },
+      {
+        "id": "code",
+        "label": "Código claro y mini-notation variada",
+        "weight": 2
+      },
+      {
+        "id": "music",
+        "label": "Suena musical, con inicio y cierre",
+        "weight": 2
+      }
+    ],
+    "passScore": 7
+  }
+}

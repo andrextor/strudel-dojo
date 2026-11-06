@@ -3,17 +3,23 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { createRng } from '../../lib/random.ts'
-import { type MixEntry, type Module, moduleSchema } from '../curriculum/schema.ts'
+import { type MixEntry, type Module, moduleSchema, stageSchema } from '../curriculum/schema.ts'
 import type { Question, Response } from '../exercises/types.ts'
 import { emptyProgress } from './persist.ts'
-import { recordBoss, recordKata, recordSubmission, startTest, submitTest } from './rules.ts'
+import { recordBoss, recordSubmission, startTest, submitTest } from './rules.ts'
 import type { ProgressState } from './types.ts'
 
 const dir = fileURLToPath(new URL('../../content/modules', import.meta.url))
+const stagesDir = fileURLToPath(new URL('../../content/stages', import.meta.url))
 
 export const curriculum: Module[] = readdirSync(dir)
   .filter((f) => f.endsWith('.json'))
   .map((f) => moduleSchema.parse(JSON.parse(readFileSync(`${dir}/${f}`, 'utf8'))))
+  .sort((a, b) => a.order - b.order)
+
+export const stages = readdirSync(stagesDir)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => stageSchema.parse(JSON.parse(readFileSync(`${stagesDir}/${f}`, 'utf8'))))
   .sort((a, b) => a.order - b.order)
 
 export function ready(id: string) {
@@ -60,21 +66,14 @@ export function takeTest(
 export function passTopic(p: ProgressState, moduleId: string, topicIndex: number): ProgressState {
   const topic = ready(moduleId).topics[topicIndex]
   if (topic === undefined) throw new Error('no topic')
-  let next = takeTest(
-    p,
-    { kind: 'test', scopeId: topic.id },
-    topic.test,
-    topic.test.questions,
-  ).progress
-  for (const k of topic.katas) next = recordKata(next, k.id, k.solution, true, NOW)
-  return next
+  return takeTest(p, { kind: 'test', scopeId: topic.id }, topic.test, topic.test.questions).progress
 }
 
 export function passModule(p: ProgressState, moduleId: string): ProgressState {
   const m = ready(moduleId)
   let next = p
   for (let i = 0; i < m.topics.length; i++) next = passTopic(next, moduleId, i)
-  return recordBoss(next, m.boss.id, bossRecord(true))
+  return recordBoss(next, `${m.id}-BOSS`, bossRecord(true))
 }
 
 export const bossRecord = (passed: boolean) => ({

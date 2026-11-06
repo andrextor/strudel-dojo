@@ -12,11 +12,15 @@ import { bossSolution as m07 } from './boss-solutions/m07.ts'
 import { bossSolution as m08 } from './boss-solutions/m08.ts'
 import { bossSolution as m09 } from './boss-solutions/m09.ts'
 import { bossSolution as m10 } from './boss-solutions/m10.ts'
-import { type Assertion, type Module, moduleSchema } from './schema.ts'
+import { bossSolution as s01 } from './boss-solutions/s01.ts'
+import { bossSolution as s02 } from './boss-solutions/s02.ts'
+import { type Assertion, type Module, moduleSchema, type Stage, stageSchema } from './schema.ts'
 import { SKILL_NAME_ES } from './skills.ts'
 
 const modulesDir = fileURLToPath(new URL('../../content/modules', import.meta.url))
 const lessonsDir = fileURLToPath(new URL('../../content/lessons', import.meta.url))
+const stagesDir = fileURLToPath(new URL('../../content/stages', import.meta.url))
+const unitLessonsDir = fileURLToPath(new URL('../../content/strudel-lessons', import.meta.url))
 
 function loadModules(): Module[] {
   const files = readdirSync(modulesDir).filter((f) => f.endsWith('.json'))
@@ -32,6 +36,14 @@ function loadModules(): Module[] {
 }
 
 const modules = loadModules().sort((a, b) => a.order - b.order)
+
+const stages: Stage[] = readdirSync(stagesDir)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => stageSchema.parse(JSON.parse(readFileSync(`${stagesDir}/${f}`, 'utf8'))))
+  .sort((a, b) => a.order - b.order)
+
+const units = stages.flatMap((s) => s.units)
+const katas = units.flatMap((u) => u.katas)
 
 test('every module file matches the schema', () => {
   assert.equal(modules.length, 10)
@@ -49,16 +61,48 @@ test('ids are unique and correctly prefixed', () => {
       add(topic.id)
       assert.ok(topic.id.startsWith(`${m.id}-T`), `${topic.id} not under ${m.id}`)
     }
-    if (m.status === 'ready') {
-      add(m.boss.id)
-      assert.equal(m.boss.id, `${m.id}-BOSS`)
-      for (const topic of m.topics) {
-        for (const kata of topic.katas) {
-          add(kata.id)
-          assert.ok(kata.id.startsWith(`${topic.id}-K`), `${kata.id} not under ${topic.id}`)
-        }
+  }
+  for (const stage of stages) {
+    add(stage.id)
+    add(stage.boss.id)
+    for (const unit of stage.units) {
+      add(unit.id)
+      assert.ok(unit.id.startsWith(`${stage.id}-U`), `${unit.id} not under ${stage.id}`)
+      for (const kata of unit.katas) add(kata.id)
+    }
+  }
+})
+
+test('stages follow their order and prerequisite chain', () => {
+  assert.equal(stages.length, 12)
+  stages.forEach((s, i) => {
+    assert.equal(s.order, i + 1)
+    assert.equal(s.prerequisite, stages[i - 1]?.id ?? null)
+  })
+})
+
+test('every unit requires theory topics that exist', () => {
+  const topics = new Set(modules.flatMap((m) => m.topics.map((t) => t.id)))
+  for (const u of units) {
+    for (const id of u.requires) assert.ok(topics.has(id), `${u.id} requires unknown ${id}`)
+  }
+})
+
+// Saved progress is keyed by these ids: moving content must never lose one.
+test('all 120 belt katas and the 10 belt bosses are still in the course', () => {
+  const ids = new Set(katas.map((k) => k.id))
+  for (let m = 1; m <= 10; m++) {
+    const mm = String(m).padStart(2, '0')
+    for (let t = 1; t <= 4; t++) {
+      for (let k = 1; k <= 3; k++) {
+        const id = `M${mm}-T0${t}-K${k}`
+        assert.ok(ids.has(id), `${id} is gone`)
       }
     }
+    assert.ok(
+      stages.some((s) => s.boss.id === `M${mm}-BOSS`),
+      `M${mm}-BOSS is gone`,
+    )
   }
 })
 
@@ -139,7 +183,17 @@ const BOSS_SOLUTIONS: Record<string, string> = {
     .scale("<G3:major!4 E3:minor!4>").s("piano")
 )`,
   ...Object.fromEntries(
-    Object.entries({ M04: m04, M05: m05, M06: m06, M07: m07, M08: m08, M09: m09, M10: m10 })
+    Object.entries({
+      S01: s01,
+      S02: s02,
+      M04: m04,
+      M05: m05,
+      M06: m06,
+      M07: m07,
+      M08: m08,
+      M09: m09,
+      M10: m10,
+    })
       .filter((e): e is [string, string] => e[1] !== null)
       .map(([id, code]) => [`${id}-BOSS`, code]),
   ),
@@ -155,20 +209,18 @@ const passesAll = async (code: string, assertions: Assertion[], cycles: number) 
 }
 
 test('each kata and boss can be passed, and no starter passes already', async () => {
-  for (const m of modules) {
-    if (m.status !== 'ready') continue
-    for (const kata of m.topics.flatMap((t) => t.katas)) {
-      const result = await runKata(kata.solution, kata.assertions, kata.cycles)
-      assert.ok(result.ok, `${kata.id} solution: ${result.ok ? '' : result.error.raw}`)
-      for (const r of result.results) assert.ok(r.pass, `${kata.id} ${r.type}: ${r.message}`)
-      const starter = await evaluatePattern(kata.starter)
-      assert.ok(starter.ok, `${kata.id} starter: ${starter.ok ? '' : starter.error.raw}`)
-      assert.ok(
-        !(await passesAll(kata.starter, kata.assertions, kata.cycles)),
-        `${kata.id}: the starter already passes`,
-      )
-    }
-    const { boss } = m
+  for (const kata of katas) {
+    const result = await runKata(kata.solution, kata.assertions, kata.cycles)
+    assert.ok(result.ok, `${kata.id} solution: ${result.ok ? '' : result.error.raw}`)
+    for (const r of result.results) assert.ok(r.pass, `${kata.id} ${r.type}: ${r.message}`)
+    const starter = await evaluatePattern(kata.starter)
+    assert.ok(starter.ok, `${kata.id} starter: ${starter.ok ? '' : starter.error.raw}`)
+    assert.ok(
+      !(await passesAll(kata.starter, kata.assertions, kata.cycles)),
+      `${kata.id}: the starter already passes`,
+    )
+  }
+  for (const { boss } of stages) {
     const solution = BOSS_SOLUTIONS[boss.id]
     assert.ok(solution, `${boss.id} has no reference solution in this test`)
     const result = await runKata(solution, boss.assertions, boss.cycles)
@@ -187,8 +239,13 @@ test('each kata and boss can be passed, and no starter passes already', async ()
 const SNIPPET = /<(?:Listen|Example)\b[^>]*?\bcode=(?:"([^"]*)"|'([^']*)'|\{`([^`]*)`\})/g
 
 test('each lesson Listen/Example code evaluates without error', async () => {
-  for (const file of readdirSync(lessonsDir).filter((f) => f.endsWith('.mdx'))) {
-    const mdx = readFileSync(`${lessonsDir}/${file}`, 'utf8')
+  const files = [lessonsDir, unitLessonsDir].flatMap((dir) =>
+    readdirSync(dir)
+      .filter((f) => f.endsWith('.mdx'))
+      .map((f) => `${dir}/${f}`),
+  )
+  for (const file of files) {
+    const mdx = readFileSync(file, 'utf8')
     for (const match of mdx.matchAll(SNIPPET)) {
       const code = match[1] ?? match[2] ?? match[3] ?? ''
       const result = await evaluatePattern(code)
@@ -210,31 +267,46 @@ const callsIn = (code: string) =>
   new Set([...stripCode(code).matchAll(/([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1] ?? ''))
 const STRUDEL_REF = /<StrudelRef\b[^>]*?\bname="([^"]+)"/g
 
-test('every function a kata or boss uses was shown in a lesson of that module or an earlier one', () => {
+test('every function a kata or boss uses was shown in its unit or an earlier one', () => {
   const shown = new Set<string>()
-  for (const m of modules) {
-    if (m.status !== 'ready') continue
-    for (const t of m.topics) {
-      const mdx = readFileSync(`${lessonsDir}/${t.lesson}.mdx`, 'utf8')
+  for (const stage of stages) {
+    for (const unit of stage.units) {
+      const mdx = readFileSync(`${unitLessonsDir}/${unit.lesson}.mdx`, 'utf8')
       for (const match of mdx.matchAll(STRUDEL_REF)) shown.add(match[1] ?? '')
       for (const match of mdx.matchAll(SNIPPET)) {
         for (const fn of callsIn(match[1] ?? match[2] ?? match[3] ?? '')) shown.add(fn)
       }
-      for (const kata of t.katas) {
+      for (const kata of unit.katas) {
         const required = kata.assertions.flatMap((a) => (a.type === 'usesFunction' ? a.names : []))
         for (const fn of [...required, ...callsIn(kata.solution)]) {
-          assert.ok(shown.has(fn), `${kata.id} uses \`${fn}\`, which no lesson up to ${t.id} shows`)
+          assert.ok(
+            shown.has(fn),
+            `${kata.id} uses \`${fn}\`, which no lesson up to ${unit.id} shows`,
+          )
         }
       }
     }
-    const solution = BOSS_SOLUTIONS[m.boss.id] ?? ''
-    const required = m.boss.assertions.flatMap((a) => (a.type === 'usesFunction' ? a.names : []))
+    const solution = BOSS_SOLUTIONS[stage.boss.id] ?? ''
+    const required = stage.boss.assertions.flatMap((a) =>
+      a.type === 'usesFunction' ? a.names : [],
+    )
     for (const fn of [...required, ...callsIn(solution)]) {
-      assert.ok(
-        shown.has(fn),
-        `${m.boss.id} uses \`${fn}\`, which no lesson of ${m.id} or before shows`,
-      )
+      assert.ok(shown.has(fn), `${stage.boss.id} uses \`${fn}\`, not shown up to ${stage.id}`)
     }
+  }
+})
+
+test('every unit has its lesson and none is a placeholder', () => {
+  for (const u of units) {
+    const mdx = readFileSync(`${unitLessonsDir}/${u.lesson}.mdx`, 'utf8')
+    assert.ok(!/en preparación/i.test(mdx), `${u.lesson} is still a placeholder`)
+  }
+})
+
+test('theory lessons teach no code', () => {
+  for (const file of readdirSync(lessonsDir).filter((f) => f.endsWith('.mdx'))) {
+    const mdx = readFileSync(`${lessonsDir}/${file}`, 'utf8')
+    assert.ok(!/<Example\b|<StrudelRef\b|^## .*Strudel/m.test(mdx), `${file} still teaches code`)
   }
 })
 

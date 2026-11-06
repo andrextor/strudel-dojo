@@ -1,0 +1,25 @@
+---
+import { getCurriculum, getStages } from '../../../features/curriculum/index.ts'
+import KataView from '../../../features/kata/KataView.tsx'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const [curriculum, stages] = await Promise.all([getCurriculum(), getStages()])
+  return stages.flatMap((stage) =>
+    stage.units.flatMap((unit) =>
+      unit.katas.map((kata) => ({
+        params: { kata: kata.id.toLowerCase() },
+        props: { stage, unit, kata, stages, curriculum },
+      })),
+    ),
+  )
+}
+
+const { stage, unit, kata, stages, curriculum } = Astro.props
+---
+
+<BaseLayout title={`Kata: ${kata.title}`}>
+  <KataView client:only="preact" kata={kata} unit={unit} stage={stage} stages={stages} curriculum={curriculum}>
+    <div slot="fallback" class="min-h-96"></div>
+  </KataView>
+</BaseLayout>

@@ -59,62 +59,7 @@
             "weight": 2
           }
         ]
-      },
-      "katas": [
-        {
-          "id": "M03-T01-K1",
-          "title": "Tu primera tríada",
-          "brief": "Toca el acorde de Do mayor: Do, Mi y Sol a la vez, con `note`.",
-          "starter": "note(\"[c3,e3]\").s(\"piano\")",
-          "solution": "note(\"[c3,e3,g3]\").s(\"piano\")",
-          "cycles": 1,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["note"]
-            },
-            {
-              "type": "chordPerCycle",
-              "chords": ["C"]
-            }
-          ],
-          "hints": ["Falta la quinta: de Do, una quinta justa arriba es Sol."]
-        },
-        {
-          "id": "M03-T01-K2",
-          "title": "Mayor y menor",
-          "brief": "Toca Do mayor en el ciclo 1 y Do menor en el ciclo 2: solo cambia la tercera.",
-          "starter": "note(\"<[c3,e3,g3] [c3,e3,g3]>\").s(\"piano\")",
-          "solution": "note(\"<[c3,e3,g3] [c3,eb3,g3]>\").s(\"piano\")",
-          "cycles": 2,
-          "assertions": [
-            {
-              "type": "chordPerCycle",
-              "chords": ["C", "Cm"]
-            }
-          ],
-          "hints": ["La tercera menor de Do es Mi♭: en Strudel, `eb3`."]
-        },
-        {
-          "id": "M03-T01-K3",
-          "title": "Las cuatro calidades",
-          "brief": "Con `chord` y `voicing`, toca sobre Re las cuatro tríadas, una por ciclo: mayor, menor, disminuida y aumentada.",
-          "starter": "chord(\"<D Dm>\").voicing().s(\"piano\")",
-          "solution": "chord(\"<D Dm Do Daug>\").voicing().s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["chord", "voicing"]
-            },
-            {
-              "type": "chordPerCycle",
-              "chords": ["D", "Dm", "Ddim", "Daug"]
-            }
-          ],
-          "hints": ["En `chord` la disminuida se escribe con `o` (`Do`) y la aumentada con `aug`."]
-        }
-      ]
+      }
     },
     {
       "id": "M03-T02",
@@ -168,81 +113,7 @@
             "weight": 1
           }
         ]
-      },
-      "katas": [
-        {
-          "id": "M03-T02-K1",
-          "title": "Primera inversión",
-          "brief": "Toca Do mayor en primera inversión: la tercera (Mi) abajo.",
-          "starter": "note(\"[c3,e3,g3]\").s(\"piano\")",
-          "solution": "note(\"[e3,g3,c4]\").s(\"piano\")",
-          "cycles": 1,
-          "assertions": [
-            {
-              "type": "chordPerCycle",
-              "chords": ["C"]
-            },
-            {
-              "type": "noteSequence",
-              "pitchClasses": ["E"],
-              "voice": "lowest"
-            }
-          ],
-          "hints": ["Sube la fundamental una octava: `c3` pasa a `c4`."]
-        },
-        {
-          "id": "M03-T02-K2",
-          "title": "Las tres posiciones",
-          "brief": "Toca Do mayor en estado fundamental, 1.ª y 2.ª inversión, una posición por ciclo.",
-          "starter": "note(\"<[c3,e3,g3]>\").s(\"piano\")",
-          "solution": "note(\"<[c3,e3,g3] [e3,g3,c4] [g3,c4,e4]>\").s(\"piano\")",
-          "cycles": 3,
-          "assertions": [
-            {
-              "type": "chordPerCycle",
-              "chords": ["C"]
-            },
-            {
-              "type": "noteSequence",
-              "pitchClasses": ["C"],
-              "voice": "lowest",
-              "cycle": 0
-            },
-            {
-              "type": "noteSequence",
-              "pitchClasses": ["E"],
-              "voice": "lowest",
-              "cycle": 1
-            },
-            {
-              "type": "noteSequence",
-              "pitchClasses": ["G"],
-              "voice": "lowest",
-              "cycle": 2
-            }
-          ],
-          "hints": ["En cada inversión, la nota de abajo sube una octava y queda arriba."]
-        },
-        {
-          "id": "M03-T02-K3",
-          "title": "Voicings con ancla",
-          "brief": "Toca la progresión Do, La menor, Fa, Sol con `voicing` y baja el registro con `anchor` en c4 (la nota más aguda del voicing).",
-          "starter": "chord(\"<C Am F G>\").voicing().s(\"piano\")",
-          "solution": "chord(\"<C Am F G>\").anchor(\"c4\").voicing().s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["anchor", "voicing"]
-            },
-            {
-              "type": "chordPerCycle",
-              "chords": ["C", "Am", "F", "G"]
-            }
-          ],
-          "hints": ["`anchor` va antes de `voicing`: `chord(…).anchor(\"c4\").voicing()`."]
-        }
-      ]
+      }
     },
     {
       "id": "M03-T03",
@@ -277,64 +148,7 @@
             "weight": 1
           }
         ]
-      },
-      "katas": [
-        {
-          "id": "M03-T03-K1",
-          "title": "I–IV–V–I",
-          "brief": "En Do mayor, toca los acordes de los grados I, IV, V y de vuelta a I, uno por ciclo.",
-          "starter": "chord(\"<C>\").voicing().s(\"piano\")",
-          "solution": "chord(\"<C F G C>\").voicing().s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["chord"]
-            },
-            {
-              "type": "chordPerCycle",
-              "chords": ["C", "F", "G", "C"]
-            }
-          ],
-          "hints": ["En Do mayor, el IV es Fa y el V es Sol, los dos mayores."]
-        },
-        {
-          "id": "M03-T03-K2",
-          "title": "I–V–vi–IV en Sol",
-          "brief": "La progresión más usada del pop: toca I, V, vi y IV en Sol mayor.",
-          "starter": "chord(\"<G>\").voicing().s(\"piano\")",
-          "solution": "chord(\"<G D Em C>\").voicing().s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "chordPerCycle",
-              "chords": ["G", "D", "Em", "C"]
-            }
-          ],
-          "hints": ["El vi de Sol mayor es menor: Mi menor, `Em`."]
-        },
-        {
-          "id": "M03-T03-K3",
-          "title": "El campo armónico de Re",
-          "brief": "Sin escribir acordes: apila terceras dentro de la escala de Re mayor con `n` y `add` para tocar los siete acordes del campo armónico, uno por ciclo.",
-          "starter": "n(\"<0 1 2 3 4 5 6>\").scale(\"D:major\").s(\"piano\")",
-          "solution": "n(\"<0 1 2 3 4 5 6>\".add(\"[0,2,4]\")).scale(\"D:major\").s(\"piano\")",
-          "cycles": 7,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["add", "scale"]
-            },
-            {
-              "type": "chordPerCycle",
-              "chords": ["D", "Em", "F#m", "G", "A", "Bm", "C#dim"]
-            }
-          ],
-          "hints": [
-            "Una tríada son los grados 0, 2 y 4 desde cada nota: `.add(\"[0,2,4]\")` sobre los números, dentro de `n(…)`."
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "M03-T04",
@@ -369,70 +183,7 @@
             "weight": 1
           }
         ]
-      },
-      "katas": [
-        {
-          "id": "M03-T04-K1",
-          "title": "i–iv–v–i en La menor",
-          "brief": "Toca los grados i, iv, v y de vuelta a i de La menor, uno por ciclo.",
-          "starter": "chord(\"<Am>\").voicing().s(\"piano\")",
-          "solution": "chord(\"<Am Dm Em Am>\").voicing().s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "chordPerCycle",
-              "chords": ["Am", "Dm", "Em", "Am"]
-            }
-          ],
-          "hints": ["En la menor natural, i, iv y v son menores."]
-        },
-        {
-          "id": "M03-T04-K2",
-          "title": "Arpegio menor",
-          "brief": "Toca i–VI–III–VII en La menor (Am F C G) arpegiando cada acorde con `arp`.",
-          "starter": "chord(\"<Am F C G>\").voicing().s(\"piano\")",
-          "solution": "chord(\"<Am F C G>\").voicing().arp(\"0 1 2 3 4\").s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["arp"]
-            },
-            {
-              "type": "chordPerCycle",
-              "chords": ["Am", "F", "C", "G"]
-            },
-            {
-              "type": "eventsPerCycle",
-              "min": 4
-            }
-          ],
-          "hints": ["`arp` toca las notas del voicing una tras otra, por su índice."]
-        },
-        {
-          "id": "M03-T04-K3",
-          "title": "Acompañamiento con ritmo",
-          "brief": "Toca i–iv–v–i en Mi menor con el ritmo `x ~ x x` usando `struct`.",
-          "starter": "chord(\"<Em Am Bm Em>\").voicing().s(\"piano\")",
-          "solution": "chord(\"<Em Am Bm Em>\").voicing().struct(\"x ~ x x\").s(\"piano\")",
-          "cycles": 4,
-          "assertions": [
-            {
-              "type": "usesFunction",
-              "names": ["struct"]
-            },
-            {
-              "type": "chordPerCycle",
-              "chords": ["Em", "Am", "Bm", "Em"]
-            },
-            {
-              "type": "rhythmEquals",
-              "reference": "x ~ x x"
-            }
-          ],
-          "hints": ["`struct` toma el ritmo de la `x`: donde hay `~`, silencio."]
-        }
-      ]
+      }
     }
   ],
   "exam": {
@@ -471,49 +222,5 @@
         "weight": 1
       }
     ]
-  },
-  "boss": {
-    "id": "M03-BOSS",
-    "title": "Acompañamiento completo",
-    "brief": "Acompaña la progresión I–vi–IV–V en Do mayor (C Am F G), un acorde por compás: voicings arpegiados más un bajo que toque la fundamental de cada acorde.",
-    "starter": "stack(\n  chord(\"<C Am F G>\").voicing().s(\"piano\")\n)",
-    "cycles": 4,
-    "assertions": [
-      {
-        "type": "usesFunction",
-        "names": ["voicing", "arp"]
-      },
-      {
-        "type": "chordPerCycle",
-        "chords": ["C", "Am", "F", "G"]
-      },
-      {
-        "type": "rootsPerBar",
-        "roots": ["C", "A", "F", "G"]
-      }
-    ],
-    "rubric": [
-      {
-        "id": "harmony",
-        "label": "Cada acorde suena completo y en su compás",
-        "weight": 3
-      },
-      {
-        "id": "texture",
-        "label": "El arpegio y el bajo forman un acompañamiento con movimiento",
-        "weight": 3
-      },
-      {
-        "id": "code",
-        "label": "Código claro y bien organizado en capas",
-        "weight": 2
-      },
-      {
-        "id": "music",
-        "label": "Suena musical, con un ritmo que invita a cantar encima",
-        "weight": 2
-      }
-    ],
-    "passScore": 7
   }
 }

@@ -85,11 +85,11 @@ function readChecks(v: unknown): CheckResult[] | null {
   return out
 }
 
-const ID = /^M\d{2}-(T\d{2}-K\d|BOSS)$/
+const KATA_ID = /^(M\d{2}-T\d{2}|S\d{2}-U\d{2})-K\d$/
 
 export function parseHint(body: Record<string, unknown>): ParseResult<HintRequest> {
   if (body.context === 'kata') {
-    if (typeof body.kataId !== 'string' || !ID.test(body.kataId)) return BAD
+    if (typeof body.kataId !== 'string' || !KATA_ID.test(body.kataId)) return BAD
     const code = readCode(body.code)
     const failing = readFailing(body.failing)
     if (!code.ok) return code
@@ -117,7 +117,7 @@ export function parseHint(body: Record<string, unknown>): ParseResult<HintReques
 }
 
 export function parseReview(body: Record<string, unknown>): ParseResult<ReviewRequest> {
-  if (typeof body.bossId !== 'string' || !/^M\d{2}-BOSS$/.test(body.bossId)) return BAD
+  if (typeof body.bossId !== 'string' || !/^(M|S)\d{2}-BOSS$/.test(body.bossId)) return BAD
   const code = readCode(body.code)
   if (!code.ok) return code
   const checks = readChecks(body.checks)

@@ -1,9 +1,17 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { attemptXp, beltFor, totalXp, XP } from './points.ts'
-import { recordKata } from './rules.ts'
+import { recordBoss, recordKata } from './rules.ts'
 import { streak } from './streak.ts'
-import { curriculum, fresh, passModule, passTopic, ready, takeTest } from './test-helpers.ts'
+import {
+  bossRecord,
+  curriculum,
+  fresh,
+  passModule,
+  passTopic,
+  ready,
+  takeTest,
+} from './test-helpers.ts'
 
 const t1 = ready('M01').topics[0]
 if (t1 === undefined) throw new Error('no topic')
@@ -48,12 +56,18 @@ test('practice XP is capped per day and helped katas give no kata XP', () => {
 
 test('a passed module adds topic and boss bonuses', () => {
   const p = passModule(fresh(), 'M01')
-  const katas = ready('M01').topics.reduce((n, t) => n + t.katas.length, 0)
   const tests = ready('M01').topics.reduce((n, t) => n + t.test.questions, 0)
-  assert.equal(
-    totalXp(p, curriculum),
-    tests * XP.testCorrect + katas * XP.kata + 4 * XP.topic + XP.boss,
+  assert.equal(totalXp(p, curriculum), tests * XP.testCorrect + 4 * XP.topic + XP.boss)
+})
+
+test('any passed boss adds its bonus, old ids and new ones alike', () => {
+  const p = recordBoss(
+    recordBoss(fresh(), 'M03-BOSS', bossRecord(true)),
+    'S01-BOSS',
+    bossRecord(true),
   )
+  assert.equal(totalXp(p, curriculum), 2 * XP.boss)
+  assert.equal(totalXp(recordBoss(fresh(), 'S01-BOSS', bossRecord(false)), curriculum), 0)
 })
 
 test('belt is the last passed module and stripes count topics of the next one', () => {

@@ -9,6 +9,8 @@ export type TopicStatus =
   | 'in_progress'
   | 'passed'
   | 'passed_by_placement'
+export type StageStatus = 'locked' | 'available' | 'boss_ready' | 'passed'
+export type UnitStatus = 'locked' | 'needs_theory' | 'not_started' | 'in_progress' | 'passed'
 export type ModuleStatus = 'locked' | 'available' | 'exam_ready' | 'passed' | 'draft'
 export type KataStatus = 'not_started' | 'attempted' | 'passed'
 

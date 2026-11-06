@@ -1,31 +1,32 @@
-import { ClipboardCheck, Dumbbell, Lock, Target } from 'lucide-preact'
+import { ClipboardCheck, Code, Dumbbell, Lock } from 'lucide-preact'
 import { useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
 import Tabs from '../../components/ui/Tabs.tsx'
-import { kataHref, moduleHref, resultHref, testHref } from '../curriculum/paths.ts'
+import { moduleHref, resultHref, testHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import { TOPIC_STATUS } from '../progress/labels.ts'
-import { bestScore, kataStatus, openAttempt, percentOf, topicStatus } from '../progress/rules.ts'
+import { bestScore, openAttempt, percentOf, topicStatus } from '../progress/rules.ts'
 import { useProgress } from '../progress/use-progress.ts'
 import PracticeSession from './PracticeSession.tsx'
 
 type ReadyModule = Extract<Module, { status: 'ready' }>
-type TabId = 'practica' | 'prueba' | 'katas'
+type TabId = 'practica' | 'prueba'
 
 interface Props {
   module: ReadyModule
   topicId: string
   curriculum: Module[]
+  strudelUnits: { title: string; href: string }[]
 }
 
 const initialTab = (): TabId => {
   const hash = typeof location === 'undefined' ? '' : location.hash.slice(1)
-  return hash === 'prueba' || hash === 'katas' ? hash : 'practica'
+  return hash === 'prueba' ? hash : 'practica'
 }
 
-export default function TopicPanel({ module, topicId, curriculum }: Props) {
+export default function TopicPanel({ module, topicId, curriculum, strudelUnits }: Props) {
   const { active, progress } = useProgress()
   const [tab, setTab] = useState<TabId>(initialTab)
   const topic = module.topics.find((t) => t.id === topicId)
@@ -70,7 +71,6 @@ export default function TopicPanel({ module, topicId, curriculum }: Props) {
         tabs={[
           { id: 'practica', label: 'Práctica', icon: <Dumbbell size={16} aria-hidden="true" /> },
           { id: 'prueba', label: 'Prueba', icon: <ClipboardCheck size={16} aria-hidden="true" /> },
-          { id: 'katas', label: 'Katas', icon: <Target size={16} aria-hidden="true" /> },
         ]}
       >
         {tab === 'practica' && <PracticeSession topicId={topic.id} mix={topic.practice.mix} />}
@@ -105,49 +105,18 @@ export default function TopicPanel({ module, topicId, curriculum }: Props) {
             )}
           </div>
         )}
-
-        {tab === 'katas' && (
-          <ul class="space-y-3">
-            <li class="text-sm text-dojo-muted">
-              Opcionales: el tema se aprueba solo con la prueba.
-            </li>
-            {topic.katas.map((k) => {
-              const ks = kataStatus(progress, k.id)
-              return (
-                <li key={k.id}>
-                  <a
-                    href={kataHref(k.id)}
-                    class="flex flex-col gap-2 rounded-card border-2 border-dojo-hairline p-4 hover:border-dojo-neon sm:flex-row sm:items-center"
-                  >
-                    <span class="min-w-0 flex-1">
-                      <span class="block font-semibold">{k.title}</span>
-                      <span class="block text-sm text-dojo-muted">{k.brief}</span>
-                    </span>
-                    <StatusBadge
-                      status={
-                        ks === 'passed'
-                          ? 'passed'
-                          : ks === 'attempted'
-                            ? 'in-progress'
-                            : 'not-started'
-                      }
-                      label={
-                        ks === 'passed'
-                          ? progress.katas[k.id]?.helped
-                            ? 'Aprobada con ayuda'
-                            : 'Aprobada'
-                          : ks === 'attempted'
-                            ? 'Intentada'
-                            : 'Sin empezar'
-                      }
-                    />
-                  </a>
-                </li>
-              )
-            })}
-          </ul>
-        )}
       </Tabs>
+      {strudelUnits.length > 0 && (
+        <p class="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-dojo-hairline pt-4">
+          <Code size={16} aria-hidden="true" />
+          Practícalo en Strudel:
+          {strudelUnits.map((u) => (
+            <a key={u.href} href={u.href} class="text-dojo-neon hover:underline">
+              {u.title}
+            </a>
+          ))}
+        </p>
+      )}
     </section>
   )
 }

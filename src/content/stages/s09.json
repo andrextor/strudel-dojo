@@ -1,0 +1,346 @@
+{
+  "id": "S09",
+  "order": 9,
+  "title": "Séptimas y voces",
+  "summary": "Acordes de séptima, tensiones y conducción de voces.",
+  "prerequisite": "S08",
+  "units": [
+    {
+      "id": "S09-U01",
+      "title": "Séptimas con `chord`",
+      "goal": "Escribir las seis séptimas.",
+      "lesson": "s09-u01",
+      "requires": ["M07-T01"],
+      "katas": [
+        {
+          "id": "M07-T01-K1",
+          "title": "Tu primera séptima",
+          "brief": "Toca Do mayor séptima (Cmaj7) con `note`: a la tríada de Do mayor agrégale la séptima mayor, Si.",
+          "starter": "note(\"[c3,e3,g3]\").s(\"piano\")",
+          "solution": "note(\"[c3,e3,g3,b3]\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["note"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["Cmaj7"]
+            }
+          ],
+          "hints": ["La séptima mayor de Do está medio tono debajo de la octava: Si, `b3`."]
+        },
+        {
+          "id": "M07-T01-K2",
+          "title": "Tres séptimas sobre Do",
+          "brief": "Toca Cmaj7, C7 y Cm7, uno por ciclo, con `note`. Solo cambian la tercera y la séptima.",
+          "starter": "note(\"<[c3,e3,g3,b3] [c3,e3,g3,b3] [c3,e3,g3,b3]>\").s(\"piano\")",
+          "solution": "note(\"<[c3,e3,g3,b3] [c3,e3,g3,bb3] [c3,eb3,g3,bb3]>\").s(\"piano\")",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["Cmaj7", "C7", "Cm7"]
+            }
+          ],
+          "hints": [
+            "C7 tiene la séptima menor: Si♭ (`bb3`).",
+            "Cm7 baja también la tercera: Mi♭ (`eb3`)."
+          ]
+        },
+        {
+          "id": "M07-T01-K3",
+          "title": "Las seis séptimas",
+          "brief": "Con `chord` y `voicing`, toca sobre Sol los seis tipos, uno por ciclo: maj7, 7, m7, m7♭5, dim7 y mMaj7.",
+          "starter": "chord(\"<G^7 G7>\").voicing().s(\"piano\")",
+          "solution": "chord(\"<G^7 G7 Gm7 Gm7b5 Go7 Gm^7>\").voicing().s(\"piano\")",
+          "cycles": 6,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["chord", "voicing"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["Gmaj7", "G7", "Gm7", "Gm7b5", "Gdim7", "GmMaj7"]
+            }
+          ],
+          "hints": [
+            "En `chord`, maj7 se escribe `^7`, el semidisminuido `m7b5`, el disminuido `o7` y el menor con séptima mayor `m^7`."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S09-U02",
+      "title": "Progresiones y `mode`",
+      "goal": "Encadenar séptimas diatónicas.",
+      "lesson": "s09-u02",
+      "requires": ["M07-T02"],
+      "katas": [
+        {
+          "id": "M07-T02-K1",
+          "title": "ii–V–I en Do",
+          "brief": "Toca iim7, V7 e Imaj7 de Do mayor, uno por ciclo, con `chord`, `mode(\"root\")` (la fundamental abajo y el acorde completo) y `voicing`.",
+          "starter": "chord(\"<Dm7>\").mode(\"root\").voicing().s(\"piano\")",
+          "solution": "chord(\"<Dm7 G7 C^7>\").mode(\"root\").voicing().s(\"piano\")",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["chord", "mode", "voicing"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["Dm7", "G7", "Cmaj7"]
+            }
+          ],
+          "hints": ["En Do mayor: ii = Dm7, V = G7, I = Cmaj7 (en `chord`, `C^7`)."]
+        },
+        {
+          "id": "M07-T02-K2",
+          "title": "El campo armónico de Fa",
+          "brief": "Sin escribir acordes: apila cuatro notas por terceras dentro de la escala de Fa mayor con `n` y `add`, para tocar los siete acordes de séptima, uno por ciclo.",
+          "starter": "n(\"<0 1 2 3 4 5 6>\".add(\"[0,2,4]\")).scale(\"F:major\").s(\"piano\")",
+          "solution": "n(\"<0 1 2 3 4 5 6>\".add(\"[0,2,4,6]\")).scale(\"F:major\").s(\"piano\")",
+          "cycles": 7,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["add", "scale"]
+            },
+            {
+              "type": "chordPerCycle",
+              "chords": ["Fmaj7", "Gm7", "Am7", "Bbmaj7", "C7", "Dm7", "Em7b5"]
+            }
+          ],
+          "hints": [
+            "La séptima está dos grados por encima de la quinta: suma `[0,2,4,6]` en vez de `[0,2,4]`."
+          ]
+        },
+        {
+          "id": "M07-T02-K3",
+          "title": "I–vi–ii–V en Si♭",
+          "brief": "Toca la vuelta Imaj7–vim7–iim7–V7 de Si♭ mayor, un acorde por ciclo, con `chord`, `mode(\"root\")` y `voicing`.",
+          "starter": "chord(\"<Bb Gm Cm F>\").mode(\"root\").voicing().s(\"piano\")",
+          "solution": "chord(\"<Bb^7 Gm7 Cm7 F7>\").mode(\"root\").voicing().s(\"piano\")",
+          "cycles": 4,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["Bbmaj7", "Gm7", "Cm7", "F7"]
+            }
+          ],
+          "hints": [
+            "Las tríadas ya están bien: agrega la séptima que da cada grado.",
+            "El I lleva maj7 (`Bb^7`) y el V lleva 7 (`F7`)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S09-U03",
+      "title": "Tensiones y diccionarios",
+      "goal": "Sumar novenas y usar `dictionary`.",
+      "lesson": "s09-u03",
+      "requires": ["M07-T03"],
+      "katas": [
+        {
+          "id": "M07-T03-K1",
+          "title": "La novena",
+          "brief": "Convierte Cmaj7 en Cmaj9: agrega la novena (Re) arriba del acorde.",
+          "starter": "note(\"[c3,e3,g3,b3]\").s(\"piano\")",
+          "solution": "note(\"[c3,e3,g3,b3,d4]\").s(\"piano\")",
+          "cycles": 1,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["Cmaj9"]
+            }
+          ],
+          "hints": ["La novena es la segunda una octava más arriba: Re, `d4`."]
+        },
+        {
+          "id": "M07-T03-K2",
+          "title": "Tensiones sobre G7",
+          "brief": "Sobre G7, toca G9 en el ciclo 1 y G13 en el ciclo 2 (con 9 y 13). No toques la 11 (Do): sobre G7 es evitada.",
+          "starter": "note(\"<[g2,b2,d3,f3] [g2,b2,d3,f3]>\").s(\"piano\")",
+          "solution": "note(\"<[g2,b2,d3,f3,a3] [g2,b2,d3,f3,a3,e4]>\").s(\"piano\")",
+          "cycles": 2,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["G9", "G13"]
+            }
+          ],
+          "hints": [
+            "La 9 de Sol es La y la 13 es Mi. La 11, Do, queda medio tono encima de Si (la 3.ª)."
+          ]
+        },
+        {
+          "id": "M07-T03-K3",
+          "title": "Voicings con tensiones",
+          "brief": "Toca ii–V–I en Do (`Dm7 G7 C^7`) con el diccionario `lefthand`, que cambia la fundamental por la 9 (y en G7 suma la 13), y suma una línea de bajo con las fundamentales en octava 2.",
+          "starter": "stack(\n  chord(\"<Dm7 G7 C^7>\").voicing().s(\"piano\"),\n  note(\"<d2 g2 c2>\").s(\"piano\")\n)",
+          "solution": "stack(\n  chord(\"<Dm7 G7 C^7>\").dictionary(\"lefthand\").voicing().s(\"piano\"),\n  note(\"<d2 g2 c2>\").s(\"piano\")\n)",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["dictionary", "voicing", "stack"]
+            },
+            {
+              "type": "rootsPerBar",
+              "roots": ["D", "G", "C"]
+            },
+            {
+              "type": "pitchClassesInclude",
+              "pitchClasses": ["E", "A"]
+            }
+          ],
+          "hints": [
+            "`dictionary(\"lefthand\")` va antes de `voicing()`.",
+            "El bajo es la nota más grave de cada ciclo: `d2`, `g2`, `c2`."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S09-U04",
+      "title": "Dos voces independientes",
+      "goal": "Mover notas guía con el mínimo salto.",
+      "lesson": "s09-u04",
+      "requires": ["M07-T04"],
+      "katas": [
+        {
+          "id": "M07-T04-K1",
+          "title": "Dos voces guía",
+          "brief": "Toca solo las notas guía de ii–V–I en Do con dos voces en `stack`: arriba Do → Si → Si, abajo Fa → Fa → Mi. Ninguna se mueve más de un semitono.",
+          "starter": "stack(\n  note(\"<c4 g3 c4>\"),\n  note(\"<f3 b3 e3>\")\n).s(\"piano\")",
+          "solution": "stack(\n  note(\"<c4 b3 b3>\"),\n  note(\"<f3 f3 e3>\")\n).s(\"piano\")",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["stack"]
+            },
+            {
+              "type": "maxVoiceLeap",
+              "semitones": 1
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["F", "C"],
+              "voice": "all",
+              "cycle": 0
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["F", "B"],
+              "voice": "all",
+              "cycle": 1
+            },
+            {
+              "type": "noteSequence",
+              "pitchClasses": ["E", "B"],
+              "voice": "all",
+              "cycle": 2
+            }
+          ],
+          "hints": [
+            "La 7.ª de Dm7 (Do) baja a Si, la 3.ª de G7; la 3.ª de Dm7 (Fa) se queda y pasa a ser la 7.ª de G7.",
+            "En el último ciclo, Fa baja a Mi (3.ª de Cmaj7) y Si se queda como su 7.ª."
+          ]
+        },
+        {
+          "id": "M07-T04-K2",
+          "title": "Notas guía con bajo",
+          "brief": "Haz que `voicing` toque solo las notas guía de `Dm7 G7 C^7` con el diccionario `guidetones`, y súmale un bajo con las fundamentales en octava 2.",
+          "starter": "stack(\n  chord(\"<Dm7 G7 C^7>\").voicing().s(\"piano\"),\n  note(\"<d2 g2 c2>\").s(\"piano\")\n)",
+          "solution": "stack(\n  chord(\"<Dm7 G7 C^7>\").dictionary(\"guidetones\").voicing().s(\"piano\"),\n  note(\"<d2 g2 c2>\").s(\"piano\")\n)",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "usesFunction",
+              "names": ["dictionary", "voicing"]
+            },
+            {
+              "type": "rootsPerBar",
+              "roots": ["D", "G", "C"]
+            },
+            {
+              "type": "eventsPerCycle",
+              "max": 3
+            }
+          ],
+          "hints": [
+            "`dictionary(\"guidetones\")` deja dos notas por acorde: la 3.ª y la 7.ª. Con el bajo, tres por ciclo."
+          ]
+        },
+        {
+          "id": "M07-T04-K3",
+          "title": "ii–V–I a cuatro voces en Fa",
+          "brief": "Toca Gm7 → C7 → Fmaj7 a cuatro voces con `note`, sin que ninguna voz salte más de 2 semitonos. Empieza con Gm7 como Fa, Sol, Si♭, Re.",
+          "starter": "note(\"<[g3,bb3,d4,f4] [c3,e3,g3,bb3] [f3,a3,c4,e4]>\").s(\"piano\")",
+          "solution": "note(\"<[f3,g3,bb3,d4] [e3,g3,bb3,c4] [e3,f3,a3,c4]>\").s(\"piano\")",
+          "cycles": 3,
+          "assertions": [
+            {
+              "type": "chordPerCycle",
+              "chords": ["Gm7", "C7", "Fmaj7"]
+            },
+            {
+              "type": "maxVoiceLeap",
+              "semitones": 2
+            }
+          ],
+          "hints": [
+            "Mantén las notas comunes (Sol y Si♭ entre Gm7 y C7) y mueve las otras a la nota más cercana.",
+            "C7 puede ser Mi, Sol, Si♭, Do; desde ahí, Fmaj7 es Mi, Fa, La, Do."
+          ]
+        }
+      ]
+    }
+  ],
+  "boss": {
+    "id": "M07-BOSS",
+    "title": "ii–V–I en tres tonalidades",
+    "brief": "Encadena ii–V–I en Do, Si♭ y La♭ mayor, un acorde por ciclo: Dm7 G7 Cmaj7 · Cm7 F7 B♭maj7 · B♭m7 E♭7 A♭maj7. Con acordes completos de cuatro notas, ninguna voz puede saltar más de 2 semitonos entre un acorde y el siguiente, tampoco al cambiar de tonalidad. El bajo cuenta como una voz más. Puedes darle el ritmo que quieras.",
+    "starter": "chord(\"<Dm7 G7 C^7 Cm7 F7 Bb^7 Bbm7 Eb7 Ab^7>\").mode(\"root\").voicing().s(\"piano\")",
+    "cycles": 9,
+    "assertions": [
+      {
+        "type": "chordPerCycle",
+        "chords": ["Dm7", "G7", "Cmaj7", "Cm7", "F7", "Bbmaj7", "Bbm7", "Eb7", "Abmaj7"]
+      },
+      {
+        "type": "maxVoiceLeap",
+        "semitones": 2
+      }
+    ],
+    "rubric": [
+      {
+        "id": "harmony",
+        "label": "Los nueve acordes suenan completos y en su ciclo",
+        "weight": 3
+      },
+      {
+        "id": "voice-leading",
+        "label": "Cada voz se mueve lo mínimo y las notas guía resuelven por semitono",
+        "weight": 3
+      },
+      {
+        "id": "code",
+        "label": "Código claro: se lee qué acorde y qué voces suenan en cada ciclo",
+        "weight": 2
+      },
+      {
+        "id": "music",
+        "label": "Suena musical, con un ritmo o una textura que lo hace propio",
+        "weight": 2
+      }
+    ],
+    "passScore": 7
+  }
+}
