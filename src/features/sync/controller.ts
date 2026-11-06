@@ -1,6 +1,6 @@
 // When to sync and what state it is in. Failing here never blocks the app: data stays local.
 import { DIRTY_EVENT, loadSyncMark, saveSyncMark } from '../progress/store.ts'
-import { cloudDb, currentEmail, hasSession, syncConfigured } from './client.ts'
+import { arrivedFromLink, cloudDb, currentEmail, hasSession, syncConfigured } from './client.ts'
 import { browserDevice } from './device.ts'
 import { syncOnce } from './engine.ts'
 
@@ -61,7 +61,7 @@ export function runSync(): Promise<void> {
 }
 
 export function startSync() {
-  if (!syncConfigured || !hasSession()) return
+  if (!syncConfigured || !(hasSession() || arrivedFromLink())) return
   void runSync()
   if (started) return
   started = true

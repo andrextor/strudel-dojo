@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import { loadSyncMark } from '../progress/store.ts'
-import { currentEmail, hasSession, sendCode, signOut, verifyCode } from './client.ts'
+import {
+  arrivedFromLink,
+  currentEmail,
+  hasSession,
+  linkFailure,
+  sendLink,
+  signOut,
+} from './client.ts'
 import { runSync, type SyncState, startSync, stopSync, subscribeSync } from './controller.ts'
 
 const STATE_ES: Record<SyncState, string> = {
@@ -17,16 +24,22 @@ const field =
 
 export default function SyncPanel() {
   const [email, setEmail] = useState('')
-  const [code, setCode] = useState('')
   const [signedIn, setSignedIn] = useState<string | null>(null)
-  const [codeSent, setCodeSent] = useState(false)
+  const [linkSent, setLinkSent] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [state, setState] = useState<SyncState>('off')
 
   useEffect(() => {
     const stop = subscribeSync(setState)
-    if (hasSession()) void currentEmail().then(setSignedIn)
+    setError(linkFailure())
+    if (hasSession() || arrivedFromLink()) {
+      void currentEmail().then((signed) => {
+        setSignedIn(signed)
+        if (signed !== null) startSync()
+        if (location.hash !== '') history.replaceState(null, '', location.pathname)
+      })
+    }
     return stop
   }, [])
 
@@ -39,19 +52,9 @@ export default function SyncPanel() {
 
   const request = () =>
     submit(async () => {
-      const result = await sendCode(email.trim())
-      if (result.ok) setCodeSent(true)
+      const result = await sendLink(email.trim())
+      if (result.ok) setLinkSent(true)
       else setError(result.error)
-    })
-
-  const confirm = () =>
-    submit(async () => {
-      const result = await verifyCode(email.trim(), code.trim())
-      if (!result.ok) return setError(result.error)
-      setSignedIn(email.trim())
-      setCode('')
-      setCodeSent(false)
-      startSync()
     })
 
   const leave = () =>
@@ -109,7 +112,7 @@ export default function SyncPanel() {
           class="max-w-sm space-y-3"
           onSubmit={(e) => {
             e.preventDefault()
-            void (codeSent ? confirm() : request())
+            void request()
           }}
         >
           <p class="text-dojo-muted">
@@ -124,40 +127,16 @@ export default function SyncPanel() {
               autocomplete="email"
               class={field}
               value={email}
-              disabled={codeSent}
               onInput={(e) => setEmail(e.currentTarget.value)}
             />
           </label>
-          {codeSent && (
-            <label class="block space-y-1">
-              <span class="text-sm">Código de 6 dígitos que te llegó por correo</span>
-              <input
-                inputMode="numeric"
-                autocomplete="one-time-code"
-                required
-                pattern="[0-9]{6}"
-                maxLength={6}
-                class={field}
-                value={code}
-                onInput={(e) => setCode(e.currentTarget.value)}
-              />
-            </label>
-          )}
           <button type="submit" class={buttonClass('primary')} disabled={busy}>
-            {codeSent ? 'Entrar' : 'Enviarme un código'}
+            {linkSent ? 'Enviar otro enlace' : 'Enviarme un enlace'}
           </button>
-          {codeSent && (
-            <button
-              type="button"
-              class={buttonClass('ghost')}
-              onClick={() => {
-                setCodeSent(false)
-                setCode('')
-                setError(null)
-              }}
-            >
-              Cambiar correo
-            </button>
+          {linkSent && (
+            <p role="status" class="text-sm">
+              Revisa tu correo y abre el enlace en este mismo navegador. Vence en 10 minutos.
+            </p>
           )}
           {error && (
             <p role="alert" class="text-sm text-dojo-danger">

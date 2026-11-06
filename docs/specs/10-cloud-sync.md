@@ -52,9 +52,10 @@ create table public.profile_progress (
 
 ## Sesión
 
-- Entrada con **código de 6 dígitos por correo** (`signInWithOtp` + `verifyOtp`), no con enlace. En el celular, un enlace puede abrirse en otro navegador y dejar la sesión en el lugar equivocado. El código tampoco necesita configurar URLs de redirección.
-- La plantilla `magic_link` se cambia para mostrar `{{ .Token }}`.
-- `signInWithOtp` usa `shouldCreateUser: false`.
+- Entrada con **enlace por correo** (`signInWithOtp`, `shouldCreateUser: false`), sin contraseñas.
+- Un código de 6 dígitos sería más cómodo en el celular, pero exige cambiar la plantilla del correo, y el plan gratis no lo permite sin un proveedor SMTP propio. El dueño prefirió no agregar otra cuenta.
+- El enlace vuelve a `/progreso`. Usa el flujo implícito: la sesión llega en el hash de la URL y queda en el navegador que abrió el enlace, así que hay que abrirlo en el mismo donde se usa la app. Pasa una vez por dispositivo.
+- `site_url` y `additional_redirect_urls` deben incluir la URL de producción.
 - La sesión queda en `localStorage`, gestionada por `supabase-js`.
 - "Cerrar sesión" detiene la sincronización y **conserva** los datos locales.
 

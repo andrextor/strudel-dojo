@@ -26,7 +26,6 @@ La CLI tiene acceso a la organización donde vive `landak-apiario`, el proyecto 
 
 - [ ] `supabase` como dependencia de desarrollo, con versión fija, y scripts `db:start`, `db:stop`, `db:reset`, `test:db`.
 - [ ] `supabase/config.toml`: `project_id = "strudel-dojo"`, puertos 544xx, `enable_signup = false`, Storage, Realtime y Edge desactivados.
-- [ ] Plantilla de correo con `{{ .Token }}` y asunto en español.
 - [ ] Migración con la tabla, RLS, permisos y trigger del spec.
 - [ ] pgTAP:
   - [ ] un usuario no ve ni modifica filas de otro;
@@ -57,8 +56,8 @@ La CLI tiene acceso a la organización donde vive `landak-apiario`, el proyecto 
 ### Interfaz
 
 - [ ] Indicador en `AppHeader`, solo con sesión, sin mover el layout.
-- [ ] Sección "Sincronización" en `/progreso`: correo, código, estado, "Sincronizar ahora" y "Cerrar sesión".
-- [ ] Errores en español: código incorrecto, código vencido, demasiados intentos, sin conexión.
+- [ ] Sección "Sincronización" en `/progreso`: correo, enlace, estado, "Sincronizar ahora" y "Cerrar sesión".
+- [ ] Errores en español: enlace vencido, correo sin cuenta, demasiados intentos, sin conexión.
 - [ ] Revisión en 390 px y 1440 px, en tema claro y oscuro.
 
 ### Proyecto remoto
@@ -91,3 +90,7 @@ La CLI tiene acceso a la organización donde vive `landak-apiario`, el proyecto 
 `feat: sync progress across devices with supabase`
 
 ## Desviaciones
+
+- Entrada con enlace en vez de código: el plan gratis no deja cambiar la plantilla del correo sin SMTP propio (spec 10, Sesión).
+- `enable_signup = false` va solo en `[auth]`. En `[auth.email]` apagaría por completo el acceso por correo.
+- La cuenta familiar la crea el dueño en el panel de Supabase.

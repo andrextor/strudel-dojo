@@ -21,7 +21,7 @@ Fases en orden. Cada fase es autocontenida: dice qué leer, qué construir, cóm
 | P14 | [Curso Strudel](P14-strudel-course.md) | 12 etapas en `/strudel`: katas y combates movidos, reglas propias, inicio con dos cursos. |
 | P15 | [Separar las lecciones y completar S01–S02](P15-split-lessons.md) | Lecciones de teoría sin código, una lección por unidad de Strudel y las unidades nuevas de ritmo y sonido. |
 | P16 | [M10 sin Strudel y cierre](P16-m10-closure.md) | Temas de timbre y tensión de M10, práctica en unidades y documentación final. |
-| P17 | [Sincronización con Supabase](P17-cloud-sync.md) | El progreso viaja solo entre dispositivos, con `localStorage` como caché y código por correo. |
+| P17 | [Sincronización con Supabase](P17-cloud-sync.md) | El progreso viaja solo entre dispositivos, con `localStorage` como caché y enlace por correo. |
 
 P05 y P06 pueden ir en paralelo tras P04. P08 necesita P07. P09 puede ir antes que P08 si se prefiere. P13–P16 van en orden y siguen `docs/specs/09-two-courses.md`.
 

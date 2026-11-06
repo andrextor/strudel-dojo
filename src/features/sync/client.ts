@@ -19,18 +19,18 @@ let client: Promise<SupabaseClient> | null = null
 function getClient(): Promise<SupabaseClient> {
   client ??= import('@supabase/supabase-js').then(({ createClient }) =>
     createClient(url ?? '', key ?? '', {
-      auth: { storageKey: AUTH_KEY, persistSession: true, detectSessionInUrl: false },
+      auth: { storageKey: AUTH_KEY, persistSession: true, detectSessionInUrl: true },
     }),
   )
   return client
 }
 
-export type CodeResult = { ok: true } | { ok: false; error: string }
+export type LinkResult = { ok: true } | { ok: false; error: string }
 
-function codeError(code: string | undefined): string {
+function linkError(code: string | undefined): string {
   switch (code) {
     case 'otp_expired':
-      return 'Ese código no es válido o ya venció. Pide otro.'
+      return 'Ese enlace ya venció o ya se usó. Pide otro.'
     case 'over_email_send_rate_limit':
     case 'over_request_rate_limit':
       return 'Demasiados intentos. Espera unos minutos y vuelve a probar.'
@@ -43,16 +43,21 @@ function codeError(code: string | undefined): string {
   }
 }
 
-export async function sendCode(email: string): Promise<CodeResult> {
+export async function sendLink(email: string): Promise<LinkResult> {
   const { auth } = await getClient()
-  const { error } = await auth.signInWithOtp({ email, options: { shouldCreateUser: false } })
-  return error ? { ok: false, error: codeError(error.code) } : { ok: true }
+  const { error } = await auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: false, emailRedirectTo: `${location.origin}/progreso` },
+  })
+  return error ? { ok: false, error: linkError(error.code) } : { ok: true }
 }
 
-export async function verifyCode(email: string, token: string): Promise<CodeResult> {
-  const { auth } = await getClient()
-  const { error } = await auth.verifyOtp({ email, token, type: 'email' })
-  return error ? { ok: false, error: codeError(error.code) } : { ok: true }
+// The email link lands here with the session, or the reason it failed, in the URL hash.
+export const arrivedFromLink = () => /access_token=|error_code=/.test(location.hash)
+
+export function linkFailure(): string | null {
+  const code = new URLSearchParams(location.hash.slice(1)).get('error_code')
+  return code === null ? null : linkError(code)
 }
 
 export async function currentEmail(): Promise<string | null> {
