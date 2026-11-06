@@ -144,7 +144,7 @@ export default function ResultView({ curriculum }: { curriculum: Module[] }) {
           <h2 class="font-display text-xl font-bold">Para repasar</h2>
           <p class="text-dojo-muted">
             Fallaste en: {failedSkills.map((s) => SKILL_NAME_ES[s] ?? s).join(', ')}.{' '}
-            {attempt.kind === 'placement'
+            {attempt.kind === 'placement' && !passed
               ? 'Repasa estos temas antes de intentar de nuevo el examen:'
               : 'Practica estos temas:'}
           </p>
