@@ -16,7 +16,7 @@ import type { Prefs, ProgressState } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
 
 type Direction = 'up' | 'down' | 'harmonic'
-type Kind = 'intervals' | 'chords' | 'modes' | 'dictation'
+type Kind = 'notes' | 'intervals' | 'chords' | 'modes' | 'dictation'
 
 interface Exercise {
   id: string
@@ -51,6 +51,34 @@ const fixed = (generator: string, params: Record<string, unknown>) => (): MixEnt
 
 // Each exercise opens with the topic or belt that teaches it (spec 01, ear track).
 const EXERCISES: Exercise[] = [
+  {
+    id: 'notes-reference',
+    kind: 'notes',
+    label: 'Notas naturales, con Do de referencia',
+    entry: fixed('ear-note', { accidentals: 'none', reference: true }),
+    open: () => true,
+  },
+  {
+    id: 'notes-all-reference',
+    kind: 'notes',
+    label: 'Las 12 notas, con Do de referencia',
+    entry: fixed('ear-note', { accidentals: 'sharps', reference: true }),
+    open: () => true,
+  },
+  {
+    id: 'notes-free',
+    kind: 'notes',
+    label: 'Notas naturales, sin referencia',
+    entry: fixed('ear-note', { accidentals: 'none', reference: false }),
+    open: () => true,
+  },
+  {
+    id: 'notes-all-free',
+    kind: 'notes',
+    label: 'Las 12 notas, sin referencia',
+    entry: fixed('ear-note', { accidentals: 'sharps', reference: false }),
+    open: () => true,
+  },
   {
     id: 'basic',
     kind: 'intervals',
@@ -127,6 +155,7 @@ const EXERCISES: Exercise[] = [
 ]
 
 const KINDS: { id: Kind; label: string; belt: string }[] = [
+  { id: 'notes', label: 'Notas', belt: 'blanco' },
   { id: 'intervals', label: 'Intervalos', belt: 'blanco' },
   { id: 'chords', label: 'Acordes', belt: 'naranja (M03)' },
   { id: 'modes', label: 'Escalas y modos', belt: 'morado (M06)' },

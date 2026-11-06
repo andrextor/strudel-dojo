@@ -14,6 +14,8 @@ const CASES: GeneratorCase[] = [
   { id: 'ear-interval', params: { set: ['2M', '3M', '4P', '5P', '8P'], direction: 'up' } },
   { id: 'ear-interval', params: { set: ['3m', '3M'], direction: 'harmonic' } },
   { id: 'rhythm-match', params: { meter: 4, subdivision: 4 }, minDistinct: 5 }, // practice only
+  { id: 'ear-note', params: { accidentals: 'none', reference: true } },
+  { id: 'ear-note', params: { accidentals: 'sharps', reference: false } },
   { id: 'scale-spelling', params: { scales: ['major'] }, strict: true },
   { id: 'scale-spelling', params: { scales: ['minor'] }, strict: true },
   {
