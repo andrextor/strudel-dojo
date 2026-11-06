@@ -190,3 +190,24 @@ test('guitar progress: optional, validated field by field, merged by best BPM', 
   assert.equal(mergeProgress(parsed, other).guitar?.best['notes:5-1:0-12:all']?.bpm, 80)
   assert.equal(mergeProgress(parsed, other).guitar?.minRms, 0.02)
 })
+
+test('a deleted scroll does not come back in a merge, unless it was edited afterwards', () => {
+  const scroll = { id: 's1', name: 'Uno', code: 's("bd")', updatedAt: '2026-01-01T00:00:00.000Z' }
+  const kept = { ...emptyProgress(), scrolls: [scroll] }
+  const deleted = {
+    ...emptyProgress(),
+    deletedScrolls: { s1: '2026-02-01T00:00:00.000Z' },
+  }
+  assert.deepEqual(mergeProgress(kept, deleted).scrolls, [])
+  assert.deepEqual(mergeProgress(deleted, kept).scrolls, [])
+  const edited = { ...scroll, updatedAt: '2026-03-01T00:00:00.000Z' }
+  assert.deepEqual(mergeProgress(deleted, { ...kept, scrolls: [edited] }).scrolls, [edited])
+})
+
+test('old progress without deletedScrolls stays valid', () => {
+  const parsed = parseProgress({ version: 1 })
+  assert.equal('deletedScrolls' in parsed, false)
+  assert.deepEqual(parseProgress({ version: 1, deletedScrolls: { a: 'x', b: 3 } }).deletedScrolls, {
+    a: 'x',
+  })
+})
