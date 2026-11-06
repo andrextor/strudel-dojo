@@ -85,27 +85,14 @@
     },
     {
       "id": "M10-T03",
-      "title": "Diseño de sonido",
-      "goal": "Elegir la fuente (sinte, sample o soundfont) y darle forma con envolvente, filtros y efectos: reverb, delay y distorsión.",
-      "skills": ["sound-design"],
+      "title": "Timbre y envolvente",
+      "goal": "Explicar de qué está hecho un sonido: la onda, la envolvente, los filtros y los efectos.",
+      "skills": ["timbre"],
       "lesson": "m10-t03",
       "practice": {
         "mix": [
           {
-            "generator": "sound-design",
-            "params": {
-              "functions": [
-                "lpf",
-                "hpf",
-                "lpq",
-                "room",
-                "delay",
-                "shape",
-                "vowel",
-                "attack",
-                "release"
-              ]
-            },
+            "generator": "timbre-concept",
             "weight": 1
           }
         ]
@@ -115,7 +102,7 @@
         "passPercent": 80,
         "mix": [
           {
-            "generator": "sound-design",
+            "generator": "timbre-concept",
             "weight": 4
           },
           {
@@ -138,17 +125,14 @@
     },
     {
       "id": "M10-T04",
-      "title": "Performance",
-      "goal": "Crear tensión y liberación en vivo con señales, azar controlado y transiciones, y planear la curva de un set.",
-      "skills": ["performance"],
+      "title": "Tensión y liberación",
+      "goal": "Hacer crecer y soltar una pieza con densidad, registro, pedales y cortes.",
+      "skills": ["tension-release"],
       "lesson": "m10-t04",
       "practice": {
         "mix": [
           {
-            "generator": "performance-signal",
-            "params": {
-              "directions": ["describe"]
-            },
+            "generator": "tension-device",
             "weight": 1
           }
         ]
@@ -158,11 +142,11 @@
         "passPercent": 80,
         "mix": [
           {
-            "generator": "performance-signal",
+            "generator": "tension-device",
             "weight": 4
           },
           {
-            "generator": "sound-design",
+            "generator": "timbre-concept",
             "weight": 1
           },
           {
@@ -194,11 +178,11 @@
         "weight": 3
       },
       {
-        "generator": "sound-design",
+        "generator": "timbre-concept",
         "weight": 3
       },
       {
-        "generator": "performance-signal",
+        "generator": "tension-device",
         "weight": 3
       }
     ]

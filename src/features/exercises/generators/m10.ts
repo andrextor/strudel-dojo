@@ -404,6 +404,80 @@ function catalogGenerator(id: string, skill: string, catalog: readonly Entry[]) 
   return gen
 }
 
+// ---------- concept generators: timbre, tension and release (no code) ----------
+
+interface Concept {
+  term: string
+  does: string
+}
+
+const TIMBRE: readonly Concept[] = [
+  { term: 'Ataque', does: 'Cuánto tarda el sonido en llegar a su volumen máximo' },
+  { term: 'Decaimiento', does: 'Cuánto tarda en bajar del pico al nivel en que se sostiene' },
+  { term: 'Sostenimiento', does: 'El nivel que mantiene mientras la nota sigue' },
+  { term: 'Relajación', does: 'Cuánto tarda en apagarse cuando la nota termina' },
+  { term: 'Filtro pasa bajos', does: 'Deja pasar lo grave y apaga lo agudo' },
+  { term: 'Filtro pasa altos', does: 'Quita los graves y deja lo agudo' },
+  { term: 'Reverberación', does: 'Hace que el sonido parezca estar en una sala' },
+  { term: 'Eco', does: 'Repite el sonido un instante después' },
+  { term: 'Distorsión', does: 'Ensucia y endurece el sonido al saturarlo' },
+  { term: 'Onda senoidal', does: 'Un tono puro, casi sin armónicos' },
+  { term: 'Onda de sierra', does: 'Un sonido brillante, lleno de armónicos' },
+]
+
+const TENSION: readonly Concept[] = [
+  { term: 'Build-up', does: 'Sube poco a poco la densidad y el brillo antes de un punto alto' },
+  { term: 'Corte', does: 'Todo calla un instante y vuelve el ritmo completo' },
+  { term: 'Pedal', does: 'El bajo se queda en una nota mientras arriba cambia la armonía' },
+  { term: 'Más densidad', does: 'Sube la tensión con más notas por compás' },
+  { term: 'Registro agudo', does: 'Sube la tensión llevando las voces hacia arriba' },
+  { term: 'Tónica', does: 'Libera la tensión con el acorde de reposo' },
+  {
+    term: 'Entrada por capas',
+    does: 'Los instrumentos aparecen uno a uno para hacer crecer la pieza',
+  },
+  { term: 'Respiro', does: 'Baja la densidad después de un punto alto para dar contraste' },
+]
+
+function conceptGenerator(id: string, skill: string, catalog: readonly Concept[]) {
+  const gen: Generator<{ directions: Direction[] }> = {
+    id,
+    skill,
+    parseParams(raw) {
+      const directions = subset(asRecord(raw).directions, DIRECTIONS)
+      return directions ? { directions } : null
+    },
+    generate(params, rng) {
+      const entry = rng.pick([...catalog])
+      const direction = rng.pick(params.directions)
+      const others = rng.shuffle(catalog.filter((e) => e !== entry))
+      const base = {
+        key: `${id}:${direction}:${entry.term}`,
+        generator: id,
+        skill,
+        explanation: `${entry.term}: ${entry.does.charAt(0).toLowerCase()}${entry.does.slice(1)}.`,
+      }
+      return direction === 'describe'
+        ? choiceQuestion(
+            rng,
+            { ...base, prompt: `¿Qué describe «${entry.term}»?` },
+            entry.does,
+            others.map((e) => e.does),
+          )
+        : choiceQuestion(
+            rng,
+            { ...base, prompt: `¿Cómo se llama esto? ${entry.does}.` },
+            entry.term,
+            others.map((e) => e.term),
+          )
+    },
+  }
+  return gen
+}
+
+export const timbreConcept = conceptGenerator('timbre-concept', 'timbre', TIMBRE)
+export const tensionDevice = conceptGenerator('tension-device', 'tension-release', TENSION)
+
 export const soundDesign = catalogGenerator('sound-design', 'sound-design', SOUND_DESIGN)
 export const performanceSignal = catalogGenerator('performance-signal', 'performance', PERFORMANCE)
 
@@ -412,4 +486,6 @@ export const m10: Registered[] = [
   erase(layerRole),
   erase(soundDesign),
   erase(performanceSignal),
+  erase(timbreConcept),
+  erase(tensionDevice),
 ]

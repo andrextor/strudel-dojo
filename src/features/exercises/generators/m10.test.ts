@@ -15,4 +15,6 @@ generatorTests([
   },
   { id: 'performance-signal', params: {} },
   { id: 'performance-signal', params: { directions: ['describe'] } },
+  { id: 'timbre-concept', params: {} },
+  { id: 'tension-device', params: {} },
 ])
