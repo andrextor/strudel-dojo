@@ -135,7 +135,7 @@ function fakeDevice(start: LocalProfile[], pendingDeletes: string[] = []) {
 }
 
 const katasIn = (r: RemoteRow | undefined) =>
-  Object.keys((r?.progress as ProgressState).katas).sort()
+  Object.keys((r?.progress as ProgressState | undefined)?.katas ?? {}).sort()
 
 test('two devices end up with the union of their changes', async () => {
   const cloud = fakeCloud([])

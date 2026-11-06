@@ -393,7 +393,7 @@ export function mergeProgress(current: ProgressState, incoming: ProgressState): 
   const deletedScrolls = mergeBy(
     current.deletedScrolls ?? {},
     incoming.deletedScrolls ?? {},
-    (a, b) => (b > a ? b : a),
+    (a, b) => (a.localeCompare(b) < 0 ? b : a),
   )
   for (const [id, deletedAt] of Object.entries(deletedScrolls)) {
     const scroll = scrolls.get(id)
