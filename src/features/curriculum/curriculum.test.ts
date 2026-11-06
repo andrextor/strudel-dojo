@@ -311,6 +311,25 @@ test('theory summaries and goals never mention code', () => {
   }
 })
 
+// Exercises in the theory course: everything a learner reads must work without knowing Strudel.
+test('theory questions show no code', () => {
+  const CODE = /Strudel|mini-not|\b(s|n|note|chord|stack|scale)\(|\.(voicing|arp|struct)\(/i
+  for (const m of modules) {
+    if (m.status !== 'ready') continue
+    const sets = [m.exam, ...m.topics.map((t) => t.test)]
+    for (const set of sets) {
+      for (let i = 0; i < 20; i++) {
+        for (const q of buildSet(set.mix, set.questions, `theory:${i}`)) {
+          const options = 'options' in q.input ? q.input.options : []
+          for (const text of [q.prompt, q.explanation, ...options]) {
+            assert.ok(!CODE.test(text ?? ''), `${m.id} ${q.generator}: ${text}`)
+          }
+        }
+      }
+    }
+  }
+})
+
 test('theory lessons teach no code', () => {
   for (const file of readdirSync(lessonsDir).filter((f) => f.endsWith('.mdx'))) {
     const mdx = readFileSync(`${lessonsDir}/${file}`, 'utf8')
