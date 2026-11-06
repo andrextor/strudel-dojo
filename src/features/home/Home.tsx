@@ -224,7 +224,7 @@ export default function Home({ curriculum, stages }: { curriculum: Module[]; sta
         </ol>
       </section>
 
-      <section class="enter grid grid-cols-2 gap-3 md:grid-cols-5" style="--i: 4">
+      <section class="enter grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6" style="--i: 4">
         {SHORTCUTS.map(({ href, label, Icon }) => (
           <a
             key={href}
