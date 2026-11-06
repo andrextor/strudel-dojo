@@ -3,7 +3,7 @@
   "order": 1,
   "belt": "white",
   "title": "Reactivar fundamentos",
-  "summary": "Notas, intervalos y ritmo a buen ritmo, más tus primeros sonidos en Strudel.",
+  "summary": "Notas, intervalos y ritmo a buen ritmo, para llenar los huecos.",
   "status": "ready",
   "prerequisite": null,
   "exam": {
@@ -203,7 +203,7 @@
     {
       "id": "M01-T04",
       "title": "Ritmo y métrica",
-      "goal": "Leer figuras, silencios y compases, y escribir cualquier ritmo en mini-notation.",
+      "goal": "Leer figuras, silencios y compases, y reconocer un ritmo de oído.",
       "lesson": "m01-t04",
       "skills": ["rhythm-reading"],
       "practice": {

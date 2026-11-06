@@ -303,6 +303,14 @@ test('every unit has its lesson and none is a placeholder', () => {
   }
 })
 
+test('theory summaries and goals never mention code', () => {
+  for (const m of modules) {
+    for (const text of [m.summary, ...m.topics.map((t) => t.goal)]) {
+      assert.ok(!/Strudel|mini-not|`/i.test(text), `${m.id}: ${text}`)
+    }
+  }
+})
+
 test('theory lessons teach no code', () => {
   for (const file of readdirSync(lessonsDir).filter((f) => f.endsWith('.mdx'))) {
     const mdx = readFileSync(`${lessonsDir}/${file}`, 'utf8')

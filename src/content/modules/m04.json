@@ -103,7 +103,7 @@
     {
       "id": "M04-T03",
       "title": "Progresiones clásicas",
-      "goal": "Reconocer y tocar I–V–vi–IV, I–vi–IV–V, ii–V–I y el blues de 12 compases en cualquier tonalidad mayor, y ordenar secciones con `cat` y `arrange`.",
+      "goal": "Reconocer y tocar I–V–vi–IV, I–vi–IV–V, ii–V–I y el blues de 12 compases en cualquier tonalidad mayor.",
       "skills": ["common-progressions"],
       "lesson": "m04-t03",
       "practice": {
@@ -153,7 +153,7 @@
     {
       "id": "M04-T04",
       "title": "Armonizar una melodía",
-      "goal": "Elegir I, IV o V para cada compás según las notas de la melodía, y acompañarla con ritmo usando `euclid` y `mask`.",
+      "goal": "Elegir I, IV o V para cada compás según las notas de la melodía, y decidir cada cuánto cambia el acorde.",
       "skills": ["harmonization"],
       "lesson": "m04-t04",
       "practice": {
