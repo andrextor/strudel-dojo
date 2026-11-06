@@ -19,7 +19,6 @@ import type { Module, Stage } from '../curriculum/schema.ts'
 import ProfilePicker from '../profiles/ProfilePicker.tsx'
 import { needsBackupReminder } from '../progress/persist.ts'
 import {
-  isStagePassed,
   isTopicPassed,
   moduleStatus,
   recommendedNext,
@@ -63,7 +62,6 @@ export default function Home({ curriculum, stages }: { curriculum: Module[]; sta
     strudel && strudel.kind !== 'boss'
       ? strudelStage?.units.find((u) => u.id === strudel.unitId)
       : undefined
-  const stagesPassed = stages.filter((s) => isStagePassed(progress, s)).length
 
   return (
     <div class="space-y-10">
@@ -104,7 +102,7 @@ export default function Home({ curriculum, stages }: { curriculum: Module[]; sta
 
         <section class="flex flex-col items-start rounded-card bg-dojo-surface p-5 md:p-6">
           <p class="text-sm text-dojo-muted">
-            Strudel · Etapa {Math.min(stagesPassed + 1, stages.length)} de {stages.length}
+            Strudel · Etapa {strudelStage?.order ?? stages.length} de {stages.length}
           </p>
           {strudel && strudelStage ? (
             <>
