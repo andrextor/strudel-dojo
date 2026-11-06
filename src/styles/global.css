@@ -261,3 +261,217 @@
     animation: none;
   }
 }
+
+/* The apprentice (DESIGN.md). Poses set joint angles; a change of pose springs between them. */
+.apprentice {
+  --arm-l: 36deg;
+  --fore-l: -176deg;
+  --arm-r: -30deg;
+  --fore-r: 164deg;
+  --leg-l: 8deg;
+  --shin-l: -4deg;
+  --leg-r: -12deg;
+  --shin-r: 6deg;
+  --upper: 0deg;
+  --squash: 1;
+  --head: 0deg;
+  --head-drop: 0px;
+  --lift: 0px;
+  --spring: 460ms cubic-bezier(0.34, 1.45, 0.64, 1);
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+.apprentice :where(g) {
+  transform-box: view-box;
+  transition: transform var(--spring);
+}
+
+.ap-limb {
+  fill: none;
+  stroke: var(--color-dojo-text);
+  stroke-linecap: round;
+  stroke-width: 9;
+}
+.ap-gi {
+  fill: var(--color-dojo-text);
+}
+.ap-skull {
+  fill: var(--color-dojo-text);
+}
+.ap-lapel {
+  fill: none;
+  stroke: var(--color-dojo-surface);
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+}
+.ap-belt {
+  fill: var(--belt);
+}
+.ap-belt-tails {
+  fill: none;
+  stroke: var(--belt);
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+/* Light belts on a light gi need an edge; the black belt needs one on dark surfaces. */
+.apprentice[data-belt="white"] .ap-belt,
+.apprentice[data-belt="black"] .ap-belt {
+  stroke: var(--color-dojo-border);
+  stroke-width: 1;
+}
+
+.ap-body {
+  transform: translateY(var(--lift));
+}
+.ap-upper {
+  transform-origin: 60px 96px;
+  transform: rotate(var(--upper)) scaleY(var(--squash));
+}
+.ap-head {
+  transform-origin: 60px 38px;
+  transform: translateY(var(--head-drop)) rotate(var(--head));
+}
+.ap-arm-l {
+  transform-origin: 46px 47px;
+  transform: rotate(var(--arm-l));
+}
+.ap-fore-l {
+  transform-origin: 37px 67px;
+  transform: rotate(var(--fore-l));
+}
+.ap-arm-r {
+  transform-origin: 74px 47px;
+  transform: rotate(var(--arm-r));
+}
+.ap-fore-r {
+  transform-origin: 83px 67px;
+  transform: rotate(var(--fore-r));
+}
+.ap-leg-l {
+  transform-origin: 53px 96px;
+  transform: rotate(var(--leg-l));
+}
+.ap-shin-l {
+  transform-origin: 47px 118px;
+  transform: rotate(var(--shin-l));
+}
+.ap-leg-r {
+  transform-origin: 67px 96px;
+  transform: rotate(var(--leg-r));
+}
+.ap-shin-r {
+  transform-origin: 73px 118px;
+  transform: rotate(var(--shin-r));
+}
+
+.ap-ki {
+  fill: none;
+  opacity: 0;
+  stroke: var(--color-dojo-gold);
+  stroke-linecap: round;
+  stroke-width: 3;
+  transition: opacity 300ms ease-out;
+}
+
+.apprentice[data-pose="guard"] .ap-body,
+.apprentice[data-pose="ki"] .ap-body {
+  animation: ap-breathe 3.2s ease-in-out infinite;
+}
+.apprentice[data-pose="ki"] .ap-ki {
+  opacity: 1;
+}
+
+.apprentice[data-pose="cheer"] {
+  --arm-l: 18deg;
+  --fore-l: -8deg;
+  --arm-r: -142deg;
+  --fore-r: -14deg;
+  --leg-l: 14deg;
+  --leg-r: -14deg;
+  --shin-l: 0deg;
+  --shin-r: 0deg;
+}
+.apprentice[data-pose="cheer"] .ap-body {
+  animation: ap-jump 720ms cubic-bezier(0.3, 0.7, 0.3, 1) 2;
+}
+
+.apprentice[data-pose="bow"] {
+  --squash: 0.8;
+  --head-drop: 20px;
+  --arm-l: -10deg;
+  --fore-l: 6deg;
+  --arm-r: 10deg;
+  --fore-r: -6deg;
+  --leg-l: 0deg;
+  --leg-r: 0deg;
+  --shin-l: 0deg;
+  --shin-r: 0deg;
+}
+
+.apprentice[data-pose="down"] {
+  --squash: 0.96;
+  --head: 9deg;
+  --head-drop: 8px;
+  --arm-l: -4deg;
+  --fore-l: 4deg;
+  --arm-r: 4deg;
+  --fore-r: -4deg;
+  --leg-l: 2deg;
+  --leg-r: -2deg;
+  --shin-l: 0deg;
+  --shin-r: 0deg;
+}
+
+.apprentice[data-pose="meditate"] {
+  --lift: 30px;
+  --arm-l: -2deg;
+  --fore-l: 42deg;
+  --arm-r: 2deg;
+  --fore-r: -42deg;
+  --leg-l: 72deg;
+  --shin-l: -128deg;
+  --leg-r: -72deg;
+  --shin-r: 128deg;
+}
+.apprentice[data-pose="meditate"] .ap-upper {
+  animation: ap-settle 5s ease-in-out infinite;
+}
+
+.apprentice[data-pose="dance"] {
+  --spring: 110ms ease-out;
+  --arm-l: 40deg;
+  --fore-l: -120deg;
+  --arm-r: -120deg;
+  --fore-r: -30deg;
+  --upper: -7deg;
+  --leg-l: 16deg;
+  --leg-r: -6deg;
+  --lift: -3px;
+}
+.apprentice[data-pose="dance"][data-step="b"] {
+  --arm-l: 120deg;
+  --fore-l: 30deg;
+  --arm-r: -40deg;
+  --fore-r: 120deg;
+  --upper: 7deg;
+  --leg-l: 6deg;
+  --leg-r: -16deg;
+  --lift: 2px;
+}
+
+@keyframes ap-breathe {
+  50% {
+    transform: translateY(1.5px);
+  }
+}
+@keyframes ap-settle {
+  50% {
+    transform: translateY(1.5px);
+  }
+}
+@keyframes ap-jump {
+  40% {
+    transform: translateY(-14px);
+  }
+}

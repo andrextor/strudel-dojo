@@ -4,7 +4,7 @@ Fuente de verdad del lenguaje visual. Léelo antes de cualquier trabajo de UI. T
 
 ## Tema
 
-Un dojo de noche con luces de neón: la sala de práctica donde se entrena música a medianoche y se hace live coding como en un club. Lo usan un adulto músico y su hijo: **chévere, no infantil**. Sin mascotas, sin caricaturas, sin colores pastel. El progreso son **cinturones**: cada módulo es un cinturón y cada tema aprobado es una raya.
+Un dojo de noche con luces de neón: la sala de práctica donde se entrena música a medianoche y se hace live coding como en un club. Lo usan un adulto músico y su hijo: **chévere, no infantil**. Sin mascotas tiernas, sin caricaturas, sin colores pastel. El progreso son **cinturones**: cada módulo es un cinturón y cada tema aprobado es una raya.
 
 ## Reglas permanentes
 
@@ -114,6 +114,7 @@ Relleno del cinturón; el texto sobre ellos es `belt-on` (fijo, en ambos temas),
 
 - **Camino de cinturones** (inicio): un cinturón horizontal por módulo, apilados como en un tablero de dojo. El activo brilla con `glow-torii` y cada tema aprobado agrega una raya. Los bloqueados se ven con 40 % de opacidad y llevan `Lock`.
 - **Ceremonia de cinturón**: al ganar un cinturón, el cinturón nuevo se "anuda" (SVG con trazo animado de 1.2 s) y suenan tres acordes generados con Strudel (I–IV–I en la tonalidad del módulo). Se puede saltar y respeta reduced-motion (sin animación, con el sonido opcional).
+- **Aprendiz** (`features/apprentice/Apprentice.tsx`): silueta sin cara hecha con `dojo-text`, cuya expresión está toda en la postura; el cinturón del perfil es su único color fuerte. Las posturas (guardia, energía, celebrar, reverencia, tomar aire, meditar, baile) son ángulos de articulación en `global.css`, y cambiar de postura hace un resorte entre ellos. Baila con cada evento que suena en el editor, así que en un silencio se queda quieto. Aparece en el inicio, en resultados, junto a los editores y en la ceremonia, y nunca durante una prueba o examen. Después de un fallo baja la cabeza unos segundos y vuelve a la guardia; una ausencia se muestra meditando, nunca triste. Con reduced-motion no baila y solo muestra la postura final.
 - **Teclado** (`components/music/Keyboard.tsx`): SVG con teclas a escala real. Nota que suena = `dojo-neon` con glow; seleccionada = `dojo-violet`; correcta/incorrecta = success/danger con ícono encima.
 - **Diapasón** (`components/music/Fretboard.tsx`): 6 cuerdas, afinación estándar configurable, 0–15 trastes, marcadores en 3-5-7-9-12. Mismos estados que el teclado.
 - **Editor Strudel**: superficie `dojo-raised`, gutter `dojo-surface`, mini-notation en `dojo-gold`, funciones en `dojo-violet`, números en `dojo-neon`, eventos activos con fondo neón al 20 %.

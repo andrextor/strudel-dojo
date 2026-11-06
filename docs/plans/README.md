@@ -22,6 +22,7 @@ Fases en orden. Cada fase es autocontenida: dice qué leer, qué construir, cóm
 | P15 | [Separar las lecciones y completar S01–S02](P15-split-lessons.md) | Lecciones de teoría sin código, una lección por unidad de Strudel y las unidades nuevas de ritmo y sonido. |
 | P16 | [M10 sin Strudel y cierre](P16-m10-closure.md) | Temas de timbre y tensión de M10, práctica en unidades y documentación final. |
 | P17 | [Sincronización con Supabase](P17-cloud-sync.md) | El progreso viaja solo entre dispositivos, con `localStorage` como caché y enlace por correo. |
+| P18 | Aprendiz | Silueta que lleva tu cinturón, reacciona a resultados y racha, y baila con tu patrón. Reglas en `DESIGN.md`. |
 
 P05 y P06 pueden ir en paralelo tras P04. P08 necesita P07. P09 puede ir antes que P08 si se prefiere. P13–P16 van en orden y siguen `docs/specs/09-two-courses.md`.
 

@@ -14,10 +14,13 @@ import {
 import BeltBadge from '../../components/ui/BeltBadge.tsx'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge, { type Status } from '../../components/ui/StatusBadge.tsx'
+import Apprentice from '../apprentice/Apprentice.tsx'
+import { restingPose } from '../apprentice/mood.ts'
 import { bossHref, moduleHref, nextStepHref, topicHref, unitHref } from '../curriculum/paths.ts'
 import type { Module, StageOutline } from '../curriculum/schema.ts'
 import ProfilePicker from '../profiles/ProfilePicker.tsx'
 import { needsBackupReminder } from '../progress/persist.ts'
+import { beltFor } from '../progress/points.ts'
 import {
   isTopicPassed,
   moduleStatus,
@@ -72,11 +75,18 @@ export default function Home({
 
   return (
     <div class="space-y-10">
-      <section class="enter space-y-2">
-        <h1 class="font-display text-3xl font-bold md:text-4xl">Hola, {active.name}</h1>
-        <p class="text-dojo-muted">
-          Dos cursos: teoría para ganar cinturones y Strudel para hacer música con código.
-        </p>
+      <section class="enter flex items-end justify-between gap-4">
+        <div class="min-w-0 space-y-2">
+          <h1 class="font-display text-3xl font-bold md:text-4xl">Hola, {active.name}</h1>
+          <p class="text-dojo-muted">
+            Dos cursos: teoría para ganar cinturones y Strudel para hacer música con código.
+          </p>
+        </div>
+        <Apprentice
+          belt={beltFor(progress, curriculum).belt ?? 'white'}
+          pose={restingPose(progress, now)}
+          class="h-28 w-24 md:h-32 md:w-28"
+        />
       </section>
 
       <div class="enter grid gap-4 md:grid-cols-2" style="--i: 1">

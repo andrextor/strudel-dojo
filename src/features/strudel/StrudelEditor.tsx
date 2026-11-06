@@ -5,8 +5,17 @@ import { Play, Square } from 'lucide-preact'
 import { Fragment } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
+import { emitBeat, emitPlaying } from '../apprentice/beat.ts'
 import { dojoTheme } from './editor-theme.ts'
-import { colorToken, DRAW_TIME, getEngine, isAudioReady, paintRoll, unlockAudio } from './engine.ts'
+import {
+  audioContext,
+  colorToken,
+  DRAW_TIME,
+  getEngine,
+  isAudioReady,
+  paintRoll,
+  unlockAudio,
+} from './engine.ts'
 import { toDojoError } from './errors.ts'
 import { type EvalResult, isPattern, knownNames } from './evaluate.ts'
 import type { DojoError } from './types.ts'
@@ -104,6 +113,8 @@ export default function StrudelEditor({
         prebake: () => engine.sounds,
         defaultOutput: (hap: unknown, ...rest: unknown[]) => {
           callbacks.current.onTrigger?.(hap)
+          // The scheduler passes the absolute audio time this hap will sound at.
+          emitBeat(typeof rest[0] === 'number' ? rest[0] - audioContext().currentTime : 0)
           return webaudio.webaudioOutput(hap, ...rest)
         },
         // StrudelMirror only keeps a look-ahead window when the pattern has a painter, so a
@@ -127,7 +138,10 @@ export default function StrudelEditor({
             pos: 0.5,
           })
         },
-        onToggle: (started: boolean) => setPlaying(started),
+        onToggle: (started: boolean) => {
+          setPlaying(started)
+          emitPlaying(started)
+        },
         beforeEval: () => {
           lastCode = instance?.code ?? lastCode
           callbacks.current.onCodeChange?.(lastCode)

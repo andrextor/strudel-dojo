@@ -2,10 +2,12 @@ import { ArrowLeft, LoaderCircle, Lock, Sparkles, Swords } from 'lucide-preact'
 import { useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
+import Apprentice from '../apprentice/Apprentice.tsx'
 import { stageHref } from '../curriculum/paths.ts'
 import type { Boss, Module, StageOutline } from '../curriculum/schema.ts'
 import { AssertionList, useAssertions } from '../kata/challenge.tsx'
 import NeedProfile from '../profiles/NeedProfile.tsx'
+import { beltFor } from '../progress/points.ts'
 import { newlyPassedModule, recordBoss, rubricScore, stageBossUnlocked } from '../progress/rules.ts'
 import type { BossRecord } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
@@ -40,6 +42,7 @@ export default function BossView({
   const [reviewError, setReviewError] = useState<string | null>(null)
   const sensei = useSenseiEnabled()
   const [earned, setEarned] = useState<Module | null>(null)
+  const [cheer, setCheer] = useState(false)
 
   if (active === null || progress === null) return <NeedProfile />
   const back = (
@@ -70,6 +73,7 @@ export default function BossView({
   const preview = rubricScore(boss.rubric, values, boss.passScore)
 
   function save(record: BossRecord) {
+    if (record.passed) setCheer(true)
     updateProgress((p) => {
       const next = recordBoss(p, boss.id, record)
       setEarned(newlyPassedModule(p, next, curriculum))
@@ -149,23 +153,32 @@ export default function BossView({
   return (
     <div class="space-y-6">
       {back}
-      <header class="space-y-2">
-        <p class="flex items-center gap-2 text-sm text-dojo-muted">
-          <Swords size={16} aria-hidden="true" />
-          Combate
-        </p>
-        <h1 class="font-display text-2xl font-bold md:text-3xl">{boss.title}</h1>
-        <p class="text-lg">{boss.brief}</p>
-        {win && (
-          <StatusBadge
-            status="passed"
-            label={
-              win.selfAssessed
-                ? 'Combate aprobado (autoevaluado)'
-                : 'Combate aprobado por el Sensei'
-            }
-          />
-        )}
+      <header class="flex items-start justify-between gap-4">
+        <div class="min-w-0 space-y-2">
+          <p class="flex items-center gap-2 text-sm text-dojo-muted">
+            <Swords size={16} aria-hidden="true" />
+            Combate
+          </p>
+          <h1 class="font-display text-2xl font-bold md:text-3xl">{boss.title}</h1>
+          <p class="text-lg">{boss.brief}</p>
+          {win && (
+            <StatusBadge
+              status="passed"
+              label={
+                win.selfAssessed
+                  ? 'Combate aprobado (autoevaluado)'
+                  : 'Combate aprobado por el Sensei'
+              }
+            />
+          )}
+        </div>
+        <Apprentice
+          belt={beltFor(progress, curriculum).belt ?? 'white'}
+          pose={cheer ? 'cheer' : 'guard'}
+          settle="guard"
+          dances
+          class="h-24 w-20 md:h-28 md:w-24"
+        />
       </header>
 
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">

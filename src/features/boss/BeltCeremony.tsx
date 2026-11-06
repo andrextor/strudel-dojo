@@ -1,6 +1,7 @@
 import { Award, Volume2 } from 'lucide-preact'
 import { useEffect, useRef } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
+import Apprentice from '../apprentice/Apprentice.tsx'
 import { BELT_NAME_ES, type BeltColor } from '../curriculum/belts.ts'
 import { playOnce } from '../strudel/engine.ts'
 import { cadence } from './cadence.ts'
@@ -43,6 +44,7 @@ export default function BeltCeremony({ belt, order, next, onContinue }: Props) {
       onClose={onContinue}
     >
       <div class="space-y-5 text-center">
+        <Apprentice belt={belt} pose="bow" class="mx-auto h-28 w-24" />
         <svg viewBox="0 0 240 120" class="mx-auto h-32 w-64" aria-hidden="true">
           <path d="M10 60 H230" class={`${FILL[belt]} [stroke-width:22]`} fill="none" />
           <path
