@@ -17,8 +17,12 @@ Fases en orden. Cada fase es autocontenida: dice qué leer, qué construir, cóm
 | P10 | [Repaso, oído, ubicación y pulido](P10-review-polish.md) | Repaso espaciado, gimnasio de oído, prueba de ubicación, ceremonia de cinturón, rendimiento y a11y. |
 | P11 | [Receta de contenido M03–M10](P11-content-recipe.md) | Procedimiento repetible para cada cinturón restante (una rama/PR por módulo). |
 | P12 | [Gimnasio de diapasón](P12-guitar-gym.md) | `/diapason`: la guitarra real entra por la interfaz de audio; notas en todas las cuerdas, escala mayor por posiciones, intervalos, arpegios y "Encuentra la nota". |
+| P13 | [Teoría sin depender de Strudel](P13-theory-progression.md) | Tema = prueba, módulo = temas + examen de cinturón. La ubicación pasa a ser el mismo examen. Sin mover contenido. |
+| P14 | [Curso Strudel](P14-strudel-course.md) | 12 etapas en `/strudel`: katas y combates movidos, reglas propias, inicio con dos cursos. |
+| P15 | [Separar las lecciones y completar S01–S02](P15-split-lessons.md) | Lecciones de teoría sin código, una lección por unidad de Strudel y las unidades nuevas de ritmo y sonido. |
+| P16 | [M10 sin Strudel y cierre](P16-m10-closure.md) | Temas de timbre y tensión de M10, práctica en unidades y documentación final. |
 
-P05 y P06 pueden ir en paralelo tras P04. P08 necesita P07. P09 puede ir antes que P08 si se prefiere.
+P05 y P06 pueden ir en paralelo tras P04. P08 necesita P07. P09 puede ir antes que P08 si se prefiere. P13–P16 van en orden y siguen `docs/specs/09-two-courses.md`.
 
 ## Protocolo para el agente
 
