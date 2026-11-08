@@ -4,6 +4,8 @@ import { buttonClass } from '../../components/ui/button.ts'
 import { freshRng } from '../../lib/random.ts'
 import { BELT_NAME_ES, BELTS, type BeltColor } from '../curriculum/belts.ts'
 import { useProgress } from '../progress/use-progress.ts'
+import { syncConfigured } from '../sync/client.ts'
+import SyncPanel from '../sync/SyncPanel.tsx'
 import { createProfile, NAME_MAX, setActive } from './profiles.ts'
 
 export const PROFILE_DOT: Record<BeltColor, string> = {
@@ -118,13 +120,17 @@ export default function ProfilePicker() {
           Nuevo perfil
         </button>
       )}
-      <p class="text-sm text-dojo-muted">
-        Los perfiles y el progreso se guardan solo en este navegador. ¿Vienes de otro dispositivo?{' '}
-        <a href="/progreso" class="text-dojo-neon underline">
-          Restaura tu respaldo
-        </a>
-        .
-      </p>
+      {syncConfigured ? (
+        <SyncPanel entry />
+      ) : (
+        <p class="text-sm text-dojo-muted">
+          Los perfiles y el progreso se guardan solo en este navegador. ¿Vienes de otro dispositivo?{' '}
+          <a href="/progreso" class="text-dojo-neon underline">
+            Restaura tu respaldo
+          </a>
+          .
+        </p>
+      )}
     </section>
   )
 }

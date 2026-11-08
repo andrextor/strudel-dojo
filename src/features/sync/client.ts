@@ -47,7 +47,7 @@ export async function sendLink(email: string): Promise<LinkResult> {
   const { auth } = await getClient()
   const { error } = await auth.signInWithOtp({
     email,
-    options: { shouldCreateUser: false, emailRedirectTo: `${location.origin}/progreso` },
+    options: { shouldCreateUser: false, emailRedirectTo: `${location.origin}${location.pathname}` },
   })
   return error ? { ok: false, error: linkError(error.code) } : { ok: true }
 }

@@ -22,7 +22,8 @@ const STATE_ES: Record<SyncState, string> = {
 const field =
   'min-h-11 w-full rounded-control border-2 border-dojo-border bg-dojo-raised px-3 text-dojo-text'
 
-export default function SyncPanel() {
+// `entry`: on the profile picker, where a new device signs in to bring its profiles down.
+export default function SyncPanel({ entry = false }: { entry?: boolean }) {
   const [email, setEmail] = useState('')
   const [signedIn, setSignedIn] = useState<string | null>(null)
   const [linkSent, setLinkSent] = useState(false)
@@ -73,13 +74,16 @@ export default function SyncPanel() {
       aria-labelledby="sync-title"
     >
       <h2 id="sync-title" class="font-display text-xl font-bold">
-        Sincronización
+        {entry ? '¿Ya entrenas en otro dispositivo?' : 'Sincronización'}
       </h2>
       {signedIn ? (
         <>
           <p class="text-dojo-muted">
             Conectado como {signedIn}. Estado: {STATE_ES[state]}
           </p>
+          {entry && state === 'idle' && (
+            <p>Listo: elige tu perfil arriba. Si no aparece, crea uno nuevo.</p>
+          )}
           {last && (
             <p class="text-sm text-dojo-muted">
               Última sincronización: {new Date(last).toLocaleString('es')}
@@ -116,8 +120,9 @@ export default function SyncPanel() {
           }}
         >
           <p class="text-dojo-muted">
-            Lleva tu progreso entre el celular y la laptop. Si este dispositivo ya tiene un perfil,
-            usa el mismo nombre en los dos para que se unan.
+            {entry
+              ? 'Entra con tu correo y tus perfiles aparecen aquí, con todo su progreso.'
+              : 'Lleva tu progreso entre el celular y la laptop. Los perfiles con el mismo nombre se unen en uno.'}
           </p>
           <label class="block space-y-1">
             <span class="text-sm">Correo</span>
