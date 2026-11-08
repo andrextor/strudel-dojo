@@ -54,7 +54,8 @@ create table public.profile_progress (
 
 - Entrada con **enlace por correo** (`signInWithOtp`, `shouldCreateUser: false`), sin contraseñas.
 - Un código de 6 dígitos sería más cómodo en el celular, pero exige cambiar la plantilla del correo, y el plan gratis no lo permite sin un proveedor SMTP propio. El dueño prefirió no agregar otra cuenta.
-- El enlace vuelve a `/progreso`. Usa el flujo implícito: la sesión llega en el hash de la URL y queda en el navegador que abrió el enlace, así que hay que abrirlo en el mismo donde se usa la app. Pasa una vez por dispositivo.
+- La entrada está en `/progreso` y también en "¿Quién entrena hoy?": un dispositivo nuevo entra con su correo y baja sus perfiles, sin crear ni adivinar nombres. El enlace vuelve a la página donde se pidió (`additional_redirect_urls` con `/**`).
+- El enlace vuelve a la misma página. Usa el flujo implícito: la sesión llega en el hash de la URL y queda en el navegador que abrió el enlace, así que hay que abrirlo en el mismo donde se usa la app. Pasa una vez por dispositivo.
 - `site_url` y `additional_redirect_urls` deben incluir la URL de producción.
 - La sesión queda en `localStorage`, gestionada por `supabase-js`.
 - "Cerrar sesión" detiene la sincronización y **conserva** los datos locales.
