@@ -123,7 +123,11 @@ export function topicStatus(
   if (module.status !== 'ready' || !isModuleUnlocked(p, curriculum, module)) return 'locked'
   if (isTopicEarned(p, topic)) return 'passed'
   if (isExamPassed(p, module.id)) return 'passed_by_placement'
-  const started = p.attempts.some((a) => a.kind === 'test' && a.scopeId === topic.id)
+  // ponytail: practice is stored per skill, not per topic, so practising a skill shared with
+  // another topic starts both; a per-topic practice log if that ever misleads.
+  const started =
+    p.attempts.some((a) => a.kind === 'test' && a.scopeId === topic.id) ||
+    topic.skills.some((skill) => Object.hasOwn(p.skillStats, skill))
   return started ? 'in_progress' : 'not_started'
 }
 
