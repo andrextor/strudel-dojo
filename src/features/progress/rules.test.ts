@@ -423,3 +423,10 @@ test('strudel next step: a unit, then the boss, then a theory wait, then nothing
   const everything = stages.reduce((acc, s) => passStage(acc, s.id), fresh())
   assert.equal(recommendedStrudel(everything, curriculum, stages), null)
 })
+
+test('practising a topic skill moves the topic to in progress, never to passed', () => {
+  const skill = t1.skills[0] ?? ''
+  const p = recordPractice(fresh(), '2026-03-10', skill, true, NOW)
+  assert.equal(topicStatus(fresh(), curriculum, m01, t1), 'not_started')
+  assert.equal(topicStatus(p, curriculum, m01, t1), 'in_progress')
+})

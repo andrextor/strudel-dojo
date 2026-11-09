@@ -22,6 +22,10 @@ Sí, sin dependencias nuevas.
 - **Monofónico.** Una nota a la vez. Sin acordes.
 - **Latencia.** Interfaz + navegador suman 10–60 ms. Hay un ajuste de **calibración** (ms) en la pantalla del ejercicio: toca 8 clics de prueba, la app mide el desfase medio y lo guarda en `prefs.guitar.latencyMs`. El ajuste manual queda visible.
 
+## Modo guía (por defecto)
+
+La detección depende de la interfaz y del navegador, y puede no funcionar. Por eso el gimnasio arranca en **modo guía**: sin micrófono, el metrónomo lleva el pulso y cada paso del ejercicio se ilumina en su tiempo (tras 4 clics de cuenta). Nada se califica: el alumno toca, para y empieza de nuevo cuando quiera. No guarda mejor marca. Sin tempo, cada paso avanza con "Siguiente nota"; en "Encuentra la nota", con "La toqué" y "Mostrar dónde está". "Preparar" tiene además un metrónomo suelto (BPM y pulsos por compás). La detección queda como "Escuchar la guitarra y corregirme".
+
 ## Entrada de audio (`features/guitar/`)
 
 | Archivo | Puro | Qué hace |

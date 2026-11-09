@@ -3,7 +3,7 @@ import { useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import StatusBadge from '../../components/ui/StatusBadge.tsx'
 import Tabs from '../../components/ui/Tabs.tsx'
-import { moduleHref, resultHref, testHref } from '../curriculum/paths.ts'
+import { moduleHref, resultHref, testHref, topicHref } from '../curriculum/paths.ts'
 import type { Module } from '../curriculum/schema.ts'
 import NeedProfile from '../profiles/NeedProfile.tsx'
 import { TOPIC_STATUS } from '../progress/labels.ts'
@@ -73,7 +73,19 @@ export default function TopicPanel({ module, topicId, curriculum, strudelUnits }
           { id: 'prueba', label: 'Prueba', icon: <ClipboardCheck size={16} aria-hidden="true" /> },
         ]}
       >
-        {tab === 'practica' && <PracticeSession topicId={topic.id} mix={topic.practice.mix} />}
+        {tab === 'practica' && (
+          <PracticeSession
+            topicId={topic.id}
+            mix={topic.practice.mix}
+            test={testHref(topic.id)}
+            next={(() => {
+              const following = module.topics[module.topics.indexOf(topic) + 1]
+              return following
+                ? { href: topicHref(following.id), label: `Siguiente tema: ${following.title}` }
+                : { href: moduleHref(module.id), label: 'Volver al cinturón' }
+            })()}
+          />
+        )}
 
         {tab === 'prueba' && (
           <div class="space-y-4">

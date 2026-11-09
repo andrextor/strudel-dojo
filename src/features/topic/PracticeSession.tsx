@@ -1,4 +1,4 @@
-import { Dumbbell } from 'lucide-preact'
+import { ClipboardCheck, Dumbbell } from 'lucide-preact'
 import { useMemo, useRef, useState } from 'preact/hooks'
 import { buttonClass } from '../../components/ui/button.ts'
 import { freshRng, randomId } from '../../lib/random.ts'
@@ -27,9 +27,11 @@ function nextQuestion(mix: MixEntry[], prefix: string, n: number, used: Set<stri
 interface Props {
   topicId: string
   mix: MixEntry[]
+  test?: string // a theory topic passes on its test, not on practice
+  next?: { href: string; label: string }
 }
 
-export default function PracticeSession({ topicId, mix }: Props) {
+export default function PracticeSession({ topicId, mix, test, next }: Props) {
   const { progress, updateProgress } = useProgress()
   const [session, setSession] = useState(() => randomId(freshRng()))
   const [n, setN] = useState(0)
@@ -51,23 +53,37 @@ export default function PracticeSession({ topicId, mix }: Props) {
         <p class="font-display text-2xl font-bold">
           {score.correct} de {score.answered} correctas
         </p>
-        <p class="text-dojo-muted">
-          La práctica no cuenta para aprobar, pero sí para tu racha y tu XP.
+        <p>
+          La práctica suma a tu racha y tu XP
+          {test ? ', pero el tema se aprueba con la prueba.' : '.'}
         </p>
-        <button
-          type="button"
-          class={buttonClass('primary')}
-          onClick={() => {
-            used.current.clear()
-            setSession(randomId(freshRng()))
-            setN(0)
-            setScore({ answered: 0, correct: 0 })
-            setStopped(false)
-          }}
-        >
-          <Dumbbell size={18} aria-hidden="true" />
-          Otra ronda
-        </button>
+        <div class="flex flex-wrap gap-3">
+          {test && (
+            <a href={test} class={buttonClass('primary')}>
+              <ClipboardCheck size={18} aria-hidden="true" />
+              Hacer la prueba
+            </a>
+          )}
+          <button
+            type="button"
+            class={buttonClass('secondary')}
+            onClick={() => {
+              used.current.clear()
+              setSession(randomId(freshRng()))
+              setN(0)
+              setScore({ answered: 0, correct: 0 })
+              setStopped(false)
+            }}
+          >
+            <Dumbbell size={18} aria-hidden="true" />
+            Otra ronda
+          </button>
+          {next && (
+            <a href={next.href} class={buttonClass('ghost')}>
+              {next.label}
+            </a>
+          )}
+        </div>
       </div>
     )
   }

@@ -1,5 +1,5 @@
 import { Guitar, Mic, Timer } from 'lucide-preact'
-import { useRef, useState } from 'preact/hooks'
+import { useEffect, useRef, useState } from 'preact/hooks'
 import { Note } from 'tonal'
 import Fretboard from '../../components/music/Fretboard.tsx'
 import type { KeyState } from '../../components/music/instrument.tsx'
@@ -100,6 +100,7 @@ interface Run {
   subdivision: number
   helped: boolean
   kind: Tab
+  guide: boolean
 }
 
 export default function GuitarGym() {
@@ -115,6 +116,10 @@ export default function GuitarGym() {
   const [run, setRun] = useState<Run | null>(null)
   const [result, setResult] = useState<(DrillResult & { run: Run }) | null>(null)
   const [calibrating, setCalibrating] = useState<string | null>(null)
+  // Guide: no microphone, the metronome leads and the fretboard shows each step on its beat.
+  const [guide, setGuide] = useState(true)
+  const [restarts, setRestarts] = useState(0)
+  const guideContext = useRef<AudioContext | null>(null)
 
   // Exercise settings.
   const [pool, setPool] = useState<NotePool>('naturals')
@@ -193,6 +198,10 @@ export default function GuitarGym() {
   }
 
   function startRun(r: Run) {
+    if (r.guide) {
+      guideContext.current ??= new AudioContext()
+      void guideContext.current.resume()
+    }
     stopCalibration.current()
     setResult(null)
     setRun(r)
@@ -201,7 +210,7 @@ export default function GuitarGym() {
   function finish(r: Run, res: DrillResult) {
     setRun(null)
     setResult({ ...res, run: r })
-    if (r.noTempo) return
+    if (r.noTempo || r.guide) return
     updateProgress((p) => {
       const g = p.guitar ?? { ...DEFAULT_GUITAR, best: {} }
       const prev = g.best[r.key]
@@ -244,13 +253,18 @@ export default function GuitarGym() {
     return segment.title
   }
 
-  const ready = status.state === 'on'
-  const startButton = (label: string, make: () => Run) => (
+  const ready = guide || status.state === 'on'
+  const drillContext = run?.guide
+    ? guideContext.current
+    : status.state === 'on'
+      ? status.input.context
+      : null
+  const startButton = (label: string, make: () => Omit<Run, 'guide'>) => (
     <button
       type="button"
       class={buttonClass('primary')}
       disabled={!ready}
-      onClick={() => startRun(make())}
+      onClick={() => startRun({ ...make(), guide })}
     >
       <Timer size={18} aria-hidden="true" />
       {label}
@@ -259,14 +273,16 @@ export default function GuitarGym() {
   const tempoFields = (
     <>
       <NumberField label="BPM" value={bpm} min={40} max={160} onChange={setBpm} />
-      <NumberField
-        label="Ventana de tiempo (ms)"
-        value={windowMs}
-        min={60}
-        max={200}
-        step={10}
-        onChange={setWindowMs}
-      />
+      {!guide && (
+        <NumberField
+          label="Ventana de tiempo (ms)"
+          value={windowMs}
+          min={60}
+          max={200}
+          step={10}
+          onChange={setWindowMs}
+        />
+      )}
     </>
   )
   const best = (key: string) => {
@@ -289,15 +305,16 @@ export default function GuitarGym() {
           Diapasón
         </h1>
         <p class="text-dojo-muted">
-          Conecta la guitarra a la interfaz de audio (o tócala cerca del micrófono) y practica con
-          metrónomo. Todo se procesa en este navegador.
+          Practica con metrónomo. En modo guía la app marca cada paso al pulso y tú tocas; si
+          quieres que te corrija, actívala para escuchar la guitarra.
         </p>
       </header>
 
-      {run && status.state === 'on' ? (
+      {run && drillContext ? (
         <TempoDrill
-          key={run.key + run.segments.length}
-          context={status.input.context}
+          key={`${run.key}:${restarts}`}
+          context={drillContext}
+          guide={run.guide}
           segments={run.segments}
           bpm={run.bpm}
           windowMs={windowMs}
@@ -312,6 +329,7 @@ export default function GuitarGym() {
             listener.current = h
           }}
           onDone={(res) => finish(run, res)}
+          onRestart={() => setRestarts((n) => n + 1)}
           onStop={() => {
             listener.current = () => {}
             setRun(null)
@@ -337,13 +355,27 @@ export default function GuitarGym() {
               role="status"
             >
               <p class="font-display text-2xl font-bold">
-                {result.run.noTempo ? '¡Forma completa!' : `¡Ronda limpia a ${result.run.bpm} BPM!`}
+                {result.run.noTempo
+                  ? '¡Forma completa!'
+                  : result.run.guide
+                    ? `Ronda guiada completa a ${result.run.bpm} BPM`
+                    : `¡Ronda limpia a ${result.run.bpm} BPM!`}
               </p>
-              <p>
-                {result.run.segments.length} {result.run.kind === 'scale' ? 'recorrido' : 'notas'} ·
-                te costó {result.attempts === 1 ? '1 intento' : `${result.attempts} intentos`}
-                {result.run.helped ? ' · con ayuda visual' : ''}.
-              </p>
+              {result.run.guide ? (
+                <button
+                  type="button"
+                  class={buttonClass('primary')}
+                  onClick={() => startRun(result.run)}
+                >
+                  Otra vez
+                </button>
+              ) : (
+                <p>
+                  {result.run.segments.length} {result.run.kind === 'scale' ? 'recorrido' : 'notas'}{' '}
+                  · te costó {result.attempts === 1 ? '1 intento' : `${result.attempts} intentos`}
+                  {result.run.helped ? ' · con ayuda visual' : ''}.
+                </p>
+              )}
               {!result.run.noTempo && (
                 <button
                   type="button"
@@ -361,105 +393,148 @@ export default function GuitarGym() {
 
           {tab === 'setup' && (
             <div class="space-y-5">
-              <Callout tone="warning" title="Lo que la app puede oír">
-                La app oye la nota y la octava, no la cuerda: la cuerda la pones tú. Toca una nota a
-                la vez (sin acordes). La interfaz y el navegador suman algo de retraso: calíbralo
-                abajo.
-              </Callout>
-              {status.state === 'denied' && (
-                <p role="alert" class="text-dojo-danger">
-                  {status.reason}
+              <fieldset class="space-y-2">
+                <legend class="text-sm text-dojo-muted">Cómo practicar</legend>
+                <label class="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="guitar-mode"
+                    class="size-5 accent-dojo-neon"
+                    checked={guide}
+                    onChange={() => setGuide(true)}
+                  />
+                  Guía con metrónomo (sin conectar la guitarra)
+                </label>
+                <label class="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="guitar-mode"
+                    class="size-5 accent-dojo-neon"
+                    checked={!guide}
+                    onChange={() => setGuide(false)}
+                  />
+                  Escuchar la guitarra y corregirme
+                </label>
+              </fieldset>
+              <MetronomePanel defaultBpm={bpm} />
+              {guide ? (
+                <p class="text-dojo-muted">
+                  Elige un ejercicio arriba. Tras 4 clics de cuenta, cada paso se ilumina en su
+                  pulso: tócalo tú. Para cuando quieras y empieza de nuevo.
                 </p>
-              )}
-              {status.state !== 'on' ? (
-                <button
-                  type="button"
-                  class={buttonClass('primary')}
-                  disabled={status.state === 'opening'}
-                  onClick={() => void activate()}
-                >
-                  <Mic size={18} aria-hidden="true" />
-                  {status.state === 'opening' ? 'Abriendo…' : 'Activar la guitarra'}
-                </button>
               ) : (
-                <div class="space-y-5">
-                  {devices.length > 1 && (
-                    <Select
-                      label="Entrada de audio"
-                      value={guitar.deviceId ?? ''}
-                      options={devices.map((d, i) => [d.deviceId, d.label || `Entrada ${i + 1}`])}
-                      onChange={(id) => {
-                        saveGuitar({ deviceId: id })
-                        close()
-                        setTimeout(() => void activate(id), 50)
-                      }}
-                    />
-                  )}
-                  <div class="space-y-2">
-                    <p class="text-sm text-dojo-muted">
-                      Nivel de entrada y umbral (lo de abajo del umbral es silencio)
+                <>
+                  <Callout tone="warning" title="Lo que la app puede oír">
+                    La app oye la nota y la octava, no la cuerda: la cuerda la pones tú. Toca una
+                    nota a la vez (sin acordes). La interfaz y el navegador suman algo de retraso:
+                    calíbralo abajo.
+                  </Callout>
+                  {status.state === 'denied' && (
+                    <p role="alert" class="text-dojo-danger">
+                      {status.reason}
                     </p>
-                    <div class="relative h-4 overflow-hidden rounded-full bg-dojo-raised">
-                      <div
-                        class="h-full bg-dojo-neon"
-                        style={{ width: `${Math.min(100, (live.level / 0.3) * 100)}%` }}
-                      />
-                      <div
-                        class="absolute top-0 h-full w-0.5 bg-dojo-torii"
-                        style={{ left: `${Math.min(100, (guitar.minRms / 0.3) * 100)}%` }}
-                      />
-                    </div>
-                    <label class="block space-y-1 text-sm">
-                      <span class="text-dojo-muted">Umbral</span>
-                      <input
-                        type="range"
-                        min={0.002}
-                        max={0.1}
-                        step={0.002}
-                        value={guitar.minRms}
-                        class="w-full accent-dojo-neon"
-                        onChange={(e) => saveGuitar({ minRms: Number(e.currentTarget.value) })}
-                      />
-                    </label>
-                  </div>
-                  <div class="flex items-baseline gap-4" aria-live="polite">
-                    <span class="text-sm text-dojo-muted">Afinador</span>
-                    <span class="font-display text-4xl font-bold">
-                      {live.midi === null ? (
-                        '—'
-                      ) : (
-                        <NoteName note={Note.fromMidiSharps(live.midi)} notation={prefs.notation} />
+                  )}
+                  {status.state !== 'on' ? (
+                    <button
+                      type="button"
+                      class={buttonClass('primary')}
+                      disabled={status.state === 'opening'}
+                      onClick={() => void activate()}
+                    >
+                      <Mic size={18} aria-hidden="true" />
+                      {status.state === 'opening' ? 'Abriendo…' : 'Activar la guitarra'}
+                    </button>
+                  ) : (
+                    <div class="space-y-5">
+                      {devices.length > 1 && (
+                        <Select
+                          label="Entrada de audio"
+                          value={guitar.deviceId ?? ''}
+                          options={devices.map((d, i) => [
+                            d.deviceId,
+                            d.label || `Entrada ${i + 1}`,
+                          ])}
+                          onChange={(id) => {
+                            saveGuitar({ deviceId: id })
+                            close()
+                            setTimeout(() => void activate(id), 50)
+                          }}
+                        />
                       )}
-                    </span>
-                    {live.midi !== null && (
-                      <span
-                        class={
-                          Math.abs(live.cents) <= 5 ? 'text-dojo-success' : 'text-dojo-warning'
-                        }
-                      >
-                        {live.cents > 0 ? '+' : ''}
-                        {live.cents} cents
-                      </span>
-                    )}
-                  </div>
-                  <div class="space-y-2">
-                    <p class="text-sm text-dojo-muted">Latencia: {guitar.latencyMs} ms</p>
-                    <div class="flex flex-wrap items-end gap-3">
-                      <button type="button" class={buttonClass('secondary')} onClick={calibrate}>
-                        Calibrar con 8 clics
-                      </button>
-                      <NumberField
-                        label="Ajuste manual (ms)"
-                        value={guitar.latencyMs}
-                        min={0}
-                        max={500}
-                        step={5}
-                        onChange={(v) => saveGuitar({ latencyMs: v })}
-                      />
+                      <div class="space-y-2">
+                        <p class="text-sm text-dojo-muted">
+                          Nivel de entrada y umbral (lo de abajo del umbral es silencio)
+                        </p>
+                        <div class="relative h-4 overflow-hidden rounded-full bg-dojo-raised">
+                          <div
+                            class="h-full bg-dojo-neon"
+                            style={{ width: `${Math.min(100, (live.level / 0.3) * 100)}%` }}
+                          />
+                          <div
+                            class="absolute top-0 h-full w-0.5 bg-dojo-torii"
+                            style={{ left: `${Math.min(100, (guitar.minRms / 0.3) * 100)}%` }}
+                          />
+                        </div>
+                        <label class="block space-y-1 text-sm">
+                          <span class="text-dojo-muted">Umbral</span>
+                          <input
+                            type="range"
+                            min={0.002}
+                            max={0.1}
+                            step={0.002}
+                            value={guitar.minRms}
+                            class="w-full accent-dojo-neon"
+                            onChange={(e) => saveGuitar({ minRms: Number(e.currentTarget.value) })}
+                          />
+                        </label>
+                      </div>
+                      <div class="flex items-baseline gap-4" aria-live="polite">
+                        <span class="text-sm text-dojo-muted">Afinador</span>
+                        <span class="font-display text-4xl font-bold">
+                          {live.midi === null ? (
+                            '—'
+                          ) : (
+                            <NoteName
+                              note={Note.fromMidiSharps(live.midi)}
+                              notation={prefs.notation}
+                            />
+                          )}
+                        </span>
+                        {live.midi !== null && (
+                          <span
+                            class={
+                              Math.abs(live.cents) <= 5 ? 'text-dojo-success' : 'text-dojo-warning'
+                            }
+                          >
+                            {live.cents > 0 ? '+' : ''}
+                            {live.cents} cents
+                          </span>
+                        )}
+                      </div>
+                      <div class="space-y-2">
+                        <p class="text-sm text-dojo-muted">Latencia: {guitar.latencyMs} ms</p>
+                        <div class="flex flex-wrap items-end gap-3">
+                          <button
+                            type="button"
+                            class={buttonClass('secondary')}
+                            onClick={calibrate}
+                          >
+                            Calibrar con 8 clics
+                          </button>
+                          <NumberField
+                            label="Ajuste manual (ms)"
+                            value={guitar.latencyMs}
+                            min={0}
+                            max={500}
+                            step={5}
+                            onChange={(v) => saveGuitar({ latencyMs: v })}
+                          />
+                        </div>
+                        {calibrating && <p class="text-sm">{calibrating}</p>}
+                      </div>
                     </div>
-                    {calibrating && <p class="text-sm">{calibrating}</p>}
-                  </div>
-                </div>
+                  )}
+                </>
               )}
             </div>
           )}
@@ -779,6 +854,7 @@ export default function GuitarGym() {
           {tab === 'find' && (
             <FindNote
               ready={ready}
+              guide={guide}
               pool={pool}
               setPool={setPool}
               prefs={prefs}
@@ -796,6 +872,7 @@ export default function GuitarGym() {
 // Without a metronome: a string and a note, as fast as you can find it. A miss shows where it was.
 function FindNote(props: {
   ready: boolean
+  guide: boolean
   pool: NotePool
   setPool: (p: NotePool) => void
   prefs: Prefs
@@ -826,6 +903,7 @@ function FindNote(props: {
     setMisses(0)
     setReveal([])
     startedAt.current = performance.now()
+    if (props.guide) return
     let index = 0
     props.listen((e) => {
       const target = all[index]
@@ -873,7 +951,35 @@ function FindNote(props: {
           <p class="font-display text-4xl font-extrabold">
             Cuerda {current.string}: <NoteName note={current.pc} notation={props.prefs.notation} />
           </p>
-          {reveal.length > 0 && <p class="text-dojo-danger">No es esa. En rojo, dónde está.</p>}
+          {reveal.length > 0 && !props.guide && (
+            <p class="text-dojo-danger">No es esa. En rojo, dónde está.</p>
+          )}
+          {props.guide && (
+            <div class="flex flex-wrap gap-3">
+              <button
+                type="button"
+                class={buttonClass('primary')}
+                onClick={() => {
+                  setTimes((t) => [...t, performance.now() - startedAt.current])
+                  setReveal([])
+                  setI((x) => x + 1)
+                  startedAt.current = performance.now()
+                }}
+              >
+                La toqué
+              </button>
+              <button
+                type="button"
+                class={buttonClass('secondary')}
+                onClick={() => {
+                  setMisses((m) => m + 1)
+                  setReveal(positionsOf(current.pc, current.string, '0-12'))
+                }}
+              >
+                Mostrar dónde está
+              </button>
+            </div>
+          )}
         </div>
       )}
       {finished && (
@@ -899,6 +1005,57 @@ function FindNote(props: {
         <Timer size={18} aria-hidden="true" />
         {list === null || finished ? 'Empezar' : 'Reiniciar'}
       </button>
+    </div>
+  )
+}
+
+// A plain metronome to play along with, apart from the drills.
+function MetronomePanel({ defaultBpm }: { defaultBpm: number }) {
+  const [bpm, setBpm] = useState(defaultBpm)
+  const [beatsPerBar, setBeatsPerBar] = useState(4)
+  const [on, setOn] = useState(false)
+  const context = useRef<AudioContext | null>(null)
+  const stop = useRef(() => {})
+
+  function toggle() {
+    stop.current()
+    stop.current = () => {}
+    if (on) {
+      setOn(false)
+      return
+    }
+    context.current ??= new AudioContext()
+    void context.current.resume()
+    const metronome = startMetronome(context.current, { bpm, beatsPerBar })
+    stop.current = metronome.stop
+    setOn(true)
+  }
+
+  useEffect(() => () => stop.current(), [])
+
+  return (
+    <div class="space-y-3 rounded-card bg-dojo-raised p-4">
+      <p class="font-display text-lg font-bold">Metrónomo</p>
+      <div class="grid max-w-md gap-3 sm:grid-cols-2">
+        <NumberField label="BPM" value={bpm} min={30} max={240} onChange={setBpm} />
+        <Select
+          label="Pulsos por compás"
+          value={String(beatsPerBar)}
+          options={[
+            ['2', '2'],
+            ['3', '3'],
+            ['4', '4'],
+            ['6', '6'],
+          ]}
+          onChange={(v) => setBeatsPerBar(Number(v))}
+        />
+      </div>
+      <button type="button" class={buttonClass(on ? 'secondary' : 'primary')} onClick={toggle}>
+        {on ? 'Parar' : 'Empezar'}
+      </button>
+      {on && (
+        <p class="text-sm text-dojo-muted">Cambia el BPM y pulsa Parar y Empezar para aplicarlo.</p>
+      )}
     </div>
   )
 }

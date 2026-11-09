@@ -40,7 +40,7 @@ export default function Tabs<T extends string>({
       <div
         role="tablist"
         aria-label={label}
-        class="flex gap-1 overflow-x-auto border-b border-dojo-hairline"
+        class="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-dojo-hairline"
         onKeyDown={(e) => {
           const list = e.currentTarget
           const moves: Record<string, number> = {
