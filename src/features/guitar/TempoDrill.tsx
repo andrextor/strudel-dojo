@@ -1,4 +1,4 @@
-import { Square } from 'lucide-preact'
+import { RotateCcw, Square } from 'lucide-preact'
 import type { ComponentChildren } from 'preact'
 import { useEffect, useRef, useState } from 'preact/hooks'
 import Fretboard from '../../components/music/Fretboard.tsx'
@@ -23,12 +23,14 @@ interface Props {
   subdivision?: number // 2 = eighth notes
   noTempo?: boolean // learn the shape first: only the order of the notes counts
   help: boolean // show where the current step is on the fretboard
+  guide?: boolean // nothing listens: each step passes on its beat (or on a tap without tempo)
   lefty: boolean
   notation: Notation
   title: (segment: Segment) => ComponentChildren
   listen: (handler: (e: NoteEvent) => void) => void
   onDone: (result: DrillResult) => void
   onStop: () => void
+  onRestart: () => void
 }
 
 // The onset tracker confirms a note `holdMs` (40) after its attack, plus up to a frame.
@@ -38,7 +40,16 @@ type Miss = { segment: number; step: number; why: string }
 
 // One beat per step after a one-bar count-in; any miss restarts the round (spec 08).
 export default function TempoDrill(props: Props) {
-  const { context, segments, bpm, windowMs, latencyMs, noTempo = false, subdivision = 1 } = props
+  const {
+    context,
+    segments,
+    bpm,
+    windowMs,
+    latencyMs,
+    noTempo = false,
+    subdivision = 1,
+    guide = false,
+  } = props
   const plan: RoundPlan = {
     segments: segments.map((s) => s.steps.length),
     countIn: noTempo ? 0 : 4 * subdivision,
@@ -124,8 +135,14 @@ export default function TempoDrill(props: Props) {
       const current = stateRef.current
       if (current.phase.kind === 'done') return
       if (current.phase.kind === 'play') {
-        // A played step is decided once its window has closed.
-        if (now >= at(n) + windowMs + latencyMs + CONFIRM_MS) {
+        // The guide moves on half a step after the click, so each step is lit around its beat.
+        if (guide) {
+          if (now >= at(n) + stepMs / 2) {
+            apply('ok')
+            n++
+            setBeat(n)
+          }
+        } else if (now >= at(n) + windowMs + latencyMs + CONFIRM_MS) {
           const step = stepOf(current)
           if (current.phase.step === 0) previous = null
           const got = heard.get(n)
@@ -182,10 +199,16 @@ export default function TempoDrill(props: Props) {
           </p>
           <div class="font-display text-5xl font-extrabold">{segment && props.title(segment)}</div>
         </div>
-        <button type="button" class={buttonClass('secondary')} onClick={props.onStop}>
-          <Square size={18} aria-hidden="true" />
-          Parar
-        </button>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class={buttonClass('secondary')} onClick={props.onRestart}>
+            <RotateCcw size={18} aria-hidden="true" />
+            Empezar de nuevo
+          </button>
+          <button type="button" class={buttonClass('secondary')} onClick={props.onStop}>
+            <Square size={18} aria-hidden="true" />
+            Parar
+          </button>
+        </div>
       </div>
 
       <p class="text-xl">
@@ -215,6 +238,12 @@ export default function TempoDrill(props: Props) {
           {phase.kind === 'done' ? segments.length : segmentIndex} de {segments.length} completas
         </span>
       </p>
+
+      {guide && noTempo && phase.kind === 'play' && (
+        <button type="button" class={buttonClass('primary')} onClick={() => apply('ok')}>
+          Siguiente nota
+        </button>
+      )}
 
       {miss && (
         <p role="alert" class="text-dojo-danger">

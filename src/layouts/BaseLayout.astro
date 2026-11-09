@@ -18,6 +18,15 @@ const {
   description = 'Aprende teoría musical y live coding con Strudel, cinturón por cinturón.',
 } = Astro.props
 const curriculum = await getCurriculum()
+const NAV = [
+  ['/', 'Inicio'],
+  ['/strudel', 'Strudel'],
+  ['/repaso', 'Repaso'],
+  ['/oido', 'Oído'],
+  ['/diapason', 'Diapasón'],
+  ['/progreso', 'Progreso'],
+] as const
+const path = Astro.url.pathname.replace(/\/$/, '') || '/'
 ---
 
 <!doctype html>
@@ -51,6 +60,27 @@ const curriculum = await getCurriculum()
         </AppHeader>
         <ThemeToggle />
       </div>
+      <nav aria-label="Secciones" class="mx-auto w-full max-w-6xl overflow-x-auto px-4 md:px-8">
+        <ul class="flex gap-1 pb-2 text-sm whitespace-nowrap">
+          {NAV.map(([href, label]) => {
+            const current = href === '/' ? path === '/' || path.startsWith('/m/') : path.startsWith(href)
+            return (
+              <li>
+                <a
+                  href={href}
+                  aria-current={current ? 'page' : undefined}
+                  class:list={[
+                    'inline-flex min-h-11 items-center rounded-control px-3 font-semibold hover:text-dojo-neon',
+                    current ? 'text-dojo-text underline decoration-dojo-torii decoration-2 underline-offset-8' : 'text-dojo-muted',
+                  ]}
+                >
+                  {label}
+                </a>
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
     </header>
     <main class="mx-auto w-full max-w-6xl flex-1 px-4 pt-6 pb-16 md:px-8 md:pt-10">
       <slot />
