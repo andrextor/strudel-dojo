@@ -28,7 +28,7 @@ Copy en español neutro latinoamericano con "tú", en oraciones simples, sin asu
 ## Alcance (v1)
 
 1. Currículo de 10 cinturones (ver `01-curriculum.md`), con contenido completo de los cinturones 1 y 2 en v1 y el resto añadido por fases.
-2. Por tema de teoría: lección (MDX con ejemplos que suenan), práctica ilimitada generada y prueba calificada. Por módulo: examen de cinturón.
+2. Por tema de teoría: lección (MDX con ejemplos que suenan), práctica generada en rondas de 10 (siempre hay otra ronda) y prueba calificada. Por módulo: examen de cinturón.
 3. Curso Strudel de 12 etapas: lección y katas validadas por unidad, y un combate creativo por etapa revisado por el Sensei (o autoevaluado con rúbrica si no hay clave de API).
 4. Motor Strudel propio: editor CodeMirror con resaltado de eventos, visuales (pianoroll, scope, punchcard, Hydra opcional), validación automática de katas consultando los eventos del patrón.
 5. Entrenamiento auditivo (intervalos, calidades de acorde, modos, dictado melódico corto).
