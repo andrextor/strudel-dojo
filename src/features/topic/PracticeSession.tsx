@@ -11,8 +11,10 @@ import { localDate } from '../progress/streak.ts'
 import type { Prefs } from '../progress/types.ts'
 import { useProgress } from '../progress/use-progress.ts'
 
-// Endless practice: every question is fresh; once the mix runs out of unseen questions the
-// session starts reusing them instead of failing.
+// Practice comes in rounds; every question is fresh, and once the mix runs out of unseen
+// questions the session starts reusing them instead of failing.
+const ROUND = 10
+
 function nextQuestion(mix: MixEntry[], prefix: string, n: number, used: Set<string>): Question {
   try {
     return pickQuestion(mix, prefix, n, used)
@@ -32,7 +34,8 @@ export default function PracticeSession({ topicId, mix }: Props) {
   const [session, setSession] = useState(() => randomId(freshRng()))
   const [n, setN] = useState(0)
   const [score, setScore] = useState({ answered: 0, correct: 0 })
-  const [ended, setEnded] = useState(false)
+  const [stopped, setStopped] = useState(false)
+  const ended = stopped || n >= ROUND
   const used = useRef(new Set<string>())
   const question = useMemo(
     () => nextQuestion(mix, `practice:${topicId}:${session}`, n, used.current),
@@ -59,11 +62,11 @@ export default function PracticeSession({ topicId, mix }: Props) {
             setSession(randomId(freshRng()))
             setN(0)
             setScore({ answered: 0, correct: 0 })
-            setEnded(false)
+            setStopped(false)
           }}
         >
           <Dumbbell size={18} aria-hidden="true" />
-          Practicar de nuevo
+          Otra ronda
         </button>
       </div>
     )
@@ -73,12 +76,12 @@ export default function PracticeSession({ topicId, mix }: Props) {
     <div class="space-y-4">
       <div class="flex items-center justify-between gap-3">
         <p class="text-sm text-dojo-muted" aria-live="polite">
-          Esta sesión: {score.correct} de {score.answered} correctas
+          Pregunta {n + 1} de {ROUND} · {score.correct} correctas
         </p>
         <button
           type="button"
           class={buttonClass('ghost', 'min-h-11')}
-          onClick={() => setEnded(true)}
+          onClick={() => setStopped(true)}
         >
           Terminar
         </button>
